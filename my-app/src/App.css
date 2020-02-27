@@ -1,0 +1,82 @@
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    height: 40vmin;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
+}
+
+.AppContainer {
+    background-color: #000;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+    text-shadow: 0 0 20px white;
+    overflow: hidden;
+}
+
+.App {
+    max-width: 95%;
+    top:0;
+    position: absolute;
+}
+
+.App h2 {
+    text-decoration: underline;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#the-input-field-container {
+    background: #000;
+    border: 1px #fff solid;
+    border-radius: 15px;
+}
+
+#the-input-field {
+    background: #000;
+    color: #fa0;
+    text-shadow: 0 0 20px #fa0;
+    max-width: 92%;
+    margin: 0 auto;
+    min-height: 38px;
+    overflow: hidden;
+}
+
+.typewriter #the-caret {
+    overflow: visible;
+    border-right: .1em solid #fff;
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: .15em;
+    animation: blink-caret 0.75s step-end infinite;
+    height: 38px;
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+    from, to {
+        border-color: transparent
+    }
+    50% {
+        border-color: #fff;
+    }
+}
