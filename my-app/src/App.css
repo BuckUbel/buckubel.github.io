@@ -28,7 +28,7 @@
 
 .App {
     max-width: 95%;
-    top:0;
+    top: 0;
     position: absolute;
 }
 
@@ -49,6 +49,10 @@
     background: #000;
     border: 1px #fff solid;
     border-radius: 15px;
+}
+
+#the-hidden-real-input-field {
+    display: none;
 }
 
 #the-input-field {

@@ -16,6 +16,7 @@ function App() {
         </h5>
         <div id={"the-input-field-container"}>
           <div id={"the-input-field"} className={"typewriter"}>
+            <input id={"the-hidden-real-input-field"} autoFocus/>
             <p>
               {caretPos === 0 && <span id={"the-caret"}/>}
               {Array.from(userText).map((l: string, i: number) => {
