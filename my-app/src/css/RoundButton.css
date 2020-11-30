@@ -1,0 +1,19 @@
+.round-button {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+}
+
+.round-button a button {
+    background: #ffa6af;
+    border-radius: 20px;
+    border: none;
+    color: white;
+    font-size: 20px;
+    padding: 10px 20px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 95%;
+}

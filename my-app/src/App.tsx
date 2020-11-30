@@ -1,15 +1,22 @@
 import React from 'react';
-import './App.css';
-import NameValidator from "./nameValidator/NameValidator";
+import './css/App.css';
+import HeaderImage from "./components/header/HeaderImage";
+import AppRoutes from "./components/navigation/AppRoutes";
+import AppNavigation from "./components/navigation/AppNavigation";
+import {routeMatcherFactory} from "./components/navigation/routeMatchFactory";
+import {Router} from "react-router-ts";
 
 function App() {
   return (
-    <div className="AppContainer">
-      <div className="App">
-        <h2>Name Validator</h2>
-        <NameValidator/>
+    <Router routeMatcherFactory={routeMatcherFactory}>
+      <AppNavigation/>
+      <div className="AppContainer">
+        <div className="App">
+          <HeaderImage/>
+          <AppRoutes/>
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }
 

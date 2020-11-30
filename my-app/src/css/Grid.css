@@ -1,0 +1,21 @@
+.columns-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.column {
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.column :first-child(1) {
+    margin-left: 0;
+}
+
+.column :last-child(1) {
+    margin-right: 0;
+}

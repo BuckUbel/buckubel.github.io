@@ -1,0 +1,60 @@
+<svg width="1000" height="800" xmlns="http://www.w3.org/2000/svg" stroke="#000" stroke-width="1.5">
+    <g>
+        <!--  triangle bottom direction -->
+        <line id="svg_1" x1="300" x2="700" y1="200" y2="200"/>
+        <line id="svg_2" x1="300" x2="500" y1="200" y2="546"/>
+        <line id="svg_3" x1="500" x2="700" y1="546" y2="200"/>
+
+        <!--  triangle top direction -->
+        <line id="svg_4" x1="300" x2="700" y1="500" y2="500"/>
+        <line id="svg_5" x1="300" x2="500" y1="500" y2="154"/>
+        <line id="svg_6" x1="700" x2="500" y1="500" y2="154"/>
+
+        <!--  connections of the tips -->
+        <line id="svg_7" x1="300" x2="700" y1="200" y2="500"/>
+        <line id="svg_8" x1="700" x2="300" y1="200" y2="500"/>
+        <line id="svg_9" x1="500" x2="500" y1="154" y2="546"/>
+
+        <!--  middle top connection-->
+        <line id="svg_10" x1="500" x2="421" y1="200" y2="291"/>
+        <line id="svg_10" x1="500" x2="579" y1="200" y2="291"/>
+
+        <!--  middle bottom connection-->
+        <line id="svg_10" x1="500" x2="421" y1="500" y2="409"/>
+        <line id="svg_10" x1="500" x2="579" y1="500" y2="409"/>
+
+        <!--  middle connection connectors -->
+        <line id="svg_10" x1="421" x2="421" y1="291" y2="409"/>
+        <line id="svg_10" x1="579" x2="579" y1="291" y2="409"/>
+
+        <!-- top corner-->
+        <line id="svg_20" x1="500" x2="421" y1="154" y2="409"/>
+        <line id="svg_20" x1="500" x2="579" y1="154" y2="409"/>
+        <!-- top middle corner-->
+        <line id="svg_20" x1="500" x2="421" y1="200" y2="409"/>
+        <line id="svg_20" x1="500" x2="579" y1="200" y2="409"/>
+        <line id="svg_20" x1="500" x2="300" y1="200" y2="500"/>
+        <line id="svg_24" x1="500" x2="700" y1="200" y2="500"/>
+
+        <!-- bottom corner-->
+        <line id="svg_20" x1="500" x2="421" y1="546" y2="291"/>
+        <line id="svg_20" x1="500" x2="579" y1="546" y2="291"/>
+        <!-- bottom middle corner-->
+        <line id="svg_20" x1="500" x2="421" y1="500" y2="291"/>
+        <line id="svg_20" x1="500" x2="579" y1="500" y2="291"/>
+        <line id="svg_20" x1="500" x2="300" y1="500" y2="200"/>
+        <line id="svg_24" x1="500" x2="700" y1="500" y2="200"/>
+
+        <!-- left top corner-->
+        <line id="svg_20" x1="300" x2="579" y1="200" y2="291"/>
+
+        <!-- right top corner-->
+        <line id="svg_20" x1="700" x2="421" y1="200" y2="291"/>
+        
+        <!-- left bottom corner-->
+        <line id="svg_20" x1="300" x2="579" y1="500" y2="409"/>
+        
+        <!-- right bottom corner-->
+        <line id="svg_20" x1="700" x2="421" y1="500" y2="409"/>
+    </g>
+</svg>
