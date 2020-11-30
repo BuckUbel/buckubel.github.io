@@ -6,7 +6,7 @@ function Navigation(props: CompProps) {
   return (
     <div className="navigation">
       <div className="navigation-main-icon">
-        MW
+        BU
       </div>
       {props.children}
     </div>
