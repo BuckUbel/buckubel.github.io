@@ -16,9 +16,11 @@ code {
 
 #root {
     display: block;
-    position:relative;
+    position: relative;
     height: 100%;
     width: 100%;
 }
 
-a { color: inherit; }
+a {
+    color: inherit;
+}

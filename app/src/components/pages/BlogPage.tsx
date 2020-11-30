@@ -2,12 +2,7 @@ import * as React from "react";
 import Page from "../Page";
 import {LangDE} from "../config/langDE";
 import PageDescription from "../content/PageDescription";
-import SitePreview from "../content/SitePreview";
-import {getSitePreviewContent} from "../config/sitePreviewConfig";
-import {routes} from "../config/routes";
-import ColumnsContainer from "../grid/ColumnsContainer";
-import BlogEntryList from "../content/BlogEntryList";
-import {BlogEntries, BlogEntry} from "../config/blog";
+import {BlogEntry} from "../config/blog";
 
 function getLast3BlogEntry(entryList: BlogEntry[]) {
   if (entryList.length > 2) {
@@ -20,7 +15,7 @@ function getLast3BlogEntry(entryList: BlogEntry[]) {
   return [];
 }
 
-const last3BlogEntry: BlogEntry[] = getLast3BlogEntry(BlogEntries);
+// const last3BlogEntry: BlogEntry[] = getLast3BlogEntry(BlogEntries);
 
 function BlogPage() {
   return (
@@ -29,12 +24,12 @@ function BlogPage() {
       description={LangDE.blogShortDescription}
     >
       <PageDescription content={LangDE.blogDescription}/>
-      <BlogEntryList content={last3BlogEntry}/>
-      <ColumnsContainer>
-        <SitePreview content={getSitePreviewContent(routes).default}/>
-        <SitePreview content={getSitePreviewContent(routes).default}/>
-        <SitePreview content={getSitePreviewContent(routes).default}/>
-      </ColumnsContainer>
+      {/*<BlogEntryList content={last3BlogEntry}/>*/}
+      {/*<ColumnsContainer>*/}
+      {/*  <SitePreview content={getSitePreviewContent(routes).default}/>*/}
+      {/*  <SitePreview content={getSitePreviewContent(routes).default}/>*/}
+      {/*  <SitePreview content={getSitePreviewContent(routes).default}/>*/}
+      {/*</ColumnsContainer>*/}
     </Page>
   );
 }

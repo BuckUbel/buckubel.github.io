@@ -7,8 +7,7 @@ export const LangDE = {
   projectTitle: "Projekte",
   blogTitle: "Blog",
   blogShortDescription: "",
-  blogDescription: "TODO: Persönliche Geschichten\n" +
-    "TODO: Unternehmens-Erfahrungen",
+  blogDescription: "",
   contactTitle: "Kontakt",
   impressumTitle: "Impressum",
   dataSecurityTitle: "Datenschutzerklärung",

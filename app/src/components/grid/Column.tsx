@@ -1,6 +1,5 @@
 import React from "react";
 import {CompProps} from "../helper/types";
-import '../../css/SitePreview.css';
 
 interface ColumnProps extends CompProps {
   width?: string;

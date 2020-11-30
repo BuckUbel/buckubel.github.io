@@ -1,8 +1,11 @@
 export enum Color  {
-  PRIME_COLOR= "#58585a",
-  ALPHA_COLOR= "#83092c",
-  BETA_COLOR= "#7c293b",
-  GAMMA_COLOR= "#38a331",
-  DELTA_COLOR= "#df0716",
-  EPSILON_COLOR= "#ffa6af",
+  PRIME_COLOR= "#000000",
+  ALPHA_COLOR= "#098765",
+  BETA_COLOR= "#567890",
+  GAMMA_COLOR= "#012345",
+  DELTA_COLOR= "#543210",
+
+  TEXT_PRIME_COLOR= "#ffffff",
+
+
 }
