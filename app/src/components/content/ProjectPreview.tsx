@@ -7,7 +7,7 @@ import styled from "styled-components";
 import {Color} from "../config/color";
 import {TEXTCOLOR} from "../config/css";
 import {getRouteHref} from "../config/routes";
-import {ProjectEntryInterface} from "../data/projects";
+import {ProjectEntryInterface} from "../data/projects/projects";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons";
 
 interface ProjectPreviewProps extends StyledCompProps {

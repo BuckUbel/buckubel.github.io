@@ -3,7 +3,7 @@ import Page from "../Page";
 import {LangDE} from "../config/langDE";
 import ColumnsContainer from "../grid/ColumnsContainer";
 import ProjectPreview from "../content/ProjectPreview";
-import {PROJECTS} from "../data/projects";
+import {PROJECTS} from "../data/projects/projects";
 
 const projects = Object.values(PROJECTS);
 

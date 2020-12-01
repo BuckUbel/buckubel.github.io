@@ -1,7 +1,7 @@
 import * as React from "react";
 import Page from "../Page";
 import {useRouter} from "react-router-ts";
-import {getProjectComponent, getProjectHeadline} from "../data/projects";
+import {getProjectComponent, getProjectHeadline} from "../data/projects/projects";
 import RoundButton from "../buttons/RoundButton";
 import {getRouteHref} from "../config/routes";
 import {faChevronLeft} from '@fortawesome/free-solid-svg-icons'

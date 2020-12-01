@@ -1,7 +1,7 @@
-import NameValidator from "../content/projects/nameValidator/NameValidator";
+import NameValidator from "./nameValidator/NameValidator";
 import * as React from "react";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
-import AdventOfCode2020 from "../content/projects/adventOfCode2020/AdventOfCode2020";
+import AdventOfCode2020 from "./adventOfCode2020/AdventOfCode2020";
 
 export interface ProjectEntryInterface {
   title: string,
