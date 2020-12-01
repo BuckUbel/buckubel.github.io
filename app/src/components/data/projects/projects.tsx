@@ -11,7 +11,7 @@ export interface ProjectEntryInterface {
 }
 
 export type ProjectEntryListInterface = {
-  [key: string]: ProjectEntryInterface
+  [key: number]: ProjectEntryInterface
 }
 export const PROJECTS: ProjectEntryListInterface = {
   0: {
@@ -25,10 +25,10 @@ export const PROJECTS: ProjectEntryListInterface = {
 }
 export const PROJECT_IDS = Object.keys(PROJECTS);
 
-export function getProjectHeadline(id: string) {
+export function getProjectHeadline(id: number) {
   return PROJECTS[id] !== undefined ? PROJECTS[id].title : "";
 }
 
-export function getProjectComponent(id: string) {
+export function getProjectComponent(id: number) {
   return PROJECTS[id] !== undefined ? PROJECTS[id].component : "";
 }

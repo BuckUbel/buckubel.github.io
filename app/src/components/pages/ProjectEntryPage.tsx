@@ -11,8 +11,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 function ProjectEntryPage() {
   const router = useRouter();
   const id = router.path.slice(router.path.lastIndexOf("/") + 1);
-  const headline = getProjectHeadline(id);
-  const myComponent = getProjectComponent(id);
+  const headline = getProjectHeadline(Number(id));
+  const myComponent = getProjectComponent(Number(id));
 
   return (
     <Page

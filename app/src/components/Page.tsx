@@ -9,6 +9,7 @@ import {routes} from "./config/routes";
 import styled from "styled-components";
 import {BOX_SHADOW_PIXEL} from "./config/css";
 import {useRouter} from "react-router-ts";
+import {Color} from "./config/color";
 
 export interface PageProps extends StyledCompProps {
   title: string;
@@ -44,7 +45,7 @@ export default styled(Page)`
     position: relative;
     width: calc(100% - 40px);
     text-align: center;
-
+    background: ${Color.PRIME_COLOR};
 
 
     .page-description {
