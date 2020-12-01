@@ -34,6 +34,8 @@ function NameValidator(props: NameValidatorProps) {
 
 export default styled(NameValidator)`
 
+display: inline-block;
+
     #the-input-field-container {
         background: #000;
         border: 1px #fff solid;
