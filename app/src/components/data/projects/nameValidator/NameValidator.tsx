@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {useKeyBoard} from "./useKeyBoard";
 import {useTextCalculator} from "./useTextCalculator";
 import styled from 'styled-components';
@@ -11,12 +11,14 @@ function NameValidator(props: NameValidatorProps) {
   const [userText, caretPos] = useKeyBoard('', 0);
   const textValue = useTextCalculator(userText);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className={props.className}>
       <h5>Try it and input your name {textValue > 0 && textValue}</h5>
-      <div id={"the-input-field-container"}>
+      <div id={"the-input-field-container"} onClick={() => inputRef?.current?.focus()}>
         <div id={"the-input-field"} className={"typewriter"}>
-          <input id={"the-hidden-real-input-field"} autoFocus/>
+          <input id={"the-hidden-real-input-field"} ref={inputRef} autoFocus/>
           <p>
             {caretPos === 0 && <span id={"the-caret"}/>}
             {Array.from(userText).map((l: string, i: number) => {
@@ -34,7 +36,7 @@ function NameValidator(props: NameValidatorProps) {
 
 export default styled(NameValidator)`
 
-display: inline-block;
+    display: inline-block;
 
     #the-input-field-container {
         background: #000;
