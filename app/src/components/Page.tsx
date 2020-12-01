@@ -45,10 +45,7 @@ export default styled(Page)`
     width: calc(100% - 40px);
     text-align: center;
 
-    .headline {
-        font-size: 30px;
-        text-align: center;
-    }
+
 
     .page-description {
         text-align: left;

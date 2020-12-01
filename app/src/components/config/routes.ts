@@ -23,9 +23,18 @@ export type AppRoutesInterface = {
 export const routes: AppRoutesInterface = {
   start: {href: "/", title: LangDE.startTitle, component: StartPage},
   projects: {href: "/project", title: LangDE.projectTitle, component: ProjectPage},
-  projectEntry: {href: "/project/(.*)", title: LangDE.projectTitle, component: ProjectEntryPage},
+  projectEntry: {
+    href: "/project/(.*)",
+    hrefWithoutParam: "/project/",
+    title: LangDE.projectTitle,
+    component: ProjectEntryPage
+  },
   blog: {href: "/blog", title: LangDE.blogTitle, component: BlogPage},
   blogEntry: {href: "/blog/(.*)", title: LangDE.blogTitle, component: BlogEntryPage},
   kontakt: {href: "/kontakt", title: LangDE.contactTitle, component: ContactPage},
   default: {href: "/(.*)", title: LangDE.defaultTitle, component: DefaultPage},
+}
+
+export function getRouteHref(key: AppRouteNames) {
+  return routes[key] ? routes[key].hrefWithoutParam ?? routes[key].href : ""
 }

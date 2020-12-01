@@ -43,11 +43,11 @@ const StyledNavigationItem = styled(NavigationItem)`
     ${TEXTCOLOR(Color.TEXT_PRIME_COLOR)};
     box-shadow: 0 0 18px -8px ${(Color.TEXT_PRIME_COLOR)};
 
-    transition: color, background 1s, height 0.5s;
+    transition: color 1s,  text-shadow 1s, background 1s, height 0.5s;
 
     :hover {
         background: ${Color.TEXT_PRIME_COLOR};
-        ${TEXTCOLOR(Color.PRIME_COLOR)};
+        ${TEXTCOLOR(Color.BETA_COLOR)};
         height: 50px;
     }
 `;

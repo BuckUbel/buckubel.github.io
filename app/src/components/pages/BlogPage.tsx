@@ -2,18 +2,17 @@ import * as React from "react";
 import Page from "../Page";
 import {LangDE} from "../config/langDE";
 import PageDescription from "../content/PageDescription";
-import {BlogEntry} from "../config/blog";
 
-function getLast3BlogEntry(entryList: BlogEntry[]) {
-  if (entryList.length > 2) {
-    return [entryList[entryList.length - 1], entryList[entryList.length - 2], entryList[entryList.length - 3]];
-  } else if (entryList.length > 1) {
-    return [entryList[entryList.length - 1], entryList[entryList.length - 2]];
-  } else if (entryList.length > 0) {
-    return [entryList[entryList.length - 1]];
-  }
-  return [];
-}
+// function getLast3BlogEntry(entryList: BlogEntry[]) {
+//   if (entryList.length > 2) {
+//     return [entryList[entryList.length - 1], entryList[entryList.length - 2], entryList[entryList.length - 3]];
+//   } else if (entryList.length > 1) {
+//     return [entryList[entryList.length - 1], entryList[entryList.length - 2]];
+//   } else if (entryList.length > 0) {
+//     return [entryList[entryList.length - 1]];
+//   }
+//   return [];
+// }
 
 // const last3BlogEntry: BlogEntry[] = getLast3BlogEntry(BlogEntries);
 

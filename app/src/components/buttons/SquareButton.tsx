@@ -15,12 +15,10 @@ function SquareButton(props: SquareButtonProps) {
   const routeLink = useRouteLink(props.link);
 
   return (
-    <div className={props.className}>
-      <a href={props.link}>
-        <button onClick={routeLink.onClick}>
-          {props.text}
-        </button>
-      </a>
+    <div className={props.className} onClick={routeLink.onClick}>
+      <button>
+        {props.text}
+      </button>
     </div>
   );
 }
@@ -30,11 +28,8 @@ export default styled(SquareButton)`
     position: relative;
     width: 100%;
 
-    a {
-        width: 100%;
-    }
 
-    a button {
+    button {
         background: ${Color.BETA_COLOR};
         border-radius: 20px;
         border: none;
@@ -47,5 +42,12 @@ export default styled(SquareButton)`
         text-overflow: ellipsis;
         max-width: 95%;
         width: 100%;
+
+        transition: color 1s, background 1s;
+
+        :hover {
+            background: ${Color.TEXT_PRIME_COLOR};
+            color: ${Color.BETA_COLOR};
+        }
     }
 `;

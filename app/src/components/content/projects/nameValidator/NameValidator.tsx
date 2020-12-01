@@ -2,9 +2,9 @@ import React from 'react';
 import {useKeyBoard} from "./useKeyBoard";
 import {useTextCalculator} from "./useTextCalculator";
 import styled from 'styled-components';
+import {StyledCompProps} from "../../../helper/types";
 
-interface NameValidatorProps {
-  className?: string;
+interface NameValidatorProps extends StyledCompProps {
 }
 
 function NameValidator(props: NameValidatorProps) {
@@ -34,43 +34,43 @@ function NameValidator(props: NameValidatorProps) {
 
 export default styled(NameValidator)`
 
-#the-input-field-container {
-    background: #000;
-    border: 1px #fff solid;
-    border-radius: 15px;
-}
-
-#the-hidden-real-input-field {
-    display: none;
-}
-
-#the-input-field {
-    background: #000;
-    color: #fa0;
-    text-shadow: 0 0 20px #fa0;
-    max-width: 92%;
-    margin: 0 auto;
-    min-height: 38px;
-    overflow: hidden;
-}
-
-.typewriter #the-caret {
-    overflow: visible;
-    border-right: .1em solid #fff;
-    white-space: nowrap;
-    margin: 0 auto;
-    letter-spacing: .15em;
-    animation: blink-caret 0.75s step-end infinite;
-    height: 38px;
-}
-
-/* The typewriter cursor effect */
-@keyframes blink-caret {
-    from, to {
-        border-color: transparent
+    #the-input-field-container {
+        background: #000;
+        border: 1px #fff solid;
+        border-radius: 15px;
     }
-    50% {
-        border-color: #fff;
+
+    #the-hidden-real-input-field {
+        display: none;
     }
-}
+
+    #the-input-field {
+        background: #000;
+        color: #fa0;
+        text-shadow: 0 0 20px #fa0;
+        max-width: 92%;
+        margin: 0 auto;
+        min-height: 38px;
+        overflow: hidden;
+    }
+
+    .typewriter #the-caret {
+        overflow: visible;
+        border-right: .1em solid #fff;
+        white-space: nowrap;
+        margin: 0 auto;
+        letter-spacing: .15em;
+        animation: blink-caret 0.75s step-end infinite;
+        height: 38px;
+    }
+
+    /* The typewriter cursor effect */
+    @keyframes blink-caret {
+        from, to {
+            border-color: transparent
+        }
+        50% {
+            border-color: #fff;
+        }
+    }
 `;

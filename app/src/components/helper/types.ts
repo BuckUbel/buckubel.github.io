@@ -5,7 +5,7 @@ export type CompProps<T = any> = PropsWithChildren<PropsWithRef<T>>;
 
 export interface StyledCompProps extends CompProps {
   className?: string;
-};
+}
 
 export interface ObjectArray<T = any> {
   [identifier: string]: T;
@@ -13,8 +13,9 @@ export interface ObjectArray<T = any> {
 
 export interface AppRouteInterface {
   href: string,
+  hrefWithoutParam?: string,
   title: string,
-  component: () => JSX.Element | null;
+  component: (props?: any) => JSX.Element | null;
 }
 
 export interface SitePreviewInterface {

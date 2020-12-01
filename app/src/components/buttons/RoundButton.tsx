@@ -7,18 +7,18 @@ import {Color} from "../config/color";
 interface RoundButtonProps extends StyledCompProps {
   style?: CSSProperties;
   link: string;
-  text: string;
+  text: string | JSX.Element;
+  float?: string;
+  width?: string;
 }
 
 function RoundButton(props: RoundButtonProps) {
   const routeLink = useRouteLink(props.link);
   return (
-    <div className={props.className}>
-      <a href={props.link}>
-        <button onClick={routeLink.onClick}>
-          {props.text}
-        </button>
-      </a>
+    <div className={props.className} onClick={routeLink.onClick}>
+      <button>
+        {props.text}
+      </button>
     </div>
   );
 }
@@ -26,13 +26,14 @@ function RoundButton(props: RoundButtonProps) {
 export default styled(RoundButton)`
     display: inline-block;
     position: relative;
-    width: 100%;
+    width: ${({width}) => width !== undefined ? width : "initial"};
+    padding: 0 10px;
 
-    a button {
+    button {
         background: ${Color.BETA_COLOR};
+        color: ${Color.TEXT_PRIME_COLOR};
         border-radius: 20px;
         border: none;
-        color: ${Color.TEXT_PRIME_COLOR};
         font-size: 20px;
         padding: 10px 20px;
 
@@ -40,5 +41,12 @@ export default styled(RoundButton)`
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 95%;
+        float: ${({float}) => float !== undefined ? float : "initial"};
+        transition: color 1s, background 1s;
+
+        :hover {
+            background: ${Color.TEXT_PRIME_COLOR};
+            color: ${Color.BETA_COLOR};
+        }
     }
 `;

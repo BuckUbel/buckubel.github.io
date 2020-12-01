@@ -1,12 +1,21 @@
 import * as React from "react";
-import {CompProps} from "../helper/types";
+import {StyledCompProps} from "../helper/types";
+import styled from "styled-components";
 
-function Headline(props:CompProps) {
+function Headline(props: StyledCompProps) {
   return (
-    <div className="headline">
+    <div className={props.className}>
       {props.children}
     </div>
   );
 }
 
-export default Headline;
+export default styled(Headline)`
+    font-size: 30px;
+    text-align: center;
+    transition: font-size 1s;
+
+    :hover {
+        font-size: 45px;
+    }
+`;
