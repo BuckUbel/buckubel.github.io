@@ -7,15 +7,16 @@ import {Color} from "../config/color";
 interface RoundButtonProps extends StyledCompProps {
   style?: CSSProperties;
   link: string;
+  onClick?: () => void;
   text: string | JSX.Element;
   float?: string;
   width?: string;
 }
 
 function RoundButton(props: RoundButtonProps) {
-  const routeLink = useRouteLink(props.link);
+  const routeLink = useRouteLink(props.onClick ? "" : props.link);
   return (
-    <div className={props.className} onClick={routeLink.onClick}>
+    <div className={"round-button " + props.className} onClick={!!props.onClick ? props.onClick : routeLink.onClick}>
       <button>
         {props.text}
       </button>
