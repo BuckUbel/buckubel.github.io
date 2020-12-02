@@ -49,4 +49,8 @@ export default styled(App)`
     .App h2 {
         text-decoration: underline;
     }
+    a {
+        ${TEXTCOLOR(Color.BETA_COLOR)};
+
+    }
 `;
