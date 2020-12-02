@@ -7,7 +7,7 @@ export const LangDE = {
   projectTitle: "Projekte",
   blogTitle: "Blog",
   blogShortDescription: "",
-  blogDescription: "",
+  blogDescription: "Diese Seite befindet sich bisher noch im Aufbaue. Habe bitte noch etwas Geduld.",
   contactTitle: "Kontakt",
   impressumTitle: "Impressum",
   dataSecurityTitle: "Datenschutzerklärung",
