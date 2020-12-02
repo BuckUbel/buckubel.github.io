@@ -35,7 +35,7 @@ function ProjectPreview(props: ProjectPreviewProps) {
         }
         <div className={"site-preview-link-placeholder"}/>
         <div className={"site-preview-link-container"}>
-          <RoundButton link={getRouteHref("projectEntry") + props.id}
+          <RoundButton link={getRouteHref("projectEntry") + props.id + "/"}
                        text={<FontAwesomeIcon icon={faChevronRight}/>}/>
         </div>
       </div>
