@@ -74,9 +74,6 @@ function Door1(props: Door1Props) {
         <li>Iteration über alle Zahlen von der größten zur kleinsten</li>
         <li>Weitere Iteration für jeder Zahl von der kleinsten zur größten</li>
         <li>ist die Summe der beiden Zahlen = 2020, dann haben wir unser Zahlen-Dupel gefunden</li>
-        <li>wenn das Ergebnis dieser Subtraktion in unserem gefiltertem Array steht, dann haben wir das 2-Tupel
-          gefunden
-        </li>
       </ul>
       <p>Unser Ergebnis besteht aus folgenden zwei Zahlen (und wurde nach {iterations} Schleifendurchgängen
         gefunden): </p>
