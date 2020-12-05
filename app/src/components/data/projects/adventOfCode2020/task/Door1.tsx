@@ -120,7 +120,7 @@ function Door1(props: Door1Props) {
       iterations2} Durchgänge.</b></p>
 
       <p> Eine weitere Beurteilung gelingt uns durch die Zeit. Unterteilt in die beiden Bereiche sind folgende
-        Zeitabstände entstanden (Bitte bedenke, dass diese Zeiten live berechnet werden, d.h. sie sind schneler umso
+        Zeitabstände entstanden (Bitte bedenke, dass diese Zeiten live berechnet werden, d.h. sie sind schneller umso
         stärker dein Endgerät ist):</p>
       <ul>
         <li>{((stepTwo - stepOne) * 1000).toFixed(2)} μs (mein Endgerät lag bei 100)</li>
