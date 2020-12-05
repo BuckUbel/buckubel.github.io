@@ -94,6 +94,7 @@ export default styled(Page)`
     hr {
         box-shadow: ${BOX_SHADOW_PIXEL};
         margin-bottom: 20px;
+        border-radius: 50%;
 
         &.top-hr-line {
         }

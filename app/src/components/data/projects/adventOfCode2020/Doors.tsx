@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import {StyledCompProps} from "../../../helper/types";
 import {DOOR_CONTENT} from "./DoorContent";
-import TaskDescription from "./TaskDescription";
-import Solution from "./Solution";
-import MyPropsForSolution from "./MyPropsForSolution";
 import Door1 from "./task/Door1";
+import DoorItem from "./DoorItem";
+import {Color} from "../../../config/color";
 
 interface DoorsProps extends StyledCompProps {
   id: number
@@ -28,11 +27,12 @@ function Doors(props: DoorsProps) {
   return (
     <div className={props.className}>
       <h4>Aufgabe 1: </h4>
-      <TaskDescription content={currentDoorContent}/>
-      {currentDoorContent.propsForSolution && <MyPropsForSolution content={currentDoorContent}/>}
-      <Solution content={currentDoorContent}>
+      <DoorItem content={currentDoorContent.task ?? ""} translation={currentDoorContent.translated_task ?? ""}/>
+      {!!currentDoorContent.propsForSolution &&
+      <DoorItem content={currentDoorContent.propsForSolution ?? ""} color={Color.TEXT_INFO_COLOR} openPreset={false}/>}
+      <DoorItem content={currentDoorContent.solution ?? ""} color={Color.TEXT_SUCCESS_COLOR}>
         {doorComp}
-      </Solution>
+      </DoorItem>
     </div>
   );
 }
