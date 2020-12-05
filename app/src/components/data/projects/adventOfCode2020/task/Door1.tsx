@@ -119,7 +119,7 @@ function Door1(props: Door1Props) {
       filteredInput.length +
       iterations2} Durchgänge.</b></p>
 
-      <p> Eine weitere Beurteilung gelingt uns durch die Zeit. Unterteil in die beiden Bereiche sind folgende
+      <p> Eine weitere Beurteilung gelingt uns durch die Zeit. Unterteilt in die beiden Bereiche sind folgende
         Zeitabstände entstanden (Bitte bedenke, dass diese Zeiten live berechnet werden, d.h. sie sind schneler umso
         stärker dein Endgerät ist):</p>
       <ul>
