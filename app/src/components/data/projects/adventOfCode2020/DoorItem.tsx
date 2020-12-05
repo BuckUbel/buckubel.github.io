@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {CSSProperties, useState} from 'react';
 import styled from 'styled-components';
 import {StyledCompProps} from "../../../helper/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -13,14 +13,15 @@ interface DoorItemProps extends StyledCompProps {
   translation?: string;
   color?: string;
   openPreset?: boolean;
+  style?: CSSProperties;
 }
 
-function DoorItem({translation, openPreset = true, content, className, children}: DoorItemProps) {
+function DoorItem({translation, openPreset = true, content, className, children, style}: DoorItemProps) {
 
   const [translated, setTranslated] = useState(!!translation);
   const [open, setOpen] = useState(openPreset);
   return (
-    <div className={className}>
+    <div className={className} style={style}>
       {!translation && <div className={"placeholder"}/>}
       {!!translation && <RoundButton onClick={() => setTranslated(!translated)}
                                      text={<FontAwesomeIcon icon={faLanguage}/>} width={"10%"}/>}
@@ -62,7 +63,7 @@ export default styled(DoorItem)`
     .door-item {
         width: 80%;
         max-width: 648px;
-        max-height: 2000px;
+        max-height: 2500px;
         min-height: 48px;
         display: inline-block;
         text-align: left;

@@ -119,9 +119,11 @@ function Doors(props: DoorsProps) {
   return (
     <div className={props.className}>
       <h4>Aufgabe {props.id}: </h4>
-      <DoorItem content={currentDoorContent.task ?? ""} translation={currentDoorContent.translated_task ?? ""}/>
+      <DoorItem content={currentDoorContent.task ?? ""} translation={currentDoorContent.translated_task ?? ""}
+                style={{fontFamily: "monospace"}}/>
       {!!currentDoorContent.propsForSolution &&
-      <DoorItem content={currentDoorContent.propsForSolution ?? ""} color={Color.TEXT_INFO_COLOR} openPreset={false}/>}
+      <DoorItem content={currentDoorContent.propsForSolution ?? ""} color={Color.TEXT_INFO_COLOR} openPreset={false}
+                style={{fontFamily: "monospace"}}/>}
       <DoorItem content={currentDoorContent.solution ?? ""} color={Color.TEXT_SUCCESS_COLOR}>
         {doorComp}
       </DoorItem>
