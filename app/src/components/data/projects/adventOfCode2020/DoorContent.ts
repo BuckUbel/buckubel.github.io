@@ -49,5 +49,3 @@ export const STARTED_DOOR_NUMBERS = Object.keys(DOOR_CONTENT).map(v => Number(v)
 export const COMPLETED_DOOR_NUMBERS = Object.keys(DOOR_CONTENT)
     .filter((v,i)=> !!DOOR_CONTENT[i+1]?.finished)
     .map(v => Number(v));
-
-console.log(STARTED_DOOR_NUMBERS, COMPLETED_DOOR_NUMBERS)

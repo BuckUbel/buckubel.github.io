@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import {StyledCompProps} from "../../../../helper/types";
-import Door4Input from "./Door4Input.json";
 
 interface Door4Props extends StyledCompProps {
 }
@@ -10,7 +9,7 @@ function Door4(props: Door4Props) {
 
   // const stepOne = window.performance.now();
 
-  const startInput = Door4Input.text;
+  // const startInput = Door4Input.text;
 
   // const stepTwo = window.performance.now();
   // const stepThree = window.performance.now();

@@ -6,19 +6,18 @@ interface Door3Props extends StyledCompProps {
 }
 
 function calcTreeOfWalking(startInput: string[], horiGo: number, vertGo: number): number {
-  const newInput = [startInput[0]];
   let treeCount = 0;
   let theMan = horiGo;
-  let page = 0;
+  // let page = 0;
   for (let i = vertGo; i < startInput.length; i = i + vertGo) {
     const v = startInput[i]
     const c = v.charAt(theMan);
-    // console.log(startInput[i], theMan, c)
+
     switch (c) {
       case "":
-        console.log("HERE: ", theMan, v.length, (theMan) % v.length)
+        // console.log("HERE: ", theMan, v.length, (theMan) % v.length)
         theMan = (theMan) % v.length;
-        page++;
+        // page++;
         break;
       case ".":
         theMan = (theMan + horiGo) % v.length;
@@ -45,6 +44,7 @@ function Door3(props: Door3Props) {
 
   const stepTwo = window.performance.now();
   const stepThree = window.performance.now();
+  console.log(stepOne, stepTwo, stepThree);
 
   return (
     <div className={props.className}>
