@@ -6,8 +6,8 @@ export enum Color  {
   DELTA_COLOR= "#543210",
 
   TEXT_PRIME_COLOR= "#ffffff",
+  TEXT_GREY_COLOR= "#aaaaaa",
   TEXT_SUCCESS_COLOR= "#00ff00",
   TEXT_INFO_COLOR= "#ffff00",
-
 
 }

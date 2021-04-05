@@ -7,6 +7,8 @@ interface ColumnProps extends CompProps {
   maxWidth?: string;
   colCount?: number;
   withoutBottomMargin?: boolean;
+  className?: string;
+  onHover?: (v: boolean) => void;
 }
 
 function Column(props: ColumnProps) {
@@ -16,15 +18,24 @@ function Column(props: ColumnProps) {
   const flexBasisValue = props.colCount ? "calc(" + (100 / props.colCount).toFixed(0) + "% - 2px)" : "auto";
   const marginValue = "1px  1px " + (props.withoutBottomMargin ? "1px" : "10px") + " 1px";
 
+  const handleHover = (value: boolean) => () => {
+    if (props.onHover) {
+      props.onHover(value)
+    }
+  }
+
   return (
-    <div className="column"
+    <div className={`column ${props.className ?? ""}`}
          style={{
            width: widthValue,
            minWidth: minWidthValue,
            maxWidth: maxWidthValue,
            flexBasis: flexBasisValue,
            margin: marginValue,
-         }}>
+         }}
+         onMouseEnter={handleHover(true)}
+         onMouseLeave={handleHover(false)}
+    >
       {props.children}
     </div>
   );
