@@ -3,6 +3,7 @@ import {useKeyBoard} from "./useKeyBoard";
 import {useTextCalculator} from "./useTextCalculator";
 import styled from 'styled-components';
 import {StyledCompProps} from "../../../helper/types";
+import {Color} from "../../../config/color";
 
 interface NameValidatorProps extends StyledCompProps {
 }
@@ -12,11 +13,13 @@ function NameValidator(props: NameValidatorProps) {
   const textValue = useTextCalculator(userText);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const isHundred = textValue > 0 && (textValue % 100 === 0);
 
   return (
     <div className={props.className}>
-      <h5>Try it and input your name {textValue > 0 && textValue}</h5>
-      <div id={"the-input-field-container"} onClick={() => inputRef?.current?.focus()}>
+      <h5>Try it and input your name</h5>
+      <div id={"the-input-field-container"} className={(isHundred?" hundred": "")}
+           onClick={()=>setTimeout(()=>{inputRef?.current?.focus()},1)}>
         <div id={"the-input-field"} className={"typewriter"}>
           <input id={"the-hidden-real-input-field"} ref={inputRef} autoFocus/>
           <p>
@@ -30,6 +33,7 @@ function NameValidator(props: NameValidatorProps) {
           </p>
         </div>
       </div>
+      <h2 id={"input-field-value"} className={(isHundred?" hundred": "")}>{textValue}</h2>
     </div>
   );
 }
@@ -42,20 +46,35 @@ export default styled(NameValidator)`
         background: #000;
         border: 1px #fff solid;
         border-radius: 15px;
+
+        #the-input-field {
+            color: #fa0;
+            text-shadow: 0 0 20px #fa0;
+            max-width: 92%;
+            margin: 0 auto;
+            min-height: 38px;
+            overflow: hidden;
+        }
+      
+        &.hundred {
+            border: 1px solid ${Color.TEXT_SUCCESS_COLOR};
+            box-shadow: 0 0 20px -5px ${Color.TEXT_SUCCESS_COLOR};
+            color: ${Color.TEXT_SUCCESS_COLOR};
+
+            #the-input-field {
+                color: ${Color.TEXT_SUCCESS_COLOR};
+                text-shadow: 0 0 20px ${Color.TEXT_SUCCESS_COLOR};            
+            }
+        }
+    }
+
+    #input-field-value.hundred{
+        color: ${Color.TEXT_SUCCESS_COLOR};
+        text-shadow: 0 0 20px ${Color.TEXT_SUCCESS_COLOR};
     }
 
     #the-hidden-real-input-field {
         display: none;
-    }
-
-    #the-input-field {
-        background: #000;
-        color: #fa0;
-        text-shadow: 0 0 20px #fa0;
-        max-width: 92%;
-        margin: 0 auto;
-        min-height: 38px;
-        overflow: hidden;
     }
 
     .typewriter #the-caret {
