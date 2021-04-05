@@ -95,7 +95,9 @@ function Door2(props: Door2Props) {
     console.error("This case is not considered: ", v)
     return false;
   })
+
   const stepFifth = window.performance.now();
+  console.log(validPwd12,validPwd22);
 
   return (
     <div className={props.className}>
