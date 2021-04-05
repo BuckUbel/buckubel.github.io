@@ -1,4 +1,4 @@
-import React, {CSSProperties} from "react";
+import React, {CSSProperties, useMemo} from "react";
 import {StyledCompProps} from "../helper/types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Column from "../grid/Column";
@@ -9,6 +9,7 @@ import {TEXTCOLOR} from "../config/css";
 import {getRouteHref} from "../config/routes";
 import {ProjectEntryInterface} from "../data/projects/projects";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons";
+import {useRouteLink} from "react-router-ts";
 
 interface ProjectPreviewProps extends StyledCompProps {
   style?: CSSProperties;
@@ -19,9 +20,13 @@ interface ProjectPreviewProps extends StyledCompProps {
 }
 
 function ProjectPreview(props: ProjectPreviewProps) {
-  return (
+
+    const projectLink = useMemo(()=>getRouteHref("projectEntry") + props.id + "/",[props.id]);
+    const routeLink = useRouteLink(projectLink);
+
+    return (
     <Column colCount={props.colCount ?? 3} maxWidth={"350px"}>
-      <div className={props.className} style={props.style}>
+      <div className={props.className} style={props.style} onClick={routeLink.onClick}>
         {props.content.icon !== undefined && <div className={"site-preview-bubble-container"}>
           <div className={"site-preview-bubble"}>
             <FontAwesomeIcon size={"2x"} icon={props.content.icon}/>
@@ -35,7 +40,7 @@ function ProjectPreview(props: ProjectPreviewProps) {
         }
         <div className={"site-preview-link-placeholder"}/>
         <div className={"site-preview-link-container"}>
-          <RoundButton link={getRouteHref("projectEntry") + props.id + "/"}
+          <RoundButton link={projectLink}
                        icon={<FontAwesomeIcon icon={faChevronRight}/>}/>
         </div>
       </div>
