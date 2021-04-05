@@ -8,7 +8,8 @@ interface RoundButtonProps extends StyledCompProps {
   style?: CSSProperties;
   link: string;
   onClick?: () => void;
-  text: string | JSX.Element;
+  icon?: string | JSX.Element;
+  text?: string | JSX.Element;
   float?: string;
   width?: string;
 }
@@ -18,7 +19,8 @@ function RoundButton(props: RoundButtonProps) {
   return (
     <div className={"round-button " + props.className} onClick={!!props.onClick ? props.onClick : routeLink.onClick}>
       <button>
-        {props.text}
+        {props.icon ?? ""}
+        {props.text ?? ""}
       </button>
     </div>
   );
@@ -36,11 +38,11 @@ export default styled(RoundButton)`
         border-radius: 20px;
         border: none;
         font-size: 20px;
-        padding: 10px 20px;
+        padding: ${({text, icon}) => text !== undefined ? "10px 20px" : icon? "10px 5px" : "5px"};
 
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis;
+        text-overflow: ${({text}) => text !== undefined ? "ellipsis" :"clip" };
         max-width: 95%;
         float: ${({float}) => float !== undefined ? float : "initial"};
         transition: color 1s, background 1s;

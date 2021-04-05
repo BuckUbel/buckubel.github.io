@@ -35,7 +35,7 @@ export default styled(SquareButton)`
         border: none;
         color: ${Color.TEXT_PRIME_COLOR};
         font-size: 20px;
-        padding: 10px 20px;
+        padding: 10px 5px;
 
         white-space: nowrap;
         overflow: hidden;

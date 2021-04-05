@@ -19,7 +19,7 @@ function ProjectEntryPage() {
     <Page
       title={headline}
       topSubChildren={<RoundButton link={getRouteHref("projects")}
-                                   text={<FontAwesomeIcon icon={faChevronLeft}/>} float={"left"} width={"100%"}/>}
+                                   icon={<FontAwesomeIcon icon={faChevronLeft}/>} float={"left"} width={"100%"}/>}
     >
       {myComponent}
     </Page>

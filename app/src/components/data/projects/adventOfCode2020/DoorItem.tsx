@@ -23,7 +23,7 @@ function DoorItem({translation, openPreset = true, content, className, children}
     <div className={className}>
       {!translation && <div className={"placeholder"}/>}
       {!!translation && <RoundButton onClick={() => setTranslated(!translated)}
-                                     text={<FontAwesomeIcon icon={faLanguage}/>} width={"10%"}/>}
+                                     icon={<FontAwesomeIcon icon={faLanguage}/>} width={"10%"}/>}
       <div className={"close-button"} onClick={() => setOpen(!open)}>
         <FontAwesomeIcon size={"2x"} icon={open ? faChevronUp : faChevronDown}/>
       </div>
