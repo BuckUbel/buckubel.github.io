@@ -56,15 +56,16 @@ export interface DoorContentInterface {
   translated_task: string;
   propsForSolution?: string;
   solution: string;
+  finished: boolean;
 }
 
 export type DoorContentListInterface = {
   [key: number]: DoorContentInterface
 };
 
-function arrayToObject(): DoorContentListInterface {
+function doorArrayToObject(): DoorContentListInterface {
   const doorContentObject: DoorContentListInterface = {};
-  DOOR_DATA.forEach((v: { text: string, translatedText: string, solution: string, myPropsForSolution?: string }, i) => {
+  DOOR_DATA.forEach((v: { text: string, translatedText: string, solution: string, myPropsForSolution?: string, finished?: boolean }, i) => {
     const doorNumber = i + 1;
     if (v.solution !== "") {
       doorContentObject[doorNumber] = {
@@ -73,12 +74,18 @@ function arrayToObject(): DoorContentListInterface {
         translated_task: v.translatedText,
         propsForSolution: v.myPropsForSolution,
         solution: v.solution,
+        finished: !!v.finished,
       }
     }
   });
   return doorContentObject;
 }
 
-export const DOOR_CONTENT: DoorContentListInterface = arrayToObject();
+export const DOOR_CONTENT: DoorContentListInterface = doorArrayToObject();
 
-export const COMPLETED_DOOR_NUMBERS = Object.keys(DOOR_CONTENT).map(v => Number(v));
+export const STARTED_DOOR_NUMBERS = Object.keys(DOOR_CONTENT).map(v => Number(v));
+export const COMPLETED_DOOR_NUMBERS = Object.keys(DOOR_CONTENT)
+    .filter((v,i)=> !!DOOR_CONTENT[i+1]?.finished)
+    .map(v => Number(v));
+
+console.log(STARTED_DOOR_NUMBERS, COMPLETED_DOOR_NUMBERS)

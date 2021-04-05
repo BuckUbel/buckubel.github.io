@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {StyledCompProps} from "../../../helper/types";
 import {Color} from "../../../config/color";
 import Doors from "./Doors";
-import {COMPLETED_DOOR_NUMBERS} from "./DoorContent";
+import {COMPLETED_DOOR_NUMBERS, STARTED_DOOR_NUMBERS} from "./DoorContent";
 
 interface NameValidatorProps extends StyledCompProps {
 }
@@ -17,11 +17,15 @@ function AdventOfCode2020(props: NameValidatorProps) {
     <div className={props.className}>
       <div className={"door-container " + (openedDoor !== -1 ? "door-is-selected" : "")}>
         {doors.map((v, i) => {
+          const isStarted = STARTED_DOOR_NUMBERS.includes(v);
           const isCompleted = COMPLETED_DOOR_NUMBERS.includes(v);
           return <span key={i}
-                       className={"door " + (isCompleted ? "completed " : "") + (openedDoor === v ? "selected" : "")}
+                       className={"door " +
+                           (isCompleted ? "completed " : (isStarted? "started " :"")) +
+                           (openedDoor === v ? "selected" : "")
+                       }
                        onClick={() => {
-                         if (isCompleted) {
+                         if (isStarted || isCompleted) {
                            setOpenedDoor(v)
                          }
                        }}>
@@ -57,6 +61,12 @@ export default styled(AdventOfCode2020)`
                 border: 1px solid ${Color.TEXT_SUCCESS_COLOR};
                 box-shadow: 0 0 20px -5px ${Color.TEXT_SUCCESS_COLOR};
                 color: ${Color.TEXT_SUCCESS_COLOR};
+            }
+            
+            &.started {
+               border: 1px solid ${Color.TEXT_INFO_COLOR};
+               box-shadow: 0 0 20px -5px ${Color.TEXT_INFO_COLOR};
+               color: ${Color.TEXT_INFO_COLOR};
             }
 
             &.selected {
