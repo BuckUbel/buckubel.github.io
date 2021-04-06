@@ -43,7 +43,6 @@ export default styled(RoundButton)`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ${({text}) => text !== undefined ? "ellipsis" :"clip" };
-        max-width: 95%;
         float: ${({float}) => float !== undefined ? float : "initial"};
         transition: color 1s, background 1s;
 

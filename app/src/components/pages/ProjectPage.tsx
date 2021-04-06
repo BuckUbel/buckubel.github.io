@@ -1,20 +1,25 @@
 import * as React from "react";
 import Page from "../Page";
-import {LangDE} from "../config/langDE";
+import {LangEN} from "../config/langEN";
 import ColumnsContainer from "../grid/ColumnsContainer";
-import ProjectPreview from "../content/ProjectPreview";
-import {PROJECTS} from "../data/projects/projects";
+import {PROJECT_IDS, PROJECTS} from "../data/projects/projects";
+import SitePreview from "../content/SitePreview";
+import {getRouteHref} from "../config/routes";
 
 const projects = Object.values(PROJECTS);
 
 function ProjectPage() {
   return (
     <Page
-      title={LangDE.projectTitle}
+      title={LangEN.projectTitle}
     >
       <ColumnsContainer>
         {projects.map((v, i) =>
-          <ProjectPreview key={i} content={v} id={i} colCount={3}/>
+          <SitePreview key={i}
+                       id={i}
+                       colCount={3}
+                       content={{...v, link: getRouteHref("projectEntry") + Number(PROJECT_IDS[i])}}
+          />
         )}
       </ColumnsContainer>
     </Page>

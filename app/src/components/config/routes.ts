@@ -1,7 +1,7 @@
 import StartPage from "../pages/StartPage";
 import ContactPage from "../pages/ContactPage";
 import DefaultPage from "../pages/DefaultPage";
-import {LangDE} from "./langDE";
+import {LangEN} from "./langEN";
 import {AppRouteInterface} from "../helper/types";
 import ProjectEntryPage from "../pages/ProjectEntryPage";
 import ProjectPage from "../pages/ProjectPage";
@@ -21,18 +21,21 @@ export type AppRoutesInterface = {
 }
 
 export const routes: AppRoutesInterface = {
-  start: {href: "/", title: LangDE.startTitle, component: StartPage},
-  projects: {href: "/project", title: LangDE.projectTitle, component: ProjectPage},
+  start: {href: "/", title: LangEN.startTitle, component: StartPage},
+  projects: {href: "/project", title: LangEN.projectTitle, component: ProjectPage},
   projectEntry: {
     href: "/project/(.*)",
     hrefWithoutParam: "/project/",
-    title: LangDE.projectTitle,
+    title: LangEN.projectTitle,
     component: ProjectEntryPage
   },
-  blog: {href: "/blog", title: LangDE.blogTitle, component: BlogPage},
-  blogEntry: {href: "/blog/(.*)", title: LangDE.blogTitle, component: BlogEntryPage},
-  kontakt: {href: "/kontakt", title: LangDE.contactTitle, component: ContactPage},
-  default: {href: "/(.*)", title: LangDE.defaultTitle, component: DefaultPage},
+  blog: {href: "/blog", title: LangEN.blogTitle, component: BlogPage},
+  blogEntry: {
+    href: "/blog/(.*)", hrefWithoutParam: "/blog/",
+    title: LangEN.blogTitle, component: BlogEntryPage
+  },
+  kontakt: {href: "/kontakt", title: LangEN.contactTitle, component: ContactPage},
+  default: {href: "/(.*)", title: LangEN.defaultTitle, component: DefaultPage},
 }
 
 export function getRouteHref(key: AppRouteNames) {

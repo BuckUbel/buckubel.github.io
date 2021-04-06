@@ -8,6 +8,7 @@ import project2Image from "../../../images/banner1024.png";
 export interface ProjectEntryInterface {
   title: string,
   component: JSX.Element;
+  favNumber: number;
   description?: string,
   icon?: IconDefinition;
   image?: string;
@@ -21,19 +22,29 @@ export const PROJECTS: ProjectEntryListInterface = {
     title: "Name Validator",
     image: project1Image,
     component: <NameValidator/>,
-    description: "The coolest validator for all names of the world."
+    description: "The coolest validator for all names of the world.",
+    favNumber: 0,
   },
   1: {
     title: "Advent of Code 2020",
     image: project2Image,
     component: <AdventOfCode2020/>,
-    description: "An coding christmas calendar. Unfortunately, I canceled the project at an early stage."
+    description: "An coding christmas calendar. Unfortunately, I canceled the project at an early stage.",
+    favNumber: 1,
   },
 }
 export const PROJECT_IDS = Object.keys(PROJECTS);
 
-export function getProjectHeadline(id: number) {
-  return PROJECTS[id] !== undefined ? PROJECTS[id].title : "";
+export function getFavProjectId() {
+  let highestFavValue = 0;
+  let returnProjectId = Number(PROJECT_IDS[0]);
+  Object.values(PROJECTS).forEach((v, i) => {
+    if (highestFavValue < v.favNumber) {
+      highestFavValue = v.favNumber
+      returnProjectId = Number(PROJECT_IDS[i]);
+    }
+  });
+  return returnProjectId;
 }
 
 export function getProjectComponent(id: number) {

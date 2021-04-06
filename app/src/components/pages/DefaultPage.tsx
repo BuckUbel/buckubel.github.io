@@ -1,10 +1,10 @@
 import * as React from "react";
 import Page from "../Page";
-import {LangDE} from "../config/langDE";
+import {LangEN} from "../config/langEN";
 
 function DefaultPage() {
   return (
-    <Page title={LangDE.defaultTitle}>
+    <Page title={LangEN.defaultTitle}>
     </Page>
   );
 }

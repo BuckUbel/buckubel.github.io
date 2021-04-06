@@ -12,8 +12,8 @@ interface BlurredImageProps {
 function BlurredImage({className, src, alt, isHover}: BlurredImageProps) {
   return (
     <div className={`${className} ${isHover ? "hovered" : ""}`}>
-      <img src={src} alt={alt}/>
       <div className={`header-image-blur`}/>
+      <img src={src} alt={alt}/>
     </div>
   );
 }
@@ -27,9 +27,9 @@ export default styled(BlurredImage)`
   .header-image-blur {
     width: 100%;
     height: 100%;
-    z-index: 0;
     background: url(${({src}) => src ? src : defaultImage});
 
+    position:absolute;
     display: block;
     filter: blur(10px);
     -webkit-filter: blur(10px);
@@ -50,7 +50,6 @@ export default styled(BlurredImage)`
     margin: auto;
     width: auto;
     height: auto;
-    z-index: 2;
     opacity:1;
     transform: scaleY(0) rotate(.5turn);
     transition: opacity 1s, width 1s, transform .5s;

@@ -1,19 +1,26 @@
 import * as React from "react";
 import Page from "../Page";
-import {useRouter} from "react-router-ts";
-import {getProjectComponent, getProjectHeadline} from "../data/projects/projects";
+import {useParams} from "react-router-ts";
+import {getProjectComponent, PROJECTS} from "../data/projects/projects";
 import RoundButton from "../buttons/RoundButton";
 import {getRouteHref} from "../config/routes";
 import {faChevronLeft} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {getEntryInfo} from "../helper/getEntryInfo";
 
 
 function ProjectEntryPage() {
-  const router = useRouter();
-  const routeParts = router.path.split("/");
-  const id = routeParts[routeParts.length-2] ?? "";
-  const headline = getProjectHeadline(Number(id));
-  const myComponent = getProjectComponent(Number(id));
+  const params = useParams<{ id: string }>("/project/:id");
+  const maybeProjectId = parseInt(params.id);
+  const projectId: number = !isNaN(maybeProjectId) ? maybeProjectId : -1;
+
+  const headline = getEntryInfo(PROJECTS, "title", Number(projectId));
+  const myComponent = getProjectComponent(Number(projectId));
+
+  if (myComponent === undefined) {
+    console.error("This id is not available: ", projectId)
+    return null;
+  }
 
   return (
     <Page

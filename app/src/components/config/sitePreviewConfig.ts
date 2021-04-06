@@ -1,18 +1,37 @@
-import {faAddressBook} from "@fortawesome/free-solid-svg-icons";
-import {LangDE} from "./langDE";
-import {AppRoutesInterface} from "./routes";
+import {faAddressBook, faFeatherAlt, faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
+import {LangEN} from "./langEN";
+import {getRouteHref} from "./routes";
 import {SitePreviewInterface} from "../helper/types";
+import {getLastBlogId} from "../data/blogs/blogs";
+import favProjectImage from "../../images/banner1024.png";
+import {getFavProjectId} from "../data/projects/projects";
 
 interface SitePreviewContent {
   default: SitePreviewInterface;
+  favProject: SitePreviewInterface;
+  lastBlog: SitePreviewInterface;
 }
 
-export const getSitePreviewContent = (routes: AppRoutesInterface): SitePreviewContent => ({
+export const getSitePreviewContent = (): SitePreviewContent => ({
   default: {
     icon: faAddressBook,
-    headline: LangDE.defaultTitle,
-    description: LangDE.defaultShortDescription,
+    title: LangEN.defaultTitle,
+    description: LangEN.defaultShortDescription,
+    link: "/",
     buttonText: "Hier",
-    buttonLink: "/",
+  },
+  favProject: {
+    icon: faProjectDiagram,
+    title: "Project: " + LangEN.favProjectTitle,
+    description: LangEN.favProjectShortDescription,
+    link: getRouteHref("projectEntry") + getFavProjectId(),
+    image: favProjectImage,
+  },
+  lastBlog: {
+    icon: faFeatherAlt,
+    title: "Blog: " + LangEN.lastBlogTitle,
+    description: LangEN.lastBlogShortDescription,
+    link: getRouteHref("blogEntry") + getLastBlogId(),
+    buttonText: "Read more",
   },
 })

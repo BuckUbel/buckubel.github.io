@@ -1,22 +1,22 @@
 import * as React from "react";
 import Page from "../Page";
-import {LangDE} from "../config/langDE";
+import {LangEN} from "../config/langEN";
 import PageDescription from "../content/PageDescription";
+import ColumnsContainer from "../grid/ColumnsContainer";
+import {getSitePreviewContent} from "../config/sitePreviewConfig";
+import SitePreview from "../content/SitePreview";
 
 function StartPage() {
   return (
     <Page
-      title={LangDE.startTitle}
-      description={LangDE.startShortDescription}
+      title={LangEN.startTitle}
+      description={LangEN.startShortDescription}
     >
-      <PageDescription content={LangDE.startDescription}/>
-
-
-      {/*<ColumnsContainer>*/}
-      {/*  <SitePreview content={getSitePreviewContent(routes).default}/>*/}
-      {/*  <SitePreview content={getSitePreviewContent(routes).default}/>*/}
-      {/*  <SitePreview content={getSitePreviewContent(routes).default}/>*/}
-      {/*</ColumnsContainer>*/}
+      <PageDescription content={LangEN.startDescription} style={{textAlign: "center"}}/>
+      <ColumnsContainer>
+        <SitePreview content={getSitePreviewContent().lastBlog}/>
+        <SitePreview content={getSitePreviewContent().favProject}/>
+      </ColumnsContainer>
     </Page>
   );
 }

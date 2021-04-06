@@ -19,9 +19,10 @@ export interface AppRouteInterface {
 }
 
 export interface SitePreviewInterface {
-  icon: IconDefinition;
-  headline: string;
-  description: string;
-  buttonText: string;
-  buttonLink: string;
+  title: string;
+  link: string;
+  description?: string;
+  buttonText?: string;
+  icon?: IconDefinition;
+  image?: string;
 }
