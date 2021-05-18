@@ -35,7 +35,7 @@ function SitePreview(props: SitePreviewProps) {
         <h4>{props.content.title}</h4>
         {props.content.description !== undefined &&
         <p className={"site-preview-description"} style={props.descriptionStyle}>
-          {props.content.description}
+          {props.content.description.substring(0,100)}
         </p>
         }
 
