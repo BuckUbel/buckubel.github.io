@@ -4,6 +4,8 @@ import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import AdventOfCode2020 from "./adventOfCode2020/AdventOfCode2020";
 import project1Image from "../../../images/banner1024.png";
 import project2Image from "../../../images/banner1024.png";
+import project3Image from "../../../images/banner1024.png";
+import MediaMasterContainer from "./MediaMaster/MediaMasterContainer";
 
 export interface ProjectEntryInterface {
   title: string,
@@ -32,6 +34,13 @@ export const PROJECTS: ProjectEntryListInterface = {
     description: "An coding christmas calendar. Unfortunately, I canceled the project at an early stage.",
     favNumber: 1,
   },
+  2:{
+    title: "Media Master",
+    image: project3Image,
+    component: <MediaMasterContainer/>,
+    description: "A manager for all your media things: video games, movies, series - all such things.",
+    favNumber: 2,
+  }
 }
 export const PROJECT_IDS = Object.keys(PROJECTS);
 

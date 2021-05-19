@@ -1,4 +1,4 @@
-import {PropsWithChildren, PropsWithRef} from "react";
+import {Dispatch, PropsWithChildren, PropsWithRef, SetStateAction} from "react";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 
 export type CompProps<T = any> = PropsWithChildren<PropsWithRef<T>>;
@@ -10,6 +10,9 @@ export interface StyledCompProps extends CompProps {
 export interface ObjectArray<T = any> {
   [identifier: string]: T;
 }
+
+export type SetStateType<S> = Dispatch<SetStateAction<S>>;
+export type StateType<S> = [S, Dispatch<SetStateAction<S>>];
 
 export interface AppRouteInterface {
   href: string,
