@@ -4,15 +4,16 @@ import PageDescription from "../content/PageDescription";
 import {useParams} from "react-router-ts";
 import RoundButton from "../buttons/RoundButton";
 import {routes} from "../config/routes";
-import {BLOGS} from "../data/blogs/blogs";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
+import {useBlogs} from "../data/blogs/useBlogs";
 
 function BlogEntryPage() {
   const params = useParams<{ id: string }>("/blog/:id");
   const maybeBlogId = parseInt(params.id);
   const blogId: number = !isNaN(maybeBlogId) ? maybeBlogId : -1;
-  const blogEntry = blogId > -1 ? BLOGS[blogId] : undefined;
+  const {blogEntries} = useBlogs(blogId)
+  const blogEntry = blogId > -1 ? blogEntries[blogId] : undefined;
   if (blogEntry === undefined) {
     console.error("This id is not available: ", maybeBlogId)
     return null;

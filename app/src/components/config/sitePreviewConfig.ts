@@ -2,36 +2,36 @@ import {faAddressBook, faFeatherAlt, faProjectDiagram} from "@fortawesome/free-s
 import {LangEN} from "./langEN";
 import {getRouteHref} from "./routes";
 import {SitePreviewInterface} from "../helper/types";
-import {getLastBlogId} from "../data/blogs/blogs";
 import favProjectImage from "../../images/banner1024.png";
 import {getFavProjectId} from "../data/projects/projects";
+import {BlogEntryInterface} from "../data/blogs/blogs";
 
 interface SitePreviewContent {
-  default: SitePreviewInterface;
-  favProject: SitePreviewInterface;
-  lastBlog: SitePreviewInterface;
+  default: ()=>SitePreviewInterface;
+  favProject: ()=>SitePreviewInterface;
+  lastBlog: (blog:BlogEntryInterface)=>SitePreviewInterface;
 }
 
 export const getSitePreviewContent = (): SitePreviewContent => ({
-  default: {
+  default: ()=> ({
     icon: faAddressBook,
     title: LangEN.defaultTitle,
     description: LangEN.defaultShortDescription,
     link: "/",
     buttonText: "Hier",
-  },
-  favProject: {
+  }),
+  favProject: ()=>({
     icon: faProjectDiagram,
     title: "Project: " + LangEN.favProjectTitle,
     description: LangEN.favProjectShortDescription,
     link: getRouteHref("projectEntry") + getFavProjectId(),
     image: favProjectImage,
-  },
-  lastBlog: {
+  }),
+  lastBlog: (blog?:BlogEntryInterface)=>({
     icon: faFeatherAlt,
-    title: "Blog: " + LangEN.lastBlogTitle,
-    description: LangEN.lastBlogShortDescription,
-    link: getRouteHref("blogEntry") + getLastBlogId(),
+    title: "Blog: " + blog?.title ,
+    description: blog?.previewText ?? "",
+    link: getRouteHref("blogEntry") + blog?.id ?? "",
     buttonText: "Read more",
-  },
+  }),
 })

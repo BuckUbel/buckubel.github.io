@@ -5,8 +5,10 @@ import PageDescription from "../content/PageDescription";
 import ColumnsContainer from "../grid/ColumnsContainer";
 import {getSitePreviewContent} from "../config/sitePreviewConfig";
 import SitePreview from "../content/SitePreview";
+import {useBlogs} from "../data/blogs/useBlogs";
 
 function StartPage() {
+  const {lastBlogEntry} = useBlogs();
   return (
     <Page
       title={LangEN.startTitle}
@@ -14,8 +16,8 @@ function StartPage() {
     >
       <PageDescription content={LangEN.startDescription} style={{textAlign: "center"}}/>
       <ColumnsContainer>
-        <SitePreview content={getSitePreviewContent().lastBlog}/>
-        <SitePreview content={getSitePreviewContent().favProject}/>
+        <SitePreview content={getSitePreviewContent().lastBlog(lastBlogEntry)}/>
+        <SitePreview content={getSitePreviewContent().favProject()}/>
       </ColumnsContainer>
     </Page>
   );

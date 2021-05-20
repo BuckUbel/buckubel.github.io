@@ -1,6 +1,7 @@
 import React, {CSSProperties} from "react";
 import {CompProps} from "../helper/types";
-import {crlfToP} from "../helper/crlfToP";
+import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
 
 interface PageDescriptionProps extends CompProps {
   style?: CSSProperties;
@@ -10,7 +11,7 @@ interface PageDescriptionProps extends CompProps {
 function PageDescription(props: PageDescriptionProps) {
   return (
     <div className="page-description" style={props.style}>
-      {crlfToP(props.content ?? "")}
+      <ReactMarkdown remarkPlugins={[gfm]}>{props.content ?? ""}</ReactMarkdown>
       {props.children}
     </div>
   );

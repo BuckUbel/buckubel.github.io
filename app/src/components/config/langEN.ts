@@ -1,5 +1,4 @@
 import {PROJECTS} from "../data/projects/projects";
-import {BLOGS} from "../data/blogs/blogs";
 import {getEntryInfo} from "../helper/getEntryInfo";
 
 export const LangEN = {
@@ -21,7 +20,4 @@ export const LangEN = {
 
   favProjectTitle: getEntryInfo(PROJECTS, "title", 1),
   favProjectShortDescription: getEntryInfo(PROJECTS, "description", 1),
-
-  lastBlogTitle: getEntryInfo(BLOGS, "title", -1),
-  lastBlogShortDescription: getEntryInfo(BLOGS, "description", -1),
 }
