@@ -6,8 +6,7 @@ import BlogEntryList from "../content/BlogEntryList";
 import {useBlogs} from "../data/blogs/useBlogs";
 
 function BlogPage() {
-  const {blogEntries, last3BlogEntries} = useBlogs()
-
+  const {last3BlogEntries} = useBlogs()
   return (
     <Page
       title={LangEN.blogTitle}

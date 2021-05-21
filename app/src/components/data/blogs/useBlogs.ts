@@ -1,25 +1,38 @@
 import {useEffect, useMemo, useState} from "react";
-import BLOGS from "../../../blogs/index.blog";
-import blog1Image from "../../../images/banner1024.png";
-import {BlogEntryListInterface} from "./blogs";
+import BLOGS, {BLOG_COMMANDS} from "../../../blogs/index.blog";
+import blogDefaultImage from "../../../images/banner1024.png";
+import {BlogEntryInterface, BlogEntryListInterface} from "./blogs";
 
-function getBlogEntryTitle(content: string) {
-  const firstHeadlineChar = content.indexOf("#")
-  const firstNextLine = content.indexOf("\n")
-  if (firstNextLine > firstHeadlineChar) {
-    return content.substring(firstHeadlineChar, firstNextLine).replace("#", "");
-  }
-  console.log("No headline found!")
-  return "";
+function getContentFromCommand(content: string, command: string): [string, number, number] {
+  const startPos = content.indexOf(command);
+  const endPos = content.substring(startPos).indexOf("\n") + startPos;
+  const commandContent = content.substring(startPos + command.length, endPos).trim();
+  return [commandContent, startPos, endPos]
 }
 
-function getBlogEntryBody(content: string) {
-  const firstHeadlineChar = content.indexOf("#")
-  const firstNextLine = content.indexOf("\n")
-  if (firstNextLine > firstHeadlineChar) {
-    return content.substring(firstNextLine);
+function clusterBlogEntryData(content: string) {
+  let title = "";
+  let body = "";
+  let previewText = "";
+  let createdDate = new Date();
+  let tags: string[] = [];
+
+  const [tagsContent] = getContentFromCommand(content, BLOG_COMMANDS.BLOG_TAGS);
+  tags = tagsContent.split(", ");
+
+  const [createdDateString] = getContentFromCommand(content, BLOG_COMMANDS.BLOG_CREATED_AT);
+  const createdDateArray = createdDateString.split(".");
+  if (!!createdDateArray[2] && !!createdDateArray[1] && !!createdDateArray[0]) {
+    createdDate = new Date(createdDateArray[2] + "-" + createdDateArray[1] + "-" + createdDateArray[0]);
   }
-  return content;
+
+  const [titleContent, , lastHeadlineChar] = getContentFromCommand(content, BLOG_COMMANDS.BLOG_HEADLINE);
+  title = titleContent;
+
+  body = content.substring(lastHeadlineChar);
+  return {
+    title, body, previewText, createdDate, tags
+  }
 }
 
 async function getBlogEntry(url: string) {
@@ -48,7 +61,6 @@ export const useBlogs = (id?: number) => {
           const BLOG_URLS = Object.values(BLOGS);
           const allBlogs: string[] = [];
           for (let i = 0; i < BLOG_URLS.length; i++) {
-            console.log(BLOG_URLS[i])
             allBlogs.push(await getBlogEntry(BLOG_URLS[i]));
           }
           setBlogContent(allBlogs);
@@ -66,41 +78,34 @@ export const useBlogs = (id?: number) => {
     const blogMap: BlogEntryListInterface = {};
     blogContent.forEach((v, index) => {
       const blogId = id ?? index;
+      const blogEntryData = clusterBlogEntryData(v);
       blogMap[blogId] = {
         id: blogId,
-        title: getBlogEntryTitle(v),
-        image: blog1Image,
-        description: getBlogEntryBody(v)
+        title: blogEntryData.title,
+        image: blogDefaultImage,
+        description: blogEntryData.body,
+        createdDate: blogEntryData.createdDate,
+        tags: blogEntryData.tags,
       };
     });
     return blogMap;
   }, [blogContent]);
 
-  const getLastBlogEntries = (blogEntries: BlogEntryListInterface, max:number = 3) => {
-    if(max > 3){
-      console.error("Use only maximum 3 last entries")
-    }
-    const blogIds = Object.keys(blogEntries);
+  const getLastBlogEntries = (blogEntries: BlogEntryListInterface, max: number = 3) => {
+    const blogIds = Object.keys(blogEntries).reverse();
     const blogEntryValues = Object.values(blogEntries);
-    if (blogIds.length > 2 && max === 3) {
-      const blogThirdId = Number(blogIds[blogIds.length - 3])
-      const blogSecondId = Number(blogIds[blogIds.length - 2])
-      const blogFirstId = Number(blogIds[blogIds.length - 1])
-      return [blogEntryValues[blogFirstId], blogEntryValues[blogSecondId], blogEntryValues[blogThirdId]];
-    }
-    if (blogIds.length > 1&& max === 2) {
-      const blogSecondId = Number(blogIds[blogIds.length - 2])
-      const blogFirstId = Number(blogIds[blogIds.length - 1])
-      return [blogEntryValues[blogFirstId], blogEntryValues[blogSecondId]];
-    }
-    if (blogIds.length > 0&& max === 1) {
-      const blogFirstId = Number(blogIds[blogIds.length - 1])
-      return [blogEntryValues[blogFirstId]];
-    }
-    return [];
-  }
-  const last3BlogEntries = useMemo(() => getLastBlogEntries(blogEntries,3), [blogEntries])
-  const lastBlogEntry = useMemo(() => getLastBlogEntries(blogEntries,1)[0], [blogEntries])
 
-  return {blogEntries, last3BlogEntries, lastBlogEntry, error}
+    const returnBlogEntries: BlogEntryInterface[] = [];
+    blogIds.forEach((v, i) => {
+      const id = Number(v);
+      if (!isNaN(id) && id >= 0 && i < max) {
+        returnBlogEntries.push(blogEntryValues[id]);
+      }
+    })
+    return returnBlogEntries;
+  }
+
+  const last3BlogEntries = useMemo(() => getLastBlogEntries(blogEntries, 3), [blogEntries])
+  const lastBlogEntry = useMemo(() => getLastBlogEntries(blogEntries, 1), [blogEntries])
+  return {blogEntries, last3BlogEntries, lastBlogEntry:lastBlogEntry[0], error}
 }

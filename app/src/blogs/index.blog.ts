@@ -6,4 +6,10 @@ const BLOGS: { [key: number]: string; } = {
   1: blog1md
 }
 
+export enum BLOG_COMMANDS {
+  BLOG_TAGS = "BLOG_TAGS: ",
+  BLOG_CREATED_AT = "BLOG_CREATED_AT: ",
+  BLOG_HEADLINE = "#"
+}
+
 export default BLOGS;

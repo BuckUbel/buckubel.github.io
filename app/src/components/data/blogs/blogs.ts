@@ -1,6 +1,5 @@
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 
-//TODO extend blog entries with createDate and tags
 export interface BlogEntryInterface {
   id: number,
   title: string,
@@ -8,6 +7,8 @@ export interface BlogEntryInterface {
   description?: string,
   icon?: IconDefinition;
   image?: string;
+  createdDate?:Date;
+  tags?: string[]
 }
 
 export type BlogEntryListInterface = {

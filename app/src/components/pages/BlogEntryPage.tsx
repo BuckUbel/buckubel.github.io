@@ -27,6 +27,8 @@ function BlogEntryPage() {
                      text={" blog list"}/>
       </div>}
     >
+      {blogEntry.tags ? <p>{blogEntry.tags.join(", ")}</p> : ""}
+      {blogEntry.createdDate ? <p>{blogEntry.createdDate?.toLocaleDateString()}</p> : ""}
       <PageDescription content={blogEntry.description}/>
     </Page>
   );
