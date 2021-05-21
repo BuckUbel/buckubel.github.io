@@ -1,11 +1,11 @@
 import React from "react";
 import {StyledCompProps} from "../helper/types";
-import {AlignItemsProperty, HeightProperty} from "csstype";
+import {Property} from "csstype";
 import styled from "styled-components";
 
 interface ColumnsContainerProps extends StyledCompProps {
-  alignItems?: AlignItemsProperty;
-  height?: HeightProperty<string>;
+  alignItems?: Property.AlignItems;
+  height?: Property.Height<string>;
 }
 
 function ColumnsContainer(props: ColumnsContainerProps) {
