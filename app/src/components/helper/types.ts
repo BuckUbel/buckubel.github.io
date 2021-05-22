@@ -14,6 +14,8 @@ export interface ObjectArray<T = any> {
 export type SetStateType<S> = Dispatch<SetStateAction<S>>;
 export type StateType<S> = [S, Dispatch<SetStateAction<S>>];
 
+export type Class<T> = new (...args: any[]) => T;
+
 export interface AppRouteInterface {
   href: string,
   hrefWithoutParam?: string,

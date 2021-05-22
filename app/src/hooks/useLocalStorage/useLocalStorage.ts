@@ -35,6 +35,16 @@ export const useLocalStorage = <DatabaseType extends LocalStoreEntityType>(store
   }
 
   useEffect(() => {
+    if (!store.database[storeName]) {
+      setStore(((prevState: LocalStoreType<DatabaseType>) => {
+        const newDatabase = Object.assign({}, prevState.database);
+        newDatabase[storeName] = [];
+        return {...prevState, database: newDatabase};
+      }));
+    }
+  }, [storeName]);
+
+  useEffect(() => {
     if (!!config && !!config.autoSync) {
       console.log("auto load");
       loadFromLS();
@@ -68,11 +78,12 @@ export const useLocalStorage = <DatabaseType extends LocalStoreEntityType>(store
         newDatabase[storeName].push(newEntity);
         return setNewDatabase(prevState, newDatabase);
       }));
+      return true
     }
-    return undefined;
+    return false;
   };
 
-  const load = (id?: number) => {
+  const load = (id?: string) => {
     const storeData = store.database[storeName];
     if (!!storeData) {
       if (id !== undefined) {
@@ -100,12 +111,13 @@ export const useLocalStorage = <DatabaseType extends LocalStoreEntityType>(store
           }
           return setNewDatabase(prevState, newDatabase);
         }));
+        return true;
       }
     }
-    return undefined;
+    return false;
   };
 
-  const remove = (id: number) => {
+  const remove = (id: string) => {
     const storeData = store.database[storeName];
     if (!!storeData) {
       const foundedIndex = storeData.findIndex((v) => v.id === id);
@@ -117,9 +129,10 @@ export const useLocalStorage = <DatabaseType extends LocalStoreEntityType>(store
           }
           return setNewDatabase(prevState, newDatabase);
         }));
+        return true;
       }
     }
-    return undefined;
+    return false;
   }
 
   const importJSON = (newDataJson: string) => {

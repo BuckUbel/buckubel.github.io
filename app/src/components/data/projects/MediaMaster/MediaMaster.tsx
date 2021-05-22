@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {useLocalStorage} from "../../../../hooks/useLocalStorage/useLocalStorage";
-import {MovieEntityType} from "./MovieEntityType";
+import {MovieEntityType} from "./mediaTypes/MovieEntityType";
 import RoundButton from "../../../buttons/RoundButton";
 
 interface MediaMasterProps {
@@ -10,13 +10,13 @@ interface MediaMasterProps {
 
 function MediaMaster(props: MediaMasterProps) {
   const {add, store} = useLocalStorage<MovieEntityType>('movies', {autoSync: true});
+  const a = MovieEntityType.create<MovieEntityType>({
+    name: "Horror Movie"
+  })
   return (
     <>
-      <RoundButton link={""} onClick={() => add({
-        id: Number((Math.random() * 100).toFixed(0)),
-        name: "Horror Movie"
-      })} text={"Here"}/>
-      {JSON.stringify(store)}
+      <RoundButton link={""} onClick={() => add(a)} text={"Here"}/>
+      {store.map(v=><p>{JSON.stringify(v)}</p>)}
     </>
   );
 }
