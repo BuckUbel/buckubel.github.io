@@ -8,6 +8,7 @@ import project3Image from "../../../images/banner1024.png";
 import MediaMasterContainer from "./MediaMaster/MediaMasterContainer";
 
 export interface ProjectEntryInterface {
+  id?:number;
   title: string,
   component: JSX.Element;
   favNumber: number;
@@ -21,6 +22,7 @@ export type ProjectEntryListInterface = {
 }
 export const PROJECTS: ProjectEntryListInterface = {
   0: {
+    id: 0,
     title: "Name Validator",
     image: project1Image,
     component: <NameValidator/>,
@@ -28,6 +30,7 @@ export const PROJECTS: ProjectEntryListInterface = {
     favNumber: 0,
   },
   1: {
+    id: 1,
     title: "Advent of Code 2020",
     image: project2Image,
     component: <AdventOfCode2020/>,
@@ -35,6 +38,7 @@ export const PROJECTS: ProjectEntryListInterface = {
     favNumber: 1,
   },
   2:{
+    id: 2,
     title: "Media Master",
     image: project3Image,
     component: <MediaMasterContainer/>,
@@ -54,6 +58,18 @@ export function getFavProjectId() {
     }
   });
   return returnProjectId;
+}
+
+export function getFavProject() {
+  let highestFavValue = 0;
+  let returnProject = PROJECTS[0];
+  Object.values(PROJECTS).forEach((v, i) => {
+    if (highestFavValue < v.favNumber) {
+      highestFavValue = v.favNumber
+      returnProject = v;
+    }
+  });
+  return returnProject;
 }
 
 export function getProjectComponent(id: number) {

@@ -3,13 +3,13 @@ import {LangEN} from "./langEN";
 import {getRouteHref} from "./routes";
 import {SitePreviewInterface} from "../helper/types";
 import favProjectImage from "../../images/banner1024.png";
-import {getFavProjectId} from "../data/projects/projects";
+import {getFavProjectId, ProjectEntryInterface} from "../data/projects/projects";
 import {BlogEntryInterface} from "../data/blogs/blogs";
 
 interface SitePreviewContent {
   default: ()=>SitePreviewInterface;
-  favProject: ()=>SitePreviewInterface;
-  lastBlog: (blog:BlogEntryInterface)=>SitePreviewInterface;
+  favProject: (project?:ProjectEntryInterface)=>SitePreviewInterface;
+  lastBlog: (blog?:BlogEntryInterface)=>SitePreviewInterface;
 }
 
 export const getSitePreviewContent = (): SitePreviewContent => ({
@@ -20,11 +20,11 @@ export const getSitePreviewContent = (): SitePreviewContent => ({
     link: "/",
     buttonText: "Hier",
   }),
-  favProject: ()=>({
+  favProject: (project?:ProjectEntryInterface)=>({
     icon: faProjectDiagram,
-    title: "Project: " + LangEN.favProjectTitle,
-    description: LangEN.favProjectShortDescription,
-    link: getRouteHref("projectEntry") + getFavProjectId(),
+    title: "Project: " + project?.title,
+    description: project?.description ?? "",
+    link: getRouteHref("projectEntry") + project?.id ?? "",
     image: favProjectImage,
   }),
   lastBlog: (blog?:BlogEntryInterface)=>({
