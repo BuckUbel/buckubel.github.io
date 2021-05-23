@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import styled from 'styled-components';
 import SitePreview from "../../../content/SitePreview";
 import ColumnsContainer from "../../../grid/ColumnsContainer";
 import {faGamepad, faTv} from "@fortawesome/free-solid-svg-icons";
-import MovieMaster from "./MovieMaster";
-import GameMaster from "./GameMaster";
+import MovieMaster from "./MovieMaster/MovieMaster";
+import GameMaster from "./GameMaster/GameMaster";
 import {usePage} from "../../../../hooks/usePage/usePage";
+import styled from "styled-components";
+import TableProvider from "../../../../hooks/useTable/TableProvider";
 
 interface MediaMasterProps {
   classname?: string;
@@ -54,8 +55,10 @@ function MediaMaster(props: MediaMasterProps) {
           }}/>
 
       </ColumnsContainer>}
-      {storeName === "movies" && <MovieMaster/>}
-      {storeName === "games" && <GameMaster/>}
+      {storeName !== undefined && <TableProvider>
+        {storeName === "movies" && <MovieMaster/>}
+        {storeName === "games" && <GameMaster/>}
+      </TableProvider>}
     </>
   );
 }

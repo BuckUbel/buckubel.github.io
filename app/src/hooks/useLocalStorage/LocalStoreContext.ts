@@ -37,7 +37,7 @@ export type LocalStoreEntryType<DatabaseType extends LocalStoreEntityType = Loca
 export type LocalStoreType<DatabaseType extends LocalStoreEntityType = LocalStoreEntityType> = {
   databaseActionCount: { [key: string]: number };
   isSomeLoaded?: boolean,
-  database: LocalStoreEntryType;
+  database: LocalStoreEntryType<DatabaseType>;
 }
 
 export const LocalStoreContext = React.createContext<StateType<LocalStoreType>>(

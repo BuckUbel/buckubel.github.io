@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import {useLocalStorage} from "../../../../hooks/useLocalStorage/useLocalStorage";
-import {MovieEntityType} from "./mediaTypes/MovieEntityType";
-import RoundButton from "../../../buttons/RoundButton";
+import {useLocalStorage} from "../../../../../hooks/useLocalStorage/useLocalStorage";
+import {MovieEntityType} from "../mediaTypes/MovieEntityType";
+import RoundButton from "../../../../buttons/RoundButton";
 
 interface MovieMasterProps {
   classname?: string;

@@ -61,7 +61,7 @@ export const useLocalStorage = <DatabaseType extends LocalStoreEntityType>(store
     }
   }, [store.databaseActionCount[storeName]]);
 
-  const setNewDatabase = (prevState: LocalStoreType<DatabaseType>, newDatabase: LocalStoreEntryType) => {
+  const setNewDatabase = (prevState: LocalStoreType<DatabaseType>, newDatabase: LocalStoreEntryType<DatabaseType>) => {
     const newCount = prevState.databaseActionCount[storeName] ?? 0;
     return {
       ...prevState,
