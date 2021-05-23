@@ -30,4 +30,5 @@ export interface SitePreviewInterface {
   buttonText?: string;
   icon?: IconDefinition;
   image?: string;
+  onClick?:()=>void;
 }

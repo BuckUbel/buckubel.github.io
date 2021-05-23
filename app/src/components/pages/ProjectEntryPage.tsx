@@ -2,10 +2,7 @@ import * as React from "react";
 import Page from "../Page";
 import {useParams} from "react-router-ts";
 import {getProjectComponent, PROJECTS} from "../data/projects/projects";
-import RoundButton from "../buttons/RoundButton";
 import {getRouteHref} from "../config/routes";
-import {faChevronLeft} from '@fortawesome/free-solid-svg-icons'
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {getEntryInfo} from "../helper/getEntryInfo";
 
 
@@ -25,8 +22,7 @@ function ProjectEntryPage() {
   return (
     <Page
       title={headline}
-      topSubChildren={<RoundButton link={getRouteHref("projects")}
-                                   icon={<FontAwesomeIcon icon={faChevronLeft}/>} float={"left"} width={"100%"}/>}
+      returnLink={getRouteHref("projects")}
     >
       {myComponent}
     </Page>

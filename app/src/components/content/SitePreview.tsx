@@ -19,12 +19,19 @@ interface SitePreviewProps extends StyledCompProps {
 function SitePreview(props: SitePreviewProps) {
   const [isHover, setIsHover] = useState(false);
   const routeLink = useRouteLink(props.content.link ?? "");
-
+  const handleClick = (asButton: boolean) => (e: React.MouseEvent<HTMLElement>) => {
+    if ((!props.content.buttonText && !asButton) || (!!props.content.buttonText && asButton)) {
+      routeLink.onClick(e)
+    }
+    if (!!props.content.onClick) {
+      props.content.onClick();
+    }
+  }
   return (
     <Column className={props.className} colCount={props.colCount ?? 3} maxWidth={"350px"}
             onHover={(v) => setIsHover(v)}>
       <div className={"site-preview-container"} style={props.style}
-           onClick={props.content.buttonText ?  undefined : routeLink.onClick }>
+           onClick={handleClick(false)}>
 
         {props.content.icon !== undefined && <div className={"site-preview-bubble-container"}>
             <div className={`site-preview-bubble ${isHover && !!props.content.image ? "hovered" : ""}`}>
@@ -35,7 +42,7 @@ function SitePreview(props: SitePreviewProps) {
         <h4>{props.content.title}</h4>
         {props.content.description !== undefined &&
         <p className={"site-preview-description"} style={props.descriptionStyle}>
-          {props.content.description.substring(0,100)}
+          {props.content.description.substring(0, 100)}
         </p>
         }
 
@@ -43,7 +50,7 @@ function SitePreview(props: SitePreviewProps) {
         <>
             <div className={"site-preview-link-placeholder"}/>
             <div className={"site-preview-link-container"}>
-                <RoundButton link={props.content.link}
+                <RoundButton onClick={handleClick(true)}
                              text={props.content.buttonText}/>
             </div>
         </>}
