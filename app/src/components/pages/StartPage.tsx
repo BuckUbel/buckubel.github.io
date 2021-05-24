@@ -4,7 +4,7 @@ import {LangEN} from "../config/langEN";
 import PageDescription from "../content/PageDescription";
 import ColumnsContainer from "../grid/ColumnsContainer";
 import {getSitePreviewContent} from "../config/sitePreviewConfig";
-import SitePreview from "../content/SitePreview";
+import SitePreview from "../content/SitePreview/SitePreview";
 import {useBlogs} from "../data/blogs/useBlogs";
 import {getFavProject} from "../data/projects/projects";
 

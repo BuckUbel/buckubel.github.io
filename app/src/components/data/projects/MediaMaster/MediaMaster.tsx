@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import SitePreview from "../../../content/SitePreview";
+import SitePreview from "../../../content/SitePreview/SitePreview";
 import ColumnsContainer from "../../../grid/ColumnsContainer";
 import {faGamepad, faTv} from "@fortawesome/free-solid-svg-icons";
 import MovieMaster from "./MovieMaster/MovieMaster";
