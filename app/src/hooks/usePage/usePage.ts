@@ -1,5 +1,6 @@
-import {useContext, useEffect} from "react";
+import {useContext} from "react";
 import {PageContext, PageStateType} from "./PageContext";
+import {useRefEffect} from "../../components/helper/useRefHook";
 
 export const usePage = (props: { link?: string, click?: () => void, title?: string } = {}) => {
   const [pageState, setPageState] = useContext(PageContext);
@@ -10,7 +11,7 @@ export const usePage = (props: { link?: string, click?: () => void, title?: stri
       return {...prevState, returnLink: newLink, defaultReturnLink: newLink, returnClickAction: undefined};
     }));
   }
-  useEffect(() => {
+  useRefEffect(() => {
     if (!!link && !click) {
       changeReturnLink(link)
     }
@@ -27,18 +28,18 @@ export const usePage = (props: { link?: string, click?: () => void, title?: stri
       }));
     }
   }
-  useEffect(() => {
+  useRefEffect(() => {
     if (!!click) {
       changeReturnClick(click)
     }
   }, [click])
 
   const changeTitle = (headlineTitle: string,) => {
-      setPageState(((prevState: PageStateType) => {
-        return {...prevState, headlineTitle: headlineTitle};
-      }));
+    setPageState(((prevState: PageStateType) => {
+      return {...prevState, headlineTitle: headlineTitle};
+    }));
   }
-  useEffect(() => {
+  useRefEffect(() => {
     if (!!title) {
       changeTitle(title);
     }

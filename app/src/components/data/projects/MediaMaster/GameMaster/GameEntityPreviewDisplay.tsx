@@ -49,19 +49,19 @@ interface GameEntityPreviewDisplayProps {
 }
 
 function GameEntityPreviewDisplay(props: GameEntityPreviewDisplayProps) {
-  const {className, game, displayConfig} = props;
+  const {className, game} = props;
   const {
-    id,
+    // id,
     name,
     format,
-    tags,
+    // tags,
     releaseDate,
-    additionalData,
+    // additionalData,
     usk,
-    notices,
+    // notices,
     score,
-    reviewNotes,
-    usages,
+    // reviewNotes,
+    // usages,
     plattform, // :string
     condition, // :number
     goodForPlayerCount, // :number
@@ -71,18 +71,18 @@ function GameEntityPreviewDisplay(props: GameEntityPreviewDisplayProps) {
     estimatedPlayTime, // :number
     notYetPlayed, // :boolean
     alreadyCompleted, // :boolean
-    relatedMedias,
+    // relatedMedias,
     plattformColor
   } = game
   const [isHover, setIsHover] = useState(false);
   const isOpenState = useState(false);
-  const [isOpen, setIsOpen] = isOpenState;
+  const [isOpen] = isOpenState;
 
   const rightIcons: IconDefinition[] = [];
   const leftIcons: IconDefinition[] = [];
 
   if (goodForPlayerCount) {
-    goodForPlayerCount.map(v => {
+    goodForPlayerCount.forEach(v => {
       if (v === 1) leftIcons.push(faDiceOne);
       if (v === 2) leftIcons.push(faDiceTwo);
       if (v === 3) leftIcons.push(faDiceThree);

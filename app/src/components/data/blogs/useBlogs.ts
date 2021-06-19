@@ -1,7 +1,8 @@
-import {useEffect, useMemo, useState} from "react";
+import {useMemo, useState} from "react";
 import BLOGS, {BLOG_COMMANDS} from "../../../blogs/index.blog";
 import blogDefaultImage from "../../../images/banner1024.png";
 import {BlogEntryInterface, BlogEntryListInterface} from "./blogs";
+import {useRefEffect, useRefMemo} from "../../helper/useRefHook";
 
 function getContentFromCommand(content: string, command: string): [string, number, number] {
   const startPos = content.indexOf(command);
@@ -46,7 +47,7 @@ export const useBlogs = (id?: number) => {
   const [error, setError] = useState<boolean>(false);
   const [blogContent, setBlogContent] = useState<string[]>([]);
 
-  useEffect(() => {
+  useRefEffect(() => {
       async function fetchBlogEntries() {
         if (id !== undefined && id > -1 && BLOGS[id] !== undefined) {
           setBlogContent([await getBlogEntry(BLOGS[id])]);
@@ -74,7 +75,7 @@ export const useBlogs = (id?: number) => {
     }, [id]
   );
 
-  const blogEntries = useMemo((): BlogEntryListInterface => {
+  const blogEntries = useRefMemo((): BlogEntryListInterface => {
     const blogMap: BlogEntryListInterface = {};
     blogContent.forEach((v, index) => {
       const blogId = id ?? index;
@@ -107,5 +108,5 @@ export const useBlogs = (id?: number) => {
 
   const last3BlogEntries = useMemo(() => getLastBlogEntries(blogEntries, 3), [blogEntries])
   const lastBlogEntry = useMemo(() => getLastBlogEntries(blogEntries, 1), [blogEntries])
-  return {blogEntries, last3BlogEntries, lastBlogEntry:lastBlogEntry[0], error}
+  return {blogEntries, last3BlogEntries, lastBlogEntry: lastBlogEntry[0], error}
 }

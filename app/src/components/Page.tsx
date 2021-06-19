@@ -126,6 +126,8 @@ const StyledPage = styled(Page)`
     text-align: left;
   }
 `;
-export default (props: PageProps) => <PageProvider>
+const PageContainer = (props: PageProps) => <PageProvider>
   <StyledPage {...props}/>
 </PageProvider>;
+
+export default PageContainer;

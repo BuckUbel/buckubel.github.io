@@ -12,7 +12,7 @@ interface GameMasterProps {
 }
 
 function GameMaster(props: GameMasterProps) {
-  const {displayConfig, toggleRowDisplay} = useTable<GameEntityType>(GameEntityType, () => []);
+  const {displayConfig} = useTable<GameEntityType>(GameEntityType, () => []);
   const {add, store, clear} = useLocalStorage<GameEntityType>('games', {autoSync: true});
   const a = GameEntityType.create<GameEntityType>({
     name: "Horror Game"

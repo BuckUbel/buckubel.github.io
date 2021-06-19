@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import SitePreview from "../../../content/SitePreview/SitePreview";
 import ColumnsContainer from "../../../grid/ColumnsContainer";
 import {faGamepad, faTv} from "@fortawesome/free-solid-svg-icons";
@@ -7,6 +7,7 @@ import GameMaster from "./GameMaster/GameMaster";
 import {usePage} from "../../../../hooks/usePage/usePage";
 import styled from "styled-components";
 import TableProvider from "../../../../hooks/useTable/TableProvider";
+import {useRefEffect} from "../../../helper/useRefHook";
 
 interface MediaMasterProps {
   classname?: string;
@@ -16,7 +17,7 @@ function MediaMaster(props: MediaMasterProps) {
   const [storeName, setStoreName] = useState<"movies" | "games" | undefined>(undefined)
   const {changeReturnClick, changeTitle} = usePage();
 
-  useEffect(() => {
+  useRefEffect(() => {
     if (storeName !== undefined) {
       changeReturnClick(() => setStoreName(undefined));
     } else {

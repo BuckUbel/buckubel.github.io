@@ -1,6 +1,7 @@
-import {useContext, useEffect} from "react";
+import {useContext} from "react";
 import {LocalStoreContext, LocalStoreEntityType, LocalStoreEntryType, LocalStoreType} from "./LocalStoreContext";
 import {SetStateType} from "../../components/helper/types";
+import {useRefEffect} from "../../components/helper/useRefHook";
 
 export interface LSConfigObject {
   autoSync?: boolean;
@@ -34,7 +35,7 @@ export const useLocalStorage = <DatabaseType extends LocalStoreEntityType>(store
     return false;
   }
 
-  useEffect(() => {
+  useRefEffect(() => {
     if (!store.database[storeName]) {
       setStore(((prevState: LocalStoreType<DatabaseType>) => {
         const newDatabase = Object.assign({}, prevState.database);
@@ -44,14 +45,14 @@ export const useLocalStorage = <DatabaseType extends LocalStoreEntityType>(store
     }
   }, [storeName]);
 
-  useEffect(() => {
+  useRefEffect(() => {
     if (!!config && !!config.autoSync) {
       console.log("auto load");
       loadFromLS();
     }
   }, []);
 
-  useEffect(() => {
+  useRefEffect(() => {
     if (!!config && !!config.autoSync &&
       !!store.database[storeName] &&
       (store.database[storeName].length !== 0 ||

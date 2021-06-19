@@ -1,6 +1,7 @@
-import {useContext, useEffect, useMemo} from "react";
+import {useContext} from "react";
 import {TableContext, TableStateType} from "./TableContext";
 import {LocalStoreEntityType} from "../useLocalStorage/LocalStoreContext";
+import {useRefEffect, useRefMemo} from "../../components/helper/useRefHook";
 
 export const useTable = <DatabaseType extends LocalStoreEntityType>(entityClass: typeof LocalStoreEntityType,
                                                                     propNamesFunction: () => Array<keyof DatabaseType>, addToDisplay: boolean = true) => {
@@ -16,7 +17,7 @@ export const useTable = <DatabaseType extends LocalStoreEntityType>(entityClass:
     }));
   }
   const emptyEntity = entityClass.create();
-  useEffect(() => {
+  useRefEffect(() => {
     const databaseTypeKeys = Object.keys(emptyEntity) as Array<keyof DatabaseType>;
     setRowDisplay(databaseTypeKeys, addToDisplay);
   }, [])
@@ -30,8 +31,8 @@ export const useTable = <DatabaseType extends LocalStoreEntityType>(entityClass:
       return {...prevState, displayConfig: newDisplayConfig};
     }));
   }
-  const propNames = useMemo(propNamesFunction, []);
-  useEffect(() => {
+  const propNames = useRefMemo(propNamesFunction, []);
+  useRefEffect(() => {
     toggleRowDisplay(propNames)
   }, [propNames])
 
