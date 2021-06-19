@@ -17,7 +17,7 @@ interface RoundButtonProps extends StyledCompProps {
 function RoundButton(props: RoundButtonProps) {
   const routeLink = useRouteLink(props.onClick ? "" : props.link);
   return (
-    <div className={"round-button " + props.className} onClick={!!props.onClick ? props.onClick : routeLink.onClick}>
+    <div className={"round-button " + props.className} style={props.style} onClick={!!props.onClick ? props.onClick : routeLink.onClick}>
       <button>
         {props.icon ?? ""}
         {props.text ?? ""}

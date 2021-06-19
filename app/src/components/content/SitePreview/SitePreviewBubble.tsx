@@ -40,7 +40,7 @@ export default styled(SitePreviewBubble)`
     vertical-align: middle;
     position: absolute;
     left: calc(50% - 30px);
-    top: -45px;
+    top: -60px;
     opacity: 1;
     transition: opacity 1s;
 

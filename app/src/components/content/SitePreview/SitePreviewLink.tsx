@@ -5,7 +5,8 @@ import RoundButton from "../../buttons/RoundButton";
 interface SitePreviewLinkProps {
   className?: string;
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
-  text?: string;
+  text?: string | JSX.Element;
+  icon?: string | JSX.Element;
 }
 
 function SitePreviewLink(props: SitePreviewLinkProps) {
@@ -15,7 +16,7 @@ function SitePreviewLink(props: SitePreviewLinkProps) {
       <div className={"site-preview-link-container"}>
         {!props.onClick && !!props.text && <p>{props.text}</p>}
         {!!props.onClick &&
-        <RoundButton onClick={props.onClick} text={props.text}/>
+        <RoundButton onClick={props.onClick} text={props.text} icon={props.icon}/>
         }
       </div>
     </div>

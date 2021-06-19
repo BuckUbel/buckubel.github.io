@@ -11,10 +11,10 @@ interface SitePreviewDescriptionProps extends CompProps {
 function SitePreviewDescription(props: SitePreviewDescriptionProps) {
   return (
     <>
-      <p className={`${props.className} site-preview-description ${props.isHover ? "hovered" : ""}`}
+      <div className={`${props.className} site-preview-description ${props.isHover ? "hovered" : ""}`}
          style={props.style}>
         {props.children}
-      </p>
+      </div>
     </>
   );
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import {StateType} from "../../components/helper/types";
 import {defaultLocalStoreState} from "./defaultLocalStoreState";
 import uuid from "uuid";
+import {InterfaceChangedPropTypesOnlyRealValues} from "../../components/helper/utilTypes";
 
 
 export class LocalStoreEntityType {
@@ -28,6 +29,7 @@ export class LocalStoreEntityType {
     return newObj.set(obj);
   }
 
+  static rowNames: InterfaceChangedPropTypesOnlyRealValues<LocalStoreEntityType, string> = {id: "ID"};
 }
 
 export type LocalStoreEntryType<DatabaseType extends LocalStoreEntityType = LocalStoreEntityType> = {

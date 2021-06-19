@@ -20,7 +20,7 @@ function BlogEntryList(props: BlogEntryListProps) {
             content={{
               icon: faBook,
               title: v.title,
-              description: v.description,
+              description: v.previewText ?? "",
               buttonText: "Read more",
               link: "/blog/" + v.id,
             }}

@@ -29,7 +29,7 @@ export default styled(SitePreviewContent)`
   border-radius: 10px;
   width: 100%;
 
-  padding: 20px;
+  padding: 40px 20px 20px 20px;
   margin: 35px 5px 5px 5px;
   box-shadow: inset 0 20px 150px -10px black;
   transition: box-shadow 1s;

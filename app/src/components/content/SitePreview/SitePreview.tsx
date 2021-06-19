@@ -36,7 +36,7 @@ function SitePreview(props: SitePreviewProps) {
         <SitePreviewBubble isHover={isHover && !!props.content.image} icon={props.content.icon}/>}
         <SitePreviewHeadline isHover={isHover}>{props.content.title}</SitePreviewHeadline>
         {props.content.description !== undefined &&
-        <SitePreviewDescription isHover={isHover}>{props.content.description}</SitePreviewDescription>}
+        <SitePreviewDescription isHover={isHover}><p>{props.content.description}</p></SitePreviewDescription>}
         {props.content.buttonText !== undefined &&
         <SitePreviewLink onClick={handleClick(true)} text={props.content.buttonText}/>
         }

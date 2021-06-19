@@ -1,3 +1,5 @@
+import {ObjectArray} from "./types";
+
 /**
  * Change types of all properties of I to the type T
  * interface A {
@@ -11,29 +13,37 @@ export type InterfaceChangedPropTypes<I, T> = {
 };
 
 /**
+ * Change types of all properties of I, which are not a type 'Function' and add index structure.
+ * interface A {
+ *   prop1: number
+ *   prop2: () => void
+ * }
+ * type B = InterfaceChangedPropTypesOnlyRealValues<A, any>
+ *   -> B = {prop1:any}
+ */
+export type InterfaceChangedPropTypesOnlyRealValues<I, T> =
+  InterfaceChangedPropTypes<FilteredOnNotType<I, Function>, T> & ObjectArray<T>;
+
+/**
  * Filtered all properties with the type of 'Condition'.
  * e.g:
  * type A = FilteredOnType<{id:number, name: string}, string>
  * type A = {name:string}
  */
-export type FilteredOnType<Base, Condition> = Pick<
-  Base,
+export type FilteredOnType<Base, Condition> = Pick<Base,
   {
     [Key in keyof Base]: Base[Key] extends Condition ? Key : never;
-  }[keyof Base]
->;
+  }[keyof Base]>;
 /**
  * Filtered all properties without the type of 'Condition'.
  * e.g:
- * type A = FilteredOnType<{id:number, name: string}, string>
- * type A = {:number}
+ * type A = FilteredOnNotType<{id:number, name: string}, string>
+ * type A = {id:number}
  */
-export type FilteredOnNotType<Base, Condition> = Pick<
-  Base,
+export type FilteredOnNotType<Base, Condition> = Pick<Base,
   {
     [Key in keyof Base]: Base[Key] extends Condition ? never : Key;
-  }[keyof Base]
->;
+  }[keyof Base]>;
 /**
  * Get all keys from properties with the type of 'Condition'.
  * e.g:
