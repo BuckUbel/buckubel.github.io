@@ -27,10 +27,13 @@ function clusterBlogEntryData(content: string) {
     createdDate = new Date(createdDateArray[2] + "-" + createdDateArray[1] + "-" + createdDateArray[0]);
   }
 
+  const [previewTextContent] = getContentFromCommand(content, BLOG_COMMANDS.BLOG_PREVIEW_TEXT);
+  previewText = previewTextContent;
   const [titleContent, , lastHeadlineChar] = getContentFromCommand(content, BLOG_COMMANDS.BLOG_HEADLINE);
   title = titleContent;
 
   body = content.substring(lastHeadlineChar);
+
   return {
     title, body, previewText, createdDate, tags
   }
@@ -84,6 +87,7 @@ export const useBlogs = (id?: number) => {
         id: blogId,
         title: blogEntryData.title,
         image: blogDefaultImage,
+        previewText: blogEntryData.previewText,
         description: blogEntryData.body,
         createdDate: blogEntryData.createdDate,
         tags: blogEntryData.tags,
