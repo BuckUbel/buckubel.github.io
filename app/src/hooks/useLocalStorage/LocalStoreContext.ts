@@ -40,6 +40,9 @@ export type LocalStoreType<DatabaseType extends LocalStoreEntityType = LocalStor
   databaseActionCount: { [key: string]: number };
   isSomeLoaded?: boolean,
   database: LocalStoreEntryType<DatabaseType>;
+  viewDatabase: LocalStoreEntryType<DatabaseType>;
+  count: { [key: string]: number; };
+  filterCount: { [key: string]: number; };
 }
 
 export const LocalStoreContext = React.createContext<StateType<LocalStoreType>>(

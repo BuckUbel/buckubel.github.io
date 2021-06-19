@@ -6,14 +6,15 @@ import {useLocalStorage} from "../../../../../hooks/useLocalStorage/useLocalStor
 import GameEntityPreviewDisplay from "./GameEntityPreviewDisplay";
 import {useTable} from "../../../../../hooks/useTable/useTable";
 import ColumnsContainer from "../../../../grid/ColumnsContainer";
+import {sortString} from "../../../../helper/sortFunctions";
 
 interface GameMasterProps {
   classname?: string;
 }
 
 function GameMaster(props: GameMasterProps) {
-  const {displayConfig} = useTable<GameEntityType>(GameEntityType, () => []);
-  const {add, store, clear} = useLocalStorage<GameEntityType>('games', {autoSync: true});
+  const {displayConfig} = useTable<GameEntityType>(GameEntityType, () => [], false);
+  const {add, store, clear} = useLocalStorage<GameEntityType>('games', {autoSync: true,sort:sortString('name'), pageSize:4,page:0});
   const a = GameEntityType.create<GameEntityType>({
     name: "Horror Game"
   })
