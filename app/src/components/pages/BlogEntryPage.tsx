@@ -15,7 +15,6 @@ function BlogEntryPage() {
   const {blogEntries} = useBlogs(blogId)
   const blogEntry = blogId > -1 ? blogEntries[blogId] : undefined;
   if (blogEntry === undefined) {
-    console.error("This id is not available: ", maybeBlogId)
     return null;
   }
   return (
