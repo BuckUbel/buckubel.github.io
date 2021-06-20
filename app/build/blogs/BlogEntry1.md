@@ -4,8 +4,8 @@ BLOG_PREVIEW_TEXT:
 
 # Über Blogs und der MediaMaster
 
-Bla bla bla
+Ich teste nur etwas an meinem Blog!
 
 ![Testbild](https://buckubel.github.io/images/blog1_testImage.png)
 
-bla
+bla bla bla
