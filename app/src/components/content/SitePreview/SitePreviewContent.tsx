@@ -27,7 +27,7 @@ export default styled(SitePreviewContent)`
   background: #58585a;
   color: white;
   border-radius: 10px;
-  width: 100%;
+  width: calc(100% - 50px);
 
   padding: 40px 20px 20px 20px;
   margin: 35px 5px 5px 5px;
