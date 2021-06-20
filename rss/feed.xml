@@ -4,7 +4,7 @@
         <title>Buck's Blog</title>
         <link>https://buckubel.github.io/</link>
         <description>Welcome to my blog!</description>
-        <lastBuildDate>Sun, 20 Jun 2021 23:27:08 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 20 Jun 2021 23:30:10 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>nothing</generator>
         <language>de</language>
@@ -62,8 +62,7 @@ Die Lösung wird dafür sein, den Blog entweder gleich in JSX zu schreiben, oder
             <pubDate>Sun, 30 May 2021 00:00:00 GMT</pubDate>
             <content:encoded><![CDATA[<p>Bla bla bla</p>
 
-<p><img alt="Testbild" src="https://buckubel.github.io/images/blog1_testImage.png"/>
-<img alt="Testbild" src="http://localhost:3000/images/blog1_testImage.png"/></p>
+<p><img alt="Testbild" src="https://buckubel.github.io/images/blog1_testImage.png"/></p>
 
 <p>bla</p>]]></content:encoded>
             <author>buckubel@gmail.com (Buck Ubel)</author>
