@@ -6,4 +6,6 @@ BLOG_PREVIEW_TEXT:
 
 Bla bla bla
 
-![Testbild](../images/blog1_testImage.png)
+![Testbild](https://buckubel.github.io/images/blog1_testImage.png)
+
+bla

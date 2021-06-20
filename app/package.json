@@ -28,7 +28,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && copy build\\index.html build\\404.html",
+    "build": "react-scripts build && copy build\\index.html build\\404.html && yarn run createRSS ",
+    "createRSS": "cd ../rssFeedGenerator && yarn run createRSS",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

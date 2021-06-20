@@ -1,0 +1,45 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "Buck's Blog",
+    "home_page_url": "https://buckubel.github.io/",
+    "feed_url": "https://buckubel.github.io/rss/feed.json",
+    "description": "Welcome to my blog!",
+    "icon": "https://buckubel.github.io/logo512.png",
+    "author": {
+        "name": "Buck Ubel",
+        "url": "https://twitter.com/BuckUbel"
+    },
+    "items": [
+        {
+            "id": 0,
+            "content_html": "<p>Ich denke ich habe hier noch einiges zu verbessern, aber wenn man nicht anfängt wo kommt man dahin.</p>\n\n<p>Nun worum soll es hier auf der Seite eigentlich gehen? Das ist mir selbst noch gar nicht so klar. Jedenfalls wollte ich eine Plattform für mich finden, auf welcher ich meine Gedanken äußern kann. Da dies eine Github-Page ist, werde ich auch nie erfahren ob jemand überhaupt diese Seiten liest. Höchstens durch Nutzung einer meiner Kontaktmöglichkeiten würde ich dies bemerken.</p>\n\n<p>Es gibt auf dieser Seite zum Einen, die Blog-Seite und zum Anderen die Projekt-Seite. In den Blogs werde ich wohl ein wenig über meine Projekte reden. So trenne ich die Theorie und Praxis voneinander.</p>\n\n<p>Die bisherigen Projekte bisher sind noch recht karg. Es gibt den Namens-Bewerter und Advent of Code.</p>\n\n<p>Ersteres rechnet nur Zahlen zu einander, welche von Buchstaben abhängen. Das auch noch in einem eigenem Input-Feld was eigentlich komplett unnötig ist und nicht mal mobil-fähig ist. Aber gut.</p>\n\n<p>Das Zweitere war mir nach dem vierten Tag zu zeitintensiv, so dass ich das Projekt relativ früh abgebrochen habe.</p>\n\n<p>So was wird das nächste Projekt sein, welches ich in diesem Rahmen veröffentlichen werde?</p>\n\n<p>Ich bin ein recht großer Sammler. Und was sammle ich? Vorrangig Videospiele und Filme. Ersteres aktiver als zweiteres. Aber beides doch so ernst, dass ich so langsam den Überblick verliere.</p>\n\n<h3>So kommen wir zu meiner User-Story:</h3>\n\n<p>Ich möchte ein Tool haben, in welchem ich meine Videospiele und Medien auflisten kann und mir ebenfalls dazu Gedanken aufschreiben kann und sie für mich persönlich bewerben kann.\nIn diesem Tool will ich weiterhin auch noch solche Medien abspeichern welche erst in Zukunft in meine Sammlung kommen sollen.</p>\n\n<p>Die Speicherung soll als JSON gespeichert werden, welches im localStorage gespeichert wird. So brauchen wir hier keinen extra Server und können alles schön extern handeln.</p>\n\n<p>Weiterhin werde ich auch dieses Seite immer weiter verbessern. Diesen Blogeintrag grade, schreibe ich bisher als einfachen String mit enthaltenen \\n. Das ist natürlich relativ einschränkend. Fettdruck, Überschriften, Bilder, ... all das ist so nicht einfach möglich.\nDie Lösung wird dafür sein, den Blog entweder gleich in JSX zu schreiben, oder mit einem Markdown-Plugin zu arbeiten. Wir werden es sehen wohin die Reise hingeht.</p>\n\n<p>Aber zuerst will ich mich nun um mein Tool kümmern. Also wir lesen uns später...</p>",
+            "url": "https://buckubel.github.io/blog/0",
+            "title": "Endlich fängt es jetzt an...",
+            "summary": "Mein erster Blogeintrag! Vielleicht ist er ja interessant für Dich!",
+            "date_modified": "2021-05-20T00:00:00.000Z",
+            "author": {
+                "name": "Buck Ubel",
+                "url": "https://twitter.com/BuckUbel"
+            },
+            "tags": [
+                "Start",
+                "Neues Projekt"
+            ]
+        },
+        {
+            "id": 1,
+            "content_html": "<p>Bla bla bla</p>\n\n<p><img alt=\"Testbild\" src=\"https://buckubel.github.io/images/blog1_testImage.png\"/>\n<img alt=\"Testbild\" src=\"http://localhost:3000/images/blog1_testImage.png\"/></p>\n\n<p>bla</p>",
+            "url": "https://buckubel.github.io/blog/1",
+            "title": "Über Blogs und der MediaMaster",
+            "date_modified": "2021-05-30T00:00:00.000Z",
+            "author": {
+                "name": "Buck Ubel",
+                "url": "https://twitter.com/BuckUbel"
+            },
+            "tags": [
+                "Blog",
+                "MediaMaster"
+            ]
+        }
+    ]
+}
