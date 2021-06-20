@@ -5,3 +5,5 @@ BLOG_PREVIEW_TEXT:
 # Über Blogs und der MediaMaster
 
 Bla bla bla
+
+![Testbild](../images/blog1_testImage.png)
