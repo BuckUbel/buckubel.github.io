@@ -1,5 +1,6 @@
 BLOG_TAGS: Start, Neues Projekt
 BLOG_CREATED_AT: 20.05.2021
+BLOG_PREVIEW_TEXT: Mein erster Blogeintrag! Vielleicht ist er ja interessant für Dich! 
 
 # Endlich fängt es jetzt an...
 
