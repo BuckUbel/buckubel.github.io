@@ -4,7 +4,7 @@
         <title>Buck's Blog</title>
         <link>https://buckubel.github.io/</link>
         <description>Welcome to my blog!</description>
-        <lastBuildDate>Tue, 10 Aug 2021 20:09:31 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 10 Aug 2021 20:10:32 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>nothing</generator>
         <language>de</language>
@@ -61,9 +61,7 @@ Die Lösung wird dafür sein, den Blog entweder gleich in JSX zu schreiben, oder
             <guid>1</guid>
             <pubDate>Tue, 10 Aug 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Der Blog ist fast fertig!]]></description>
-            <content:encoded><![CDATA[<hr/>
-
-<h3>Mein Blog</h3>
+            <content:encoded><![CDATA[<h3>Mein Blog</h3>
 
 <p>Es ist nun etwas länger her, dass ich meinen letzten Blog-Eintrag geschrieben habe.
 Aber ich habe die Zeit genutzt und habe die Möglichkeiten des Blogs erweitert.</p>
