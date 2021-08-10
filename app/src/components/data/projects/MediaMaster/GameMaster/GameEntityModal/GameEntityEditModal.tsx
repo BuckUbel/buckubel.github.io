@@ -2,42 +2,40 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { GameEntityType } from "../../mediaTypes/GameEntityType";
 import Modal from "../../../../../modal/Modal";
-import RoundButton from "../../../../../buttons/RoundButton";
-import { useRefMemo } from "../../../../../helper/useRefHook";
+import { useLocalStorage } from "../../../../../../hooks/useLocalStorage/useLocalStorage";
+import GameEntityForm from "../GameEntityForm/GameEntityForm";
 
-interface GameEntityModalProps {
+interface GameEntityEditModalProps {
   className?: string;
   game?: GameEntityType;
-  onSubmit: (game: GameEntityType) => void;
+  onSubmit?: (game: GameEntityType) => void;
   buttonCreator: (onClick: () => void) => void;
 }
 
 function GameEntityEditModal({
+  className,
   game,
   onSubmit,
   buttonCreator,
-}: GameEntityModalProps) {
+}: GameEntityEditModalProps) {
+  const { update } = useLocalStorage<GameEntityType>("games");
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const newGame = useRefMemo(
-    () =>
-      GameEntityType.create<GameEntityType>({
-        name: "Horror Game",
-      }),
-    [isOpen]
-  );
-  const handleSubmit = () => {
+  const handleSubmit = (newGame: GameEntityType) => {
     setIsOpen(false);
-    onSubmit(newGame);
+    const withSuccess = update(newGame);
+    if (withSuccess && !!onSubmit) {
+      onSubmit(newGame);
+    }
   };
   return (
     <>
       <Modal
-        title={`Spiel ${game ? "bearbeiten" : "hinzufügen"}`}
+        title={`Spiel bearbeiten`}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
+        furtherClassName={className}
       >
-        TODO: Formular
-        <RoundButton link={""} onClick={handleSubmit} text={"Speichern"} />
+        <GameEntityForm defaultGameValues={game} handleSubmit={handleSubmit} />
       </Modal>
       {buttonCreator(() => setIsOpen(true))}
     </>

@@ -8,7 +8,7 @@ import { useTable } from "../../../../../hooks/useTable/useTable";
 import ColumnsContainer from "../../../../grid/ColumnsContainer";
 import { sortString } from "../../../../helper/sortFunctions";
 import GameEntityDisplayModal from "./GameEntityDisplayModal/GameEntityDisplayModal";
-import GameEntityEditModal from "./GameEntityEditModal/GameEntityEditModal";
+import GameEntityEditModal from "./GameEntityModal/GameEntityEditModal";
 import YesNoModal from "../../../../modal/YesNoModal";
 
 interface GameMasterProps {
@@ -65,7 +65,7 @@ function GameMaster(props: GameMasterProps) {
             game={v}
             onClick={openDetailModal(v)}
             displayConfig={displayConfig}
-            update={update}
+            withEdit
           />
         ))}
       </ColumnsContainer>

@@ -12,19 +12,19 @@ import GameEntityPreviewRightMiniIcons from "./GameEntityPreviewRightMiniIcons";
 import GameEntityPreviewHeadline from "./GameEntityPreviewHeadline";
 import GameEntityPreviewDescription from "./GameEntityPreviewDescription";
 import RoundButton from "../../../../../buttons/RoundButton";
-import GameEntityEditModal from "../GameEntityEditModal/GameEntityEditModal";
+import GameEntityEditModal from "../GameEntityModal/GameEntityEditModal";
 
 interface GameEntityPreviewDisplayProps {
   className?: string;
   game: GameEntityType;
   onClick?: () => void;
-  update?: (newEntity: GameEntityType) => void;
   displayConfig?: Partial<InterfaceChangedPropTypes<GameEntityType, boolean>>;
   outerIsOpen?: boolean;
+  withEdit?: boolean;
 }
 
 function GameEntityPreviewDisplay(props: GameEntityPreviewDisplayProps) {
-  const { className, game, onClick, outerIsOpen, update } = props;
+  const { className, game, onClick, outerIsOpen, withEdit } = props;
   const { plattformColor } = game;
 
   const [isHover, setIsHover] = useState(false);
@@ -55,10 +55,9 @@ function GameEntityPreviewDisplay(props: GameEntityPreviewDisplayProps) {
           onClick={onClick}
         />
         {isOpen && <GameEntityPreviewDescription game={game} />}
-        {!outerIsOpen && !!update && isOpen && (
+        {withEdit && isOpen && (
           <GameEntityEditModal
             game={game}
-            onSubmit={update}
             buttonCreator={(onClick) => (
               <RoundButton link={""} onClick={onClick} text={"Edit"} />
             )}

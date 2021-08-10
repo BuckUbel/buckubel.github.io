@@ -27,6 +27,7 @@ function GameEntityDisplayModal({
           game={game}
           displayConfig={displayConfig}
           outerIsOpen={true}
+          withEdit
         />
       )}
     </Modal>
