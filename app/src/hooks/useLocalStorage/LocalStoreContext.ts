@@ -1,11 +1,11 @@
 import React from "react";
 import { StateType } from "../../components/helper/types";
 import { defaultLocalStoreState } from "./defaultLocalStoreState";
-import uuid from "uuid";
+import { v4 as uuid } from "uuid";
 import { InterfaceChangedPropTypesOnlyRealValues } from "../../components/helper/utilTypes";
 
 export class LocalStoreEntityType {
-  id: string = uuid.v4();
+  id: string = uuid();
 
   /**
    * Set the property 'prop', if it is defined as not undefined in obj.
