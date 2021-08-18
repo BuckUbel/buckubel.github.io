@@ -42,6 +42,22 @@
                 "MediaMaster",
                 "Neues Projekt"
             ]
+        },
+        {
+            "id": 2,
+            "content_html": "<p>Habt ihr euch auch schon immer gefragt, warum alle Gif-Erstell-Seiten so schrecklich sind ?\nEntweder sind sie voller Werbung - \nsperren für nicht &quot;Pro&quot;-Nutzer tolle Funktionen, \noder sehen einfach so schon schrecklich aus.</p>\n\n<p>Ich rede hier nicht über die Komprimierung, die diesem Format zu Grunde liegt - ich meine vor allen die kleinen Animationsvideos, welche den Namen populär gemacht haben.</p>\n\n<p>Ich hab das jedenfalls nie verstanden, warum die Erstellung solcher Medien nicht nett und einfach zur Verfügung gestellt werden können.\nSomit hab ich mich mal wieder für ein neues Projekt entschieden. (Ja ich weiß, ich sollte erstmal was beenden ^^).</p>\n\n<h2>Simple GifMaker</h2>\n\n<p>Das Hauptziel dieses kleinen Projektes soll sein, Bilder entgegenzunehmen, diese simpel bearbeitbar zu machen und danach eine Sequenz an Bildern als Mini-Video in eine Gif zu packen.</p>\n\n<p>Wichtig dabei sind mir vor allen die Verbindungen zwischen den Bildern. Dass heißt, ich möchte auch gerne einen Frame doppelt so lang anzeigbar machen, die Frames umsortieren können, usw.\nAlso eigentlich ganz einfach Funktionen, welche man immer mal gebrauchen könnte. </p>\n\n<p>Das ganze soll wieder server-unabhängig geschehen - also nur im Browser selbst berechnet werden. Ich denke, das wird gerade bei größeren Bildern bestimmt etwas schwierig.\nVon daher ist das Ziel erstmal kleinere Bilder bis ca. 0,25 MP zu untersützen. Mal sehen welchen Einschränkungen größere Bilder unterliegen werden.</p>\n\n<h2>Erste Umsetzung</h2>\n\n<p>So hab ich einfach mal angefangen eine kleine Bibliothek namens <a href=\"https://github.com/terikon/gif.js.optimized\"><em>gif.js.optimized</em></a> einzubauen:</p>\n\n<p><a href=\"http://localhost:3000/project/3\">Meine Umsetzung</a></p>\n\n<p>Zu Beginn habe ich eine kleine Typisierung geschrieben, um überhaupt die Bibliothek für mich richtig nutzen zu können. \nEs war aber eigentlich auch nur eine Klasse. Das Problem hierbei ist eher, dass dieser Fork des eigentlichen Ursprungsprojekts auch schon recht lang brach liegt.\nWenn ich mal die Zeit dazu finde, forke ich den Fork selbst und gebe dabei die Typisierung mit. \n(Da sollte ich mich, aber auch erstmal mit dem Publishen eines <code>@types</code> packages beschäftigen)</p>\n\n<p>In dem Zusammenhang hab ich mich nämlich erstmal grundlegend mit <em>canvas</em> auseinandergesetzt bzw. bin ich da grad noch dabei.\nDas sind alles keine Themen, die ich sonst gewöhnt bin, aber ich find sie ja doch recht interessant.</p>\n\n<p>Im derzeitigen Zustand des Projektes, gibt es ein Bild, welches man in der Breite wie auch Höhe verändern kann und jeweils zu den Frames der Gif hinzufügen kann.\nWeiterhin kann man auch Bilder generieren lassen, welche eine Rotation einbauen und somit jenes Bild drehen lassen können. Eine kleine nette Spielerei eben...</p>\n\n<p>Ich hab in diesem Zusammenhang noch viele Ideen, Sortierung, Einzelbildbearbeitung, ... seid gespannt, ich bin es nämlich auch!</p>",
+            "url": "https://buckubel.github.io/blog/2",
+            "title": "Gifs erstellen leicht gemacht!",
+            "summary": "Gifs erstellen leicht gemacht!",
+            "date_modified": "2021-08-18T00:00:00.000Z",
+            "author": {
+                "name": "Buck Ubel",
+                "url": "https://twitter.com/BuckUbel"
+            },
+            "tags": [
+                "Simple GifMaker",
+                "Neues Projekt"
+            ]
         }
     ]
 }
