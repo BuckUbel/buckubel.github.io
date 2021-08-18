@@ -1,6 +1,7 @@
 const BLOGS: { [key: number]: string } = {
   0: "/blogs/BlogEntry0.md",
   1: "/blogs/BlogEntry1.md",
+  2: "/blogs/BlogEntry2.md",
 };
 
 export enum BLOG_COMMANDS {
