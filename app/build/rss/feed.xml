@@ -4,7 +4,7 @@
         <title>Buck's Blog</title>
         <link>https://buckubel.github.io/</link>
         <description>Welcome to my blog!</description>
-        <lastBuildDate>Tue, 10 Aug 2021 20:10:32 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 18 Aug 2021 00:30:55 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>nothing</generator>
         <language>de</language>
@@ -18,6 +18,7 @@
         <category>Neues Projekt</category>
         <category>Blog</category>
         <category>MediaMaster</category>
+        <category>Simple GifMaker</category>
         <item>
             <title><![CDATA[Endlich fängt es jetzt an...]]></title>
             <link>https://buckubel.github.io/blog/0</link>
@@ -142,6 +143,54 @@ Ich finde die Idee-Klasse. Ich denke ich werde die Idee des Tools übernehmen un
             <author>buckubel@gmail.com (Buck Ubel)</author>
             <category>Blog</category>
             <category>MediaMaster</category>
+            <category>Neues Projekt</category>
+        </item>
+        <item>
+            <title><![CDATA[Gifs erstellen leicht gemacht!]]></title>
+            <link>https://buckubel.github.io/blog/2</link>
+            <guid>2</guid>
+            <pubDate>Wed, 18 Aug 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Gifs erstellen leicht gemacht!]]></description>
+            <content:encoded><![CDATA[<p>Habt ihr euch auch schon immer gefragt, warum alle Gif-Erstell-Seiten so schrecklich sind ?
+Entweder sind sie voller Werbung - 
+sperren für nicht &quot;Pro&quot;-Nutzer tolle Funktionen, 
+oder sehen einfach so schon schrecklich aus.</p>
+
+<p>Ich rede hier nicht über die Komprimierung, die diesem Format zu Grunde liegt - ich meine vor allen die kleinen Animationsvideos, welche den Namen populär gemacht haben.</p>
+
+<p>Ich hab das jedenfalls nie verstanden, warum die Erstellung solcher Medien nicht nett und einfach zur Verfügung gestellt werden können.
+Somit hab ich mich mal wieder für ein neues Projekt entschieden. (Ja ich weiß, ich sollte erstmal was beenden ^^).</p>
+
+<h2>Simple GifMaker</h2>
+
+<p>Das Hauptziel dieses kleinen Projektes soll sein, Bilder entgegenzunehmen, diese simpel bearbeitbar zu machen und danach eine Sequenz an Bildern als Mini-Video in eine Gif zu packen.</p>
+
+<p>Wichtig dabei sind mir vor allen die Verbindungen zwischen den Bildern. Dass heißt, ich möchte auch gerne einen Frame doppelt so lang anzeigbar machen, die Frames umsortieren können, usw.
+Also eigentlich ganz einfach Funktionen, welche man immer mal gebrauchen könnte. </p>
+
+<p>Das ganze soll wieder server-unabhängig geschehen - also nur im Browser selbst berechnet werden. Ich denke, das wird gerade bei größeren Bildern bestimmt etwas schwierig.
+Von daher ist das Ziel erstmal kleinere Bilder bis ca. 0,25 MP zu untersützen. Mal sehen welchen Einschränkungen größere Bilder unterliegen werden.</p>
+
+<h2>Erste Umsetzung</h2>
+
+<p>So hab ich einfach mal angefangen eine kleine Bibliothek namens <a href="https://github.com/terikon/gif.js.optimized"><em>gif.js.optimized</em></a> einzubauen:</p>
+
+<p><a href="http://localhost:3000/project/3">Meine Umsetzung</a></p>
+
+<p>Zu Beginn habe ich eine kleine Typisierung geschrieben, um überhaupt die Bibliothek für mich richtig nutzen zu können. 
+Es war aber eigentlich auch nur eine Klasse. Das Problem hierbei ist eher, dass dieser Fork des eigentlichen Ursprungsprojekts auch schon recht lang brach liegt.
+Wenn ich mal die Zeit dazu finde, forke ich den Fork selbst und gebe dabei die Typisierung mit. 
+(Da sollte ich mich, aber auch erstmal mit dem Publishen eines <code>@types</code> packages beschäftigen)</p>
+
+<p>In dem Zusammenhang hab ich mich nämlich erstmal grundlegend mit <em>canvas</em> auseinandergesetzt bzw. bin ich da grad noch dabei.
+Das sind alles keine Themen, die ich sonst gewöhnt bin, aber ich find sie ja doch recht interessant.</p>
+
+<p>Im derzeitigen Zustand des Projektes, gibt es ein Bild, welches man in der Breite wie auch Höhe verändern kann und jeweils zu den Frames der Gif hinzufügen kann.
+Weiterhin kann man auch Bilder generieren lassen, welche eine Rotation einbauen und somit jenes Bild drehen lassen können. Eine kleine nette Spielerei eben...</p>
+
+<p>Ich hab in diesem Zusammenhang noch viele Ideen, Sortierung, Einzelbildbearbeitung, ... seid gespannt, ich bin es nämlich auch!</p>]]></content:encoded>
+            <author>buckubel@gmail.com (Buck Ubel)</author>
+            <category>Simple GifMaker</category>
             <category>Neues Projekt</category>
         </item>
     </channel>
