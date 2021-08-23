@@ -38,8 +38,6 @@ export interface LSConfigObject<DatabaseType extends LocalStoreEntityType> {
   pageSize?: number;
 }
 
-const LOCAL_STORAGE_PREFIX = "MEDIA-MASTER-";
-
 export const useLocalStorage = <DatabaseType extends LocalStoreEntityType>(
   storeName: string,
   config?: LSConfigObject<DatabaseType>
@@ -201,13 +199,15 @@ export const useLocalStorage = <DatabaseType extends LocalStoreEntityType>(
   const saveToLS = async () => {
     const storeData = store.database[storeName] ?? [];
     await localStorage.setItem(
-      LOCAL_STORAGE_PREFIX + storeName,
+      store.LOCAL_STORAGE_PREFIX + "-" + storeName,
       JSON.stringify(storeData)
     );
     return true;
   };
   const loadFromLS = () => {
-    const lsString = localStorage.getItem(LOCAL_STORAGE_PREFIX + storeName);
+    const lsString = localStorage.getItem(
+      store.LOCAL_STORAGE_PREFIX + "-" + storeName
+    );
     if (!!lsString) {
       const lsData: any[] = JSON.parse(lsString);
       if (!!lsData) {
@@ -248,7 +248,7 @@ export const useLocalStorage = <DatabaseType extends LocalStoreEntityType>(
       if (
         !!store.database[storeName] &&
         (store.database[storeName].length !== 0 ||
-          !!localStorage.getItem(LOCAL_STORAGE_PREFIX + storeName))
+          !!localStorage.getItem(store.LOCAL_STORAGE_PREFIX + "-" + storeName))
       ) {
         console.log("auto save");
         await saveToLS();

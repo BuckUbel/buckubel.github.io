@@ -52,6 +52,7 @@ export type LocalStoreEntryType<
 export type LocalStoreType<
   DatabaseType extends LocalStoreEntityType = LocalStoreEntityType
 > = {
+  LOCAL_STORAGE_PREFIX: string;
   databaseActionCount: { [key: string]: number };
   isSomeLoaded?: boolean;
   database: LocalStoreEntryType<DatabaseType>;

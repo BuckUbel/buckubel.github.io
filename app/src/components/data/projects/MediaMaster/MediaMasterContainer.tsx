@@ -1,14 +1,13 @@
-import React from 'react';
+import React from "react";
 import LocalStoreProvider from "../../../../hooks/useLocalStorage/LocalStoreProvider";
 import MediaMaster from "./MediaMaster";
 
-interface MediaMasterContainerProps {
-}
+interface MediaMasterContainerProps {}
 
 function MediaMasterContainer(props: MediaMasterContainerProps) {
   return (
-    <LocalStoreProvider>
-      <MediaMaster/>
+    <LocalStoreProvider prefix={"MEDIA-MASTER"}>
+      <MediaMaster />
     </LocalStoreProvider>
   );
 }
