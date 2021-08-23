@@ -7,7 +7,7 @@ import project2Image from "../../../images/banner1024.png";
 import project3Image from "../../../images/banner1024.png";
 import project4Image from "../../../images/banner1024.png";
 import MediaMasterContainer from "./MediaMaster/MediaMasterContainer";
-import GifMaker from "./gifMaker/GifMaker";
+import GifMakerContainer from "./gifMaker/GifMakerContainer";
 
 export interface ProjectEntryInterface {
   id?: number;
@@ -53,7 +53,7 @@ export const PROJECTS: ProjectEntryListInterface = {
     id: 3,
     title: "Simple GifMaker",
     image: project4Image,
-    component: <GifMaker />,
+    component: <GifMakerContainer />,
     description: "A little tool to create gif's from images.",
     favNumber: 3,
   },

@@ -1,150 +1,142 @@
-import React, { useRef, useState } from "react";
-import GIF from "gif.js.optimized/dist/gif";
+import React, { useState } from "react";
 import image from "../../../../images/logo_transparent.png";
 import { StyledCompProps } from "../../../helper/types";
 import styled from "styled-components";
-import { v4 as uuid } from "uuid";
-
-type CanvasDrawFct = (
-  ctx: CanvasRenderingContext2D,
-  source: CanvasImageSource
-) => void;
+import { useGifJs } from "./hooks/useGifJs";
+import { useCanvasGenerator } from "./hooks/useCanvasGenerator";
+import { Color } from "../../../config/color";
 
 interface GifMakerProps extends StyledCompProps {}
 
 function GifMaker({ className }: GifMakerProps) {
-  const [width, setWidth] = useState(100);
-  const [height, setHeight] = useState(100);
-  const [rotationFrames, setRotationFrames] = useState(25);
-  const [quality, setQuality] = useState(1);
-  const [length, setLength] = useState(10);
-  const framesRef = useRef<HTMLDivElement>(null);
-  const ref = useRef<HTMLImageElement>(null);
+  const {
+    widthState: [width, setWidth],
+    heightState: [height, setHeight],
+    animationFramesState: [animationFrames, setAnimationFrames],
+    qualityState: [quality, setQuality],
+    length,
+    addImage,
+    reset,
+    render,
+    generatedGifs,
+    framesContainerRef,
+    srcRef,
+    frameCount,
+    isLoading,
+  } = useGifJs();
 
-  const [frames, setFrames] = useState<HTMLCanvasElement[]>([]);
-  const [myGeneratedGif, setMyGeneratedGif] = useState<string | undefined>(
-    undefined
-  );
-
-  const addImage = (
-    draw: CanvasDrawFct = (ctx, src) => {
-      ctx.drawImage(src, 0, 0, width, height);
-    }
-  ) => {
-    const canvas = document.createElement("canvas");
-    canvas.id = "canvas-" + uuid();
-    canvas.width = width; //specify width of your canvas
-    canvas.height = height; //specify height of your canvas
-
-    if (ref.current !== null && framesRef.current !== null) {
-      framesRef.current.appendChild(canvas);
-      const ctx = canvas.getContext("2d");
-      if (ctx !== null) {
-        draw(ctx, ref.current);
-        ctx.fill();
-      }
-      setFrames((prevFrames) => [...prevFrames, canvas]);
-    }
-  };
-  const addFullRotation = () => {
-    for (let i = 1; i < rotationFrames + 1; i++) {
-      addImage((ctx, src) => {
-        ctx.translate(width / 2, height / 2);
-        ctx.rotate(((360 / rotationFrames) * i * Math.PI) / 180); // rotate by 90 degrees
-        ctx.translate(width / -2, height / -2);
-        ctx.drawImage(src, 0, 0, width, height);
-      });
-    }
-  };
-  const reset = () => {
-    setMyGeneratedGif(undefined);
-    setFrames((prevFrames) => {
-      prevFrames.forEach((prevFrame) => prevFrame.remove());
-      return [];
-    });
-  };
-
-  const render = () => {
-    const gif = new GIF({
-      workers: 2,
-      quality: quality,
-      workerScript: "/lib/gif.worker.js",
-      debug: true,
-      width: width,
-      height: height,
-      // transparent: "#FFF",
-    });
-
-    frames.forEach((frame) => {
-      const ctx = frame.getContext("2d");
-      if (ctx !== null) {
-        gif.addFrame(ctx, { delay: (length / frames.length) * 100 });
-      }
-    });
-
-    gif.on("finished", function (blob: string) {
-      // window.open(URL.createObjectURL(blob));
-      setMyGeneratedGif(URL.createObjectURL(blob));
-      console.log(myGeneratedGif);
-      gif.abort();
-    });
-    gif.render();
-  };
-  console.log("Render", myGeneratedGif);
-  console.log("Frames", frames);
+  const { generateFullMarquee, generateFullRotation } =
+    useCanvasGenerator(addImage);
 
   //TODO: Image upload
   //TODO: SVG's to gif (with cool rotate options)
   //TODO: Gif options setter with typescript ?
   // more cool function, like rotation
   // extend rotation with a minisizer, so the complete image is on each frame visible
-
+  const [showFrames, setShowFrames] = useState(false);
   return (
     <div className={className}>
-      <div>
-        <div>
-          <span>Breite</span>
-          <input
-            type={"number"}
-            defaultValue={width}
-            onChange={(e) => setWidth(Number(e.target.value))}
-          />
+      <div className={"border-container canvas-container"}>
+        <div className={"canvas-info-container"}>
+          <h4 className={"canvas-info-frames"}>Frames: {frameCount}</h4>
+          <button
+            className={"canvas-info-show-frames-button"}
+            onClick={() => setShowFrames((prev) => !prev)}
+          >
+            {showFrames ? "Hide" : "Show"} frames
+          </button>
         </div>
-        <div>
-          <span>Höhe</span>
-          <input
-            type={"number"}
-            defaultValue={height}
-            onChange={(e) => setHeight(Number(e.target.value))}
-          />
-        </div>
-        <div>
-          <span>Drehungswinkel (pro 1s)</span>
-          <input
-            type={"number"}
-            defaultValue={rotationFrames}
-            onChange={(e) => setRotationFrames(Number(e.target.value))}
-          />
+        <div
+          className={`canvas-inner-container ${
+            showFrames ? "" : "hide-canvas-inner-container"
+          }`}
+          ref={framesContainerRef}
+        />
+      </div>
+      <div className={"border-container generated-gif-container"}>
+        <h4>Generated gifs</h4>
+        {isLoading && <div>Berechnung erfolgt ...</div>}
+        {generatedGifs.length > 0 && (
+          <>
+            {generatedGifs.map((gif) => (
+              <a key={gif} href={gif} download={"Awesowme-GIF.gif"}>
+                <img alt={"generated gif"} src={gif} />
+              </a>
+            ))}
+          </>
+        )}
+      </div>
+      <div className={"border-container generate-image-container"}>
+        <h4>Edit & Generate</h4>
+        <div className={"generate-image-inner-container"}>
+          <button onClick={() => addImage()}>Add image</button>
+          <button
+            onClick={generateFullRotation({
+              frameCount: animationFrames,
+              width: width,
+              height: height,
+            })}
+          >
+            Add full rotation
+          </button>
+          <button
+            onClick={generateFullMarquee({
+              frameCount: animationFrames,
+              width: width,
+              height: height,
+            })}
+          >
+            Add full marquee
+          </button>
+          <button onClick={reset}>Reset Gif</button>
+          <button onClick={render}>Render Gif</button>
         </div>
       </div>
-      <div>
+      <div className={"border-container source-image-container"}>
+        <h4>Images</h4>
         <img
-          id={"image-123"}
-          alt={"main image"}
+          id={"src-image"}
+          alt={"src image"}
+          className={"source-image"}
           src={image}
-          ref={ref}
+          ref={srcRef}
           style={{ width: width + "px", height: height + "px" }}
         />
       </div>
-      <div>
-        <button onClick={() => addImage()}>Add image</button>
-        <button onClick={addFullRotation}>Add full rotation</button>
-        <button onClick={reset}>Reset Gif</button>
-        <button onClick={render}>Render Gif</button>
+      <div className={"border-container edit-image-container"}>
+        <h4>Settings</h4>
+        <div className={"edit-image-inner-container"}>
+          <div>
+            <span>Width</span>
+            <input
+              type={"number"}
+              defaultValue={width}
+              onChange={(e) => setWidth(Number(e.target.value))}
+            />
+          </div>
+          <div>
+            <span>Height</span>
+            <input
+              type={"number"}
+              defaultValue={height}
+              onChange={(e) => setHeight(Number(e.target.value))}
+            />
+          </div>
+          <div>
+            <span>Animation-FPS</span>
+            <input
+              type={"number"}
+              defaultValue={animationFrames}
+              onChange={(e) => setAnimationFrames(Number(e.target.value))}
+            />
+          </div>
+        </div>
       </div>
-      <div>
+
+      <div className={"border-container info-image-container"}>
+        <h4>Info</h4>
         <div>
-          <span>Qualität</span>
+          <span>Quality</span>
           <input
             type={"number"}
             defaultValue={quality}
@@ -152,21 +144,8 @@ function GifMaker({ className }: GifMakerProps) {
           />
         </div>
         <div>
-          <span>Zeitlänge (in 100ms)</span>
-          <input
-            type={"number"}
-            defaultValue={length}
-            onChange={(e) => setLength(Number(e.target.value))}
-          />
+          <span>Timelength: {length.toFixed(2)} Sekunden</span>
         </div>
-      </div>
-      {!!myGeneratedGif && (
-        <div>
-          <img alt={"generated gif"} src={myGeneratedGif} />
-        </div>
-      )}
-      <div>
-        Canvas: <div ref={framesRef} />
       </div>
     </div>
   );
@@ -174,9 +153,78 @@ function GifMaker({ className }: GifMakerProps) {
 
 export default styled(GifMaker)`
   background: #333;
+  display: flex;
+  flex-wrap: wrap;
 
   img,
   canvas {
     border: 1px white solid;
+  }
+
+  .border-container {
+    border: 1px solid ${Color.TEXT_PRIME_COLOR};
+    box-shadow: 0 0 20px -5px ${Color.TEXT_PRIME_COLOR};
+    background: ${Color.PRIME_COLOR};
+    color: ${Color.TEXT_PRIME_COLOR};
+
+    width: calc(50% - 2px);
+    display: inline-block;
+    vertical-align: top;
+    min-height: 150px;
+    max-height: 350px;
+    overflow: auto;
+  }
+
+  .generated-gif-container {
+  }
+
+  .canvas-container {
+    .canvas-info-container {
+      height: 50px;
+      position: relative;
+
+      .canvas-info-frames {
+      }
+
+      .canvas-info-show-frames-button {
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    }
+
+    .canvas-inner-container {
+      max-height: 275px;
+      overflow: auto;
+
+      &.hide-canvas-inner-container {
+        display: none;
+      }
+    }
+  }
+
+  .source-image-container {
+    padding-top: 5px;
+
+    .source-image {
+      display: block;
+      margin: 0 auto 20px auto;
+    }
+  }
+
+  .edit-image-container {
+    .edit-image-inner-container {
+      margin: 0 10px;
+    }
+  }
+
+  .generate-image-container {
+    .generate-image-inner-container {
+      margin: 0 10px;
+    }
+  }
+
+  .info-image-container {
   }
 `;
