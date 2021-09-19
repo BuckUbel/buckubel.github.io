@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import image from "../../../../images/logo_transparent.png";
 import { StyledCompProps } from "../../../helper/types";
 import styled from "styled-components";
@@ -16,6 +16,7 @@ function GifMaker({ className }: GifMakerProps) {
     qualityState: [quality, setQuality],
     length,
     addImage,
+    addFrame,
     reset,
     render,
     generatedGifs,
@@ -28,7 +29,42 @@ function GifMaker({ className }: GifMakerProps) {
   const { generateFullMarquee, generateFullRotation } =
     useCanvasGenerator(addImage);
 
-  //TODO: Image upload
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const addUploadImage = (newSrc: string) => {
+    setUploadedImages((prev) => {
+      return [...prev, newSrc];
+    });
+  };
+  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files !== null) {
+      console.log(e.target.files, e.target.files.length);
+      for (let i = 0; i < e.target.files.length; i++) {
+        const file = e.target.files.item(i);
+        if (file !== null) {
+          const reader = new FileReader();
+          // const { current } = uploadedImage;
+          // console.log(current);
+          // current.file = file;
+          reader.onload = (progressEvent) => {
+            if (progressEvent.target !== null) {
+              const newSrc = progressEvent.target.result as string;
+              // current.src = progressEvent.target.result as string;
+              addUploadImage(newSrc);
+              addFrame(newSrc);
+              console.log(file, progressEvent.target.result);
+            }
+          };
+          reader.readAsDataURL(file);
+          console.log(e.target, uploadedImages);
+        }
+      }
+    }
+  };
+
+  //TODO: Four sizer (you take each pixel and zoom it on 4 pixels -> 16x16 -> 64x64)
+  //TODO: Operations on uploaded images (execute operations on unzoomed images)
+  //TODO: Select if you want to change the size of uploaded image, or you want to set on 0,0  of gif
+  // TODO: Add image operations, to change position of image in gif on each frame (e.g. waterDrop)
   //TODO: SVG's to gif (with cool rotate options)
   //TODO: Gif options setter with typescript ?
   // more cool function, like rotation
@@ -70,6 +106,12 @@ function GifMaker({ className }: GifMakerProps) {
         <h4>Edit & Generate</h4>
         <div className={"generate-image-inner-container"}>
           <button onClick={() => addImage()}>Add image</button>
+          <input
+            type={"file"}
+            accept={"image/*"}
+            onChange={handleImageUpload}
+            multiple
+          />
           <button
             onClick={generateFullRotation({
               frameCount: animationFrames,
@@ -102,6 +144,9 @@ function GifMaker({ className }: GifMakerProps) {
           ref={srcRef}
           style={{ width: width + "px", height: height + "px" }}
         />
+        {uploadedImages.map((upSrc, index) => (
+          <img key={upSrc + index} src={upSrc} />
+        ))}
       </div>
       <div className={"border-container edit-image-container"}>
         <h4>Settings</h4>

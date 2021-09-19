@@ -69,6 +69,33 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
     }
   };
 
+  const addFrame = (
+    src: string,
+    draw: CanvasDrawFct = (ctx, src) => {
+      ctx.drawImage(src, 0, 0, width, height);
+    }
+  ) => {
+    const canvas = document.createElement("canvas");
+    canvas.id = "canvas-" + uuid();
+    canvas.width = width; //specify width of your canvas
+    canvas.height = height; //specify height of your canvas
+
+    if (srcRef.current !== null && framesContainerRef.current !== null) {
+      framesContainerRef.current.appendChild(canvas);
+      const ctx = canvas.getContext("2d");
+      if (ctx !== null) {
+        const img = new Image();
+        img.onload = function () {
+          draw(ctx, img);
+          ctx.fill();
+        };
+        console.log(src);
+        img.src = src;
+      }
+      setFrames((prevFrames) => [...prevFrames, canvas]);
+    }
+  };
+
   const reset = () => {
     // setGeneratedGif(undefined);
     setLoading(false);
@@ -117,6 +144,7 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
     frames,
     frameCount: frames.length,
     addImage,
+    addFrame,
     reset,
     render,
     generatedGifs,
