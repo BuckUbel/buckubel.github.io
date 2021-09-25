@@ -26,8 +26,7 @@ function GifMaker({ className }: GifMakerProps) {
     isLoading,
   } = useGifJs();
 
-  const { generateFullMarquee, generateFullRotation } =
-    useCanvasGenerator(addImage);
+  const { generateFullMarquee, generateFullRotation } = useCanvasGenerator();
 
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const addUploadImage = (newSrc: string) => {
@@ -37,21 +36,20 @@ function GifMaker({ className }: GifMakerProps) {
   };
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files !== null) {
-      console.log(e.target.files, e.target.files.length);
       for (let i = 0; i < e.target.files.length; i++) {
         const file = e.target.files.item(i);
         if (file !== null) {
           const reader = new FileReader();
-          // const { current } = uploadedImage;
-          // console.log(current);
-          // current.file = file;
           reader.onload = (progressEvent) => {
             if (progressEvent.target !== null) {
               const newSrc = progressEvent.target.result as string;
-              // current.src = progressEvent.target.result as string;
               addUploadImage(newSrc);
               addFrame(newSrc);
-              console.log(file, progressEvent.target.result);
+              // generateFullMarquee((a) => addFrame(newSrc, a), {
+              //   frameCount: animationFrames,
+              //   width: width,
+              //   height: height,
+              // })();
             }
           };
           reader.readAsDataURL(file);
@@ -64,7 +62,7 @@ function GifMaker({ className }: GifMakerProps) {
   //TODO: Four sizer (you take each pixel and zoom it on 4 pixels -> 16x16 -> 64x64)
   //TODO: Operations on uploaded images (execute operations on unzoomed images)
   //TODO: Select if you want to change the size of uploaded image, or you want to set on 0,0  of gif
-  // TODO: Add image operations, to change position of image in gif on each frame (e.g. waterDrop)
+  //TODO: Add image operations, to change position of image in gif on each frame (e.g. waterDrop)
   //TODO: SVG's to gif (with cool rotate options)
   //TODO: Gif options setter with typescript ?
   // more cool function, like rotation
@@ -113,7 +111,7 @@ function GifMaker({ className }: GifMakerProps) {
             multiple
           />
           <button
-            onClick={generateFullRotation({
+            onClick={generateFullRotation(addImage, {
               frameCount: animationFrames,
               width: width,
               height: height,
@@ -122,7 +120,7 @@ function GifMaker({ className }: GifMakerProps) {
             Add full rotation
           </button>
           <button
-            onClick={generateFullMarquee({
+            onClick={generateFullMarquee(addImage, {
               frameCount: animationFrames,
               width: width,
               height: height,
