@@ -65,7 +65,11 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
         draw(ctx, srcRef.current);
         ctx.fill();
       }
-      setFrames((prevFrames) => [...prevFrames, canvas]);
+      setFrames((prevFrames) => {
+        const newFrames = [...prevFrames, canvas];
+        setAnimationFrames(newFrames.length);
+        return newFrames;
+      });
     }
   };
 
@@ -89,10 +93,13 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
           draw(ctx, img);
           ctx.fill();
         };
-        console.log(src);
         img.src = src;
       }
-      setFrames((prevFrames) => [...prevFrames, canvas]);
+      setFrames((prevFrames) => {
+        const newFrames = [...prevFrames, canvas];
+        setAnimationFrames(newFrames.length);
+        return newFrames;
+      });
     }
   };
 
@@ -148,6 +155,7 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
     reset,
     render,
     generatedGifs,
+    setGeneratedGifs,
     framesContainerRef,
     srcRef,
     isLoading: loading,

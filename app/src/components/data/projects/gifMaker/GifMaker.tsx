@@ -20,6 +20,7 @@ function GifMaker({ className }: GifMakerProps) {
     reset,
     render,
     generatedGifs,
+    setGeneratedGifs,
     framesContainerRef,
     srcRef,
     frameCount,
@@ -27,29 +28,43 @@ function GifMaker({ className }: GifMakerProps) {
   } = useGifJs();
 
   const { generateFullMarquee, generateFullRotation } = useCanvasGenerator();
+  const [showFrames, setShowFrames] = useState(false);
 
+  const [currentSelectedImage, setCurrentSelectedImage] = useState("");
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const addUploadImage = (newSrc: string) => {
+  const addToUploadedImages = (newSrc: string) => {
     setUploadedImages((prev) => {
       return [...prev, newSrc];
+    });
+  };
+  const addAllUploadImagesToFrames = () => {
+    uploadedImages.forEach((upSrc) => {
+      addFrame(upSrc);
     });
   };
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files !== null) {
       for (let i = 0; i < e.target.files.length; i++) {
         const file = e.target.files.item(i);
-        if (file !== null) {
+        if (file !== null && file.type.startsWith("image")) {
           const reader = new FileReader();
           reader.onload = (progressEvent) => {
             if (progressEvent.target !== null) {
               const newSrc = progressEvent.target.result as string;
-              addUploadImage(newSrc);
-              addFrame(newSrc);
-              // generateFullMarquee((a) => addFrame(newSrc, a), {
-              //   frameCount: animationFrames,
-              //   width: width,
-              //   height: height,
-              // })();
+
+              const tempImg = new Image();
+              tempImg.src = newSrc;
+              tempImg.onload = function () {
+                setWidth(tempImg.width);
+                setHeight(tempImg.height);
+                // TODO: Error Handling on different image sizes
+              };
+
+              console.log(reader, progressEvent, file);
+              addToUploadedImages(newSrc);
+              if (currentSelectedImage === "") {
+                setCurrentSelectedImage(newSrc);
+              }
             }
           };
           reader.readAsDataURL(file);
@@ -67,7 +82,6 @@ function GifMaker({ className }: GifMakerProps) {
   //TODO: Gif options setter with typescript ?
   // more cool function, like rotation
   // extend rotation with a minisizer, so the complete image is on each frame visible
-  const [showFrames, setShowFrames] = useState(false);
   return (
     <div className={className}>
       <div className={"border-container canvas-container"}>
@@ -103,7 +117,12 @@ function GifMaker({ className }: GifMakerProps) {
       <div className={"border-container generate-image-container"}>
         <h4>Edit & Generate</h4>
         <div className={"generate-image-inner-container"}>
-          <button onClick={() => addImage()}>Add image</button>
+          <button onClick={() => addImage()}>
+            Add current image to frames
+          </button>
+          <button onClick={() => addAllUploadImagesToFrames()}>
+            Add images to frames
+          </button>
           <input
             type={"file"}
             accept={"image/*"}
@@ -128,22 +147,30 @@ function GifMaker({ className }: GifMakerProps) {
           >
             Add full marquee
           </button>
-          <button onClick={reset}>Reset Gif</button>
+          <button onClick={reset}>Reset Frames</button>
+          <button onClick={() => setGeneratedGifs([])}>Reset Gifs</button>
           <button onClick={render}>Render Gif</button>
         </div>
       </div>
       <div className={"border-container source-image-container"}>
         <h4>Images</h4>
-        <img
-          id={"src-image"}
-          alt={"src image"}
-          className={"source-image"}
-          src={image}
-          ref={srcRef}
-          style={{ width: width + "px", height: height + "px" }}
-        />
+        {currentSelectedImage === "" && <p>Kein Bild vorhanden!</p>}
+        {currentSelectedImage !== "" && (
+          <img
+            id={"src-image"}
+            alt={"src image"}
+            className={"source-image"}
+            src={currentSelectedImage}
+            ref={srcRef}
+            style={{ width: width + "px", height: height + "px" }}
+          />
+        )}
         {uploadedImages.map((upSrc, index) => (
-          <img key={upSrc + index} src={upSrc} />
+          <img
+            key={upSrc + index}
+            src={upSrc}
+            onClick={() => setCurrentSelectedImage(upSrc)}
+          />
         ))}
       </div>
       <div className={"border-container edit-image-container"}>
@@ -153,7 +180,7 @@ function GifMaker({ className }: GifMakerProps) {
             <span>Width</span>
             <input
               type={"number"}
-              defaultValue={width}
+              value={width}
               onChange={(e) => setWidth(Number(e.target.value))}
             />
           </div>
@@ -161,7 +188,7 @@ function GifMaker({ className }: GifMakerProps) {
             <span>Height</span>
             <input
               type={"number"}
-              defaultValue={height}
+              value={height}
               onChange={(e) => setHeight(Number(e.target.value))}
             />
           </div>
@@ -169,13 +196,12 @@ function GifMaker({ className }: GifMakerProps) {
             <span>Animation-FPS</span>
             <input
               type={"number"}
-              defaultValue={animationFrames}
+              value={animationFrames}
               onChange={(e) => setAnimationFrames(Number(e.target.value))}
             />
           </div>
         </div>
       </div>
-
       <div className={"border-container info-image-container"}>
         <h4>Info</h4>
         <div>
