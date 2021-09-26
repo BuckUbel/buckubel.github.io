@@ -27,8 +27,10 @@ function GifMaker({ className }: GifMakerProps) {
     isLoading,
   } = useGifJs();
 
-  const { generateFullMarquee, generateFullRotation } = useCanvasGenerator();
+  const { generateFullMarquee, generateFullRotation, generateScaled } =
+    useCanvasGenerator();
   const [showFrames, setShowFrames] = useState(false);
+  const [scale, setScale] = useState(4);
 
   const [currentSelectedImage, setCurrentSelectedImage] = useState("");
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -74,7 +76,6 @@ function GifMaker({ className }: GifMakerProps) {
     }
   };
 
-  //TODO: Four sizer (you take each pixel and zoom it on 4 pixels -> 16x16 -> 64x64)
   //TODO: Operations on uploaded images (execute operations on unzoomed images)
   //TODO: Select if you want to change the size of uploaded image, or you want to set on 0,0  of gif
   //TODO: Add image operations, to change position of image in gif on each frame (e.g. waterDrop)
@@ -139,6 +140,15 @@ function GifMaker({ className }: GifMakerProps) {
             Add full rotation
           </button>
           <button
+            onClick={generateScaled(addImage, {
+              scale: scale,
+              width: width,
+              height: height,
+            })}
+          >
+            Increase size
+          </button>
+          <button
             onClick={generateFullMarquee(addImage, {
               frameCount: animationFrames,
               width: width,
@@ -162,7 +172,7 @@ function GifMaker({ className }: GifMakerProps) {
             className={"source-image"}
             src={currentSelectedImage}
             ref={srcRef}
-            style={{ width: width + "px", height: height + "px" }}
+            // style={{ width: width + "px", height: height + "px" }}
           />
         )}
         {uploadedImages.map((upSrc, index) => (
@@ -198,6 +208,14 @@ function GifMaker({ className }: GifMakerProps) {
               type={"number"}
               value={animationFrames}
               onChange={(e) => setAnimationFrames(Number(e.target.value))}
+            />
+          </div>
+          <div>
+            <span>Skalierung</span>
+            <input
+              type={"number"}
+              value={scale}
+              onChange={(e) => setScale(Number(e.target.value))}
             />
           </div>
         </div>

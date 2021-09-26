@@ -24,6 +24,11 @@ const defaultGifJsConfig: GifJsConfig = {
   gifs: [],
 };
 
+export interface CanvasOptions {
+  width: number;
+  height: number;
+}
+
 export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
   const config = Object.assign({}, defaultGifJsConfig, propConfig);
   const widthState = useState(config.width);
@@ -48,59 +53,63 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
     [frames, animationFrames]
   );
 
-  const addImage = (
-    draw: CanvasDrawFct = (ctx, src) => {
-      ctx.drawImage(src, 0, 0, width, height);
-    }
+  const setFramesHandler = (canvas: HTMLCanvasElement) => {
+    setFrames((prevFrames) => {
+      const newFrames = [...prevFrames, canvas];
+      setAnimationFrames(newFrames.length);
+      return newFrames;
+    });
+  };
+  const prepareNewCanvas = (
+    ctxChanger: (ctx: CanvasRenderingContext2D) => void,
+    options: Partial<CanvasOptions> = {}
   ) => {
     const canvas = document.createElement("canvas");
     canvas.id = "canvas-" + uuid();
-    canvas.width = width; //specify width of your canvas
-    canvas.height = height; //specify height of your canvas
+    canvas.width = options.width ? options.width : width;
+    canvas.height = options.height ? options.height : height;
 
-    if (srcRef.current !== null && framesContainerRef.current !== null) {
+    if (framesContainerRef.current !== null) {
       framesContainerRef.current.appendChild(canvas);
       const ctx = canvas.getContext("2d");
       if (ctx !== null) {
+        ctxChanger(ctx);
+      }
+      setFramesHandler(canvas);
+    }
+
+    return canvas;
+  };
+
+  const addImage = (
+    draw: CanvasDrawFct = (ctx, src) => {
+      ctx.drawImage(src, 0, 0, width, height);
+    },
+    options: Partial<CanvasOptions> = {}
+  ) => {
+    prepareNewCanvas((ctx) => {
+      if (srcRef.current !== null) {
         draw(ctx, srcRef.current);
         ctx.fill();
       }
-      setFrames((prevFrames) => {
-        const newFrames = [...prevFrames, canvas];
-        setAnimationFrames(newFrames.length);
-        return newFrames;
-      });
-    }
+    }, options);
   };
 
   const addFrame = (
     src: string,
     draw: CanvasDrawFct = (ctx, src) => {
       ctx.drawImage(src, 0, 0, width, height);
-    }
+    },
+    options: Partial<CanvasOptions> = {}
   ) => {
-    const canvas = document.createElement("canvas");
-    canvas.id = "canvas-" + uuid();
-    canvas.width = width; //specify width of your canvas
-    canvas.height = height; //specify height of your canvas
-
-    if (srcRef.current !== null && framesContainerRef.current !== null) {
-      framesContainerRef.current.appendChild(canvas);
-      const ctx = canvas.getContext("2d");
-      if (ctx !== null) {
-        const img = new Image();
-        img.onload = function () {
-          draw(ctx, img);
-          ctx.fill();
-        };
-        img.src = src;
-      }
-      setFrames((prevFrames) => {
-        const newFrames = [...prevFrames, canvas];
-        setAnimationFrames(newFrames.length);
-        return newFrames;
-      });
-    }
+    prepareNewCanvas((ctx) => {
+      const img = new Image();
+      img.onload = function () {
+        draw(ctx, img);
+        ctx.fill();
+      };
+      img.src = src;
+    }, options);
   };
 
   const reset = () => {
@@ -114,13 +123,22 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
 
   const render = () => {
     if (frames.length > 0) {
+      const gifWidth = frames.reduce(
+        (v, canvas) => Math.max(v, canvas.width),
+        0
+      );
+      const gifHeight = frames.reduce(
+        (v, canvas) => Math.max(v, canvas.height),
+        0
+      );
+
       const gif = new GIF({
         workers: 2,
         quality: quality,
         workerScript: "/lib/gif.worker.js",
         // debug: true,
-        width: width,
-        height: height,
+        width: gifWidth,
+        height: gifHeight,
         transparent: "#000",
       });
 
