@@ -1,10 +1,10 @@
 import { useMemo, useRef, useState } from "react";
-import { v4 as uuid } from "uuid";
 import GIF from "gif.js.optimized/dist/gif";
 import { useNonEmptyConnectState } from "../../../../helper/useNonEmptyConnectState";
+import { CanvasOptions, createNewCanvas } from "../helper/createNewCanvas";
 
 export type CanvasDrawFct = (
-  ctx: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement,
   source: CanvasImageSource
 ) => void;
 
@@ -23,11 +23,6 @@ const defaultGifJsConfig: GifJsConfig = {
   quality: 1,
   gifs: [],
 };
-
-export interface CanvasOptions {
-  width: number;
-  height: number;
-}
 
 export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
   const config = Object.assign({}, defaultGifJsConfig, propConfig);
@@ -61,56 +56,54 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
     });
   };
   const prepareNewCanvas = (
-    ctxChanger: (ctx: CanvasRenderingContext2D) => void,
+    ctxChanger: (canvas: HTMLCanvasElement) => void,
     options: Partial<CanvasOptions> = {}
   ) => {
-    const canvas = document.createElement("canvas");
-    canvas.id = "canvas-" + uuid();
-    canvas.width = options.width ? options.width : width;
-    canvas.height = options.height ? options.height : height;
-
+    const canvas = createNewCanvas({
+      width: options.width ? options.width : width,
+      height: options.height ? options.height : height,
+    });
     if (framesContainerRef.current !== null) {
       framesContainerRef.current.appendChild(canvas);
-      const ctx = canvas.getContext("2d");
-      if (ctx !== null) {
-        ctxChanger(ctx);
-      }
+      ctxChanger(canvas);
       setFramesHandler(canvas);
     }
 
     return canvas;
   };
 
-  const addImage = (
-    draw: CanvasDrawFct = (ctx, src) => {
+  const defaultDraw: CanvasDrawFct = (canvas, src) => {
+    const ctx = canvas.getContext("2d");
+    if (ctx !== null) {
       ctx.drawImage(src, 0, 0, width, height);
-    },
-    options: Partial<CanvasOptions> = {}
-  ) => {
-    prepareNewCanvas((ctx) => {
-      if (srcRef.current !== null) {
-        draw(ctx, srcRef.current);
-        ctx.fill();
-      }
-    }, options);
+    }
   };
-
-  const addFrame = (
-    src: string,
-    draw: CanvasDrawFct = (ctx, src) => {
-      ctx.drawImage(src, 0, 0, width, height);
-    },
-    options: Partial<CanvasOptions> = {}
-  ) => {
-    prepareNewCanvas((ctx) => {
-      const img = new Image();
-      img.onload = function () {
-        draw(ctx, img);
-        ctx.fill();
-      };
-      img.src = src;
-    }, options);
-  };
+  const addFrame =
+    (canvasSource: CanvasImageSource) =>
+    (draw = defaultDraw, options: Partial<CanvasOptions> = {}) => {
+      prepareNewCanvas((canvas) => {
+        draw(canvas, canvasSource);
+        const ctx = canvas.getContext("2d");
+        if (ctx !== null) {
+          ctx.fill();
+        }
+      }, options);
+    };
+  const addImage =
+    (src: string) =>
+    (draw = defaultDraw, options: Partial<CanvasOptions> = {}) => {
+      prepareNewCanvas((canvas) => {
+        const img = new Image();
+        img.onload = function () {
+          draw(canvas, img);
+          const ctx = canvas.getContext("2d");
+          if (ctx !== null) {
+            ctx.fill();
+          }
+        };
+        img.src = src;
+      }, options);
+    };
 
   const reset = () => {
     // setGeneratedGif(undefined);

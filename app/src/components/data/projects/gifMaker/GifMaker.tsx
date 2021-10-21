@@ -1,14 +1,16 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import image from "../../../../images/logo_transparent.png";
 import { StyledCompProps } from "../../../helper/types";
 import styled from "styled-components";
-import { useGifJs } from "./hooks/useGifJs";
+import { CanvasDrawFct, useGifJs } from "./hooks/useGifJs";
 import { useCanvasGenerator } from "./hooks/useCanvasGenerator";
 import { Color } from "../../../config/color";
 
-interface GifMakerProps extends StyledCompProps {}
+interface GifMakerProps extends StyledCompProps {
+  onlyVisual: boolean;
+}
 
-function GifMaker({ className }: GifMakerProps) {
+function GifMaker({ className, onlyVisual }: GifMakerProps) {
   const {
     widthState: [width, setWidth],
     heightState: [height, setHeight],
@@ -33,15 +35,49 @@ function GifMaker({ className }: GifMakerProps) {
   const [scale, setScale] = useState(4);
 
   const [currentSelectedImage, setCurrentSelectedImage] = useState("");
+  const [editCounter, setEditCounter] = useState(0);
+  const editRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    if (srcRef.current !== null) {
+      setWidth(srcRef.current.width);
+      setHeight(srcRef.current.height);
+    }
+  }, [currentSelectedImage]);
+  const changeEditImage = () => {
+    setEditCounter((prev) => prev + 1);
+    if (editRef.current !== null && srcRef.current !== null) {
+      editRef.current.width = srcRef.current.width;
+      editRef.current.height = srcRef.current.height;
+    }
+  };
+
+  useEffect(() => {
+    if (editRef.current !== null) {
+      const editCtx = editRef.current.getContext("2d");
+      if (editCtx !== null && srcRef.current !== null) {
+        editRef.current.width = srcRef.current.width;
+        editRef.current.height = srcRef.current.height;
+        editCtx.drawImage(
+          srcRef.current,
+          0,
+          0,
+          srcRef.current.width,
+          srcRef.current.height
+        );
+      }
+    }
+  }, [editCounter]);
+
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const addToUploadedImages = (newSrc: string) => {
     setUploadedImages((prev) => {
       return [...prev, newSrc];
     });
+    setCurrentSelectedImage(newSrc);
   };
   const addAllUploadImagesToFrames = () => {
     uploadedImages.forEach((upSrc) => {
-      addFrame(upSrc);
+      addImage(upSrc)();
     });
   };
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -59,18 +95,12 @@ function GifMaker({ className }: GifMakerProps) {
               tempImg.onload = function () {
                 setWidth(tempImg.width);
                 setHeight(tempImg.height);
-                // TODO: Error Handling on different image sizes
               };
 
-              console.log(reader, progressEvent, file);
               addToUploadedImages(newSrc);
-              if (currentSelectedImage === "") {
-                setCurrentSelectedImage(newSrc);
-              }
             }
           };
           reader.readAsDataURL(file);
-          console.log(e.target, uploadedImages);
         }
       }
     }
@@ -94,6 +124,7 @@ function GifMaker({ className }: GifMakerProps) {
           >
             {showFrames ? "Hide" : "Show"} frames
           </button>
+          <button onClick={reset}>Reset Frames</button>
         </div>
         <div
           className={`canvas-inner-container ${
@@ -104,6 +135,8 @@ function GifMaker({ className }: GifMakerProps) {
       </div>
       <div className={"border-container generated-gif-container"}>
         <h4>Generated gifs</h4>
+        <button onClick={render}>Render Gif</button>
+        <button onClick={() => setGeneratedGifs([])}>Reset Gifs</button>
         {isLoading && <div>Berechnung erfolgt ...</div>}
         {generatedGifs.length > 0 && (
           <>
@@ -115,56 +148,85 @@ function GifMaker({ className }: GifMakerProps) {
           </>
         )}
       </div>
-      <div className={"border-container generate-image-container"}>
-        <h4>Edit & Generate</h4>
-        <div className={"generate-image-inner-container"}>
-          <button onClick={() => addImage()}>
-            Add current image to frames
-          </button>
-          <button onClick={() => addAllUploadImagesToFrames()}>
-            Add images to frames
-          </button>
-          <input
-            type={"file"}
-            accept={"image/*"}
-            onChange={handleImageUpload}
-            multiple
-          />
+      {!onlyVisual && (
+        <div className={"border-container generate-image-container"}>
+          <h4>Edit & Generate</h4>
           <button
-            onClick={generateFullRotation(addImage, {
-              frameCount: animationFrames,
-              width: width,
-              height: height,
-            })}
+            onClick={() => {
+              if (editRef.current !== null) {
+                addToUploadedImages(editRef.current.toDataURL());
+              }
+            }}
           >
-            Add full rotation
+            Save edit
           </button>
+          <button onClick={() => setEditCounter(0)}>Reset Edit Frame</button>
+
+          <div className={"edit-image-inner-container"}>
+            {editCounter === 0 && <p>Bearbeitung pausiert!</p>}
+            {editCounter !== 0 && (
+              <canvas
+                id={"edit-image"}
+                className={"edit-canvas"}
+                ref={editRef}
+              />
+            )}
+          </div>
           <button
-            onClick={generateScaled(addImage, {
-              scale: scale,
-              width: width,
-              height: height,
-            })}
+            onClick={generateScaled(
+              (draw: CanvasDrawFct, options) => {
+                if (editRef.current !== null) {
+                  const ctx = editRef.current.getContext("2d");
+                  if (ctx !== null) {
+                    draw(editRef.current, editRef.current);
+                    ctx.fill();
+                  }
+                }
+              },
+              {
+                scale: scale,
+                width: editRef.current?.width ?? width,
+                height: editRef.current?.height ?? height,
+              }
+            )}
           >
-            Increase size
+            +
           </button>
-          <button
-            onClick={generateFullMarquee(addImage, {
-              frameCount: animationFrames,
-              width: width,
-              height: height,
-            })}
-          >
-            Add full marquee
-          </button>
-          <button onClick={reset}>Reset Frames</button>
-          <button onClick={() => setGeneratedGifs([])}>Reset Gifs</button>
-          <button onClick={render}>Render Gif</button>
+          <button>-</button>
+          <hr />
+          <div className={"generate-image-inner-container"}>
+            <button
+              onClick={generateFullRotation(addImage(currentSelectedImage), {
+                frameCount: animationFrames,
+                width: width,
+                height: height,
+              })}
+            >
+              Add full rotation
+            </button>
+
+            <button
+              onClick={generateFullMarquee(addImage(currentSelectedImage), {
+                frameCount: animationFrames,
+                width: width,
+                height: height,
+              })}
+            >
+              Add full marquee
+            </button>
+          </div>
         </div>
-      </div>
+      )}
       <div className={"border-container source-image-container"}>
-        <h4>Images</h4>
-        {currentSelectedImage === "" && <p>Kein Bild vorhanden!</p>}
+        <input
+          type={"file"}
+          accept={"image/*"}
+          onChange={handleImageUpload}
+          multiple
+        />
+        <h4>Selected Image</h4>
+
+        {currentSelectedImage === "" && <p>Kein Bild ausgewählt!</p>}
         {currentSelectedImage !== "" && (
           <img
             id={"src-image"}
@@ -172,68 +234,86 @@ function GifMaker({ className }: GifMakerProps) {
             className={"source-image"}
             src={currentSelectedImage}
             ref={srcRef}
-            // style={{ width: width + "px", height: height + "px" }}
           />
         )}
-        {uploadedImages.map((upSrc, index) => (
-          <img
-            key={upSrc + index}
-            src={upSrc}
-            onClick={() => setCurrentSelectedImage(upSrc)}
-          />
-        ))}
+        <button onClick={() => changeEditImage()}>Start Editing</button>
+        <button onClick={() => addImage(currentSelectedImage)()}>
+          Add to frames
+        </button>
+        <h4>Images</h4>
+        {uploadedImages.length === 0 && <p>Keine Bilder vorhanden!</p>}
+        <div className={"source-images-inner-container"}>
+          {uploadedImages.map((upSrc, index) => (
+            <img
+              key={upSrc + index}
+              src={upSrc}
+              onClick={() => {
+                if (!onlyVisual) {
+                  setCurrentSelectedImage(upSrc);
+                }
+              }}
+            />
+          ))}
+        </div>
+        <button onClick={() => addAllUploadImagesToFrames()}>
+          Add all images to frames
+        </button>
       </div>
-      <div className={"border-container edit-image-container"}>
-        <h4>Settings</h4>
-        <div className={"edit-image-inner-container"}>
-          <div>
-            <span>Width</span>
-            <input
-              type={"number"}
-              value={width}
-              onChange={(e) => setWidth(Number(e.target.value))}
-            />
-          </div>
-          <div>
-            <span>Height</span>
-            <input
-              type={"number"}
-              value={height}
-              onChange={(e) => setHeight(Number(e.target.value))}
-            />
-          </div>
-          <div>
-            <span>Animation-FPS</span>
-            <input
-              type={"number"}
-              value={animationFrames}
-              onChange={(e) => setAnimationFrames(Number(e.target.value))}
-            />
-          </div>
-          <div>
-            <span>Skalierung</span>
-            <input
-              type={"number"}
-              value={scale}
-              onChange={(e) => setScale(Number(e.target.value))}
-            />
+      {!onlyVisual && (
+        <div className={"border-container edit-image-container"}>
+          <h4>Settings</h4>
+          <div className={"edit-image-inner-container"}>
+            <div>
+              <span>Width</span>
+              <input
+                type={"number"}
+                value={width}
+                onChange={(e) => setWidth(Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <span>Height</span>
+              <input
+                type={"number"}
+                value={height}
+                onChange={(e) => setHeight(Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <span>Animation-FPS</span>
+              <input
+                type={"number"}
+                value={animationFrames}
+                onChange={(e) => setAnimationFrames(Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <span>Skalierung</span>
+              <input
+                type={"number"}
+                value={scale}
+                onChange={(e) => setScale(Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <span>Quality</span>
+              <input
+                type={"number"}
+                defaultValue={quality}
+                onChange={(e) => setQuality(Number(e.target.value))}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className={"border-container info-image-container"}>
-        <h4>Info</h4>
-        <div>
-          <span>Quality</span>
-          <input
-            type={"number"}
-            defaultValue={quality}
-            onChange={(e) => setQuality(Number(e.target.value))}
-          />
+      )}
+      {!onlyVisual && (
+        <div className={"border-container info-image-container"}>
+          <h4>Info</h4>
+          <div>
+            <span>Timelength: {length.toFixed(2)} Sekunden</span>
+          </div>
         </div>
-        <div>
-          <span>Timelength: {length.toFixed(2)} Sekunden</span>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -258,7 +338,7 @@ export default styled(GifMaker)`
     display: inline-block;
     vertical-align: top;
     min-height: 150px;
-    max-height: 350px;
+    max-height: 450px;
     overflow: auto;
   }
 
@@ -298,6 +378,9 @@ export default styled(GifMaker)`
       display: block;
       margin: 0 auto 20px auto;
     }
+
+    .source-images-inner-container {
+    }
   }
 
   .edit-image-container {
@@ -307,8 +390,12 @@ export default styled(GifMaker)`
   }
 
   .generate-image-container {
+    .edit-image-inner-container {
+      margin: 10px;
+    }
+
     .generate-image-inner-container {
-      margin: 0 10px;
+      margin: 10px;
     }
   }
 

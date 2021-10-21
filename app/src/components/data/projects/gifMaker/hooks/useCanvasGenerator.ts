@@ -1,6 +1,7 @@
-import { CanvasDrawFct, CanvasOptions } from "./useGifJs";
+import { CanvasDrawFct } from "./useGifJs";
 import { rgbToHex } from "../../../../helper/rgbToHex";
-import { v4 as uuid } from "uuid";
+import { CanvasOptions, createNewCanvas } from "../helper/createNewCanvas";
+import { useState } from "react";
 
 export interface CanvasTransformConfig {
   width: number;
@@ -16,6 +17,7 @@ export interface SizerCanvasTransformConfig extends CanvasTransformConfig {
 }
 
 export const useCanvasGenerator = () => {
+  const [, setActionCount] = useState(0);
   const generateFullRotation =
     (
       addImage: (draw: CanvasDrawFct) => void,
@@ -24,13 +26,17 @@ export const useCanvasGenerator = () => {
     () => {
       const { frameCount, width, height } = config;
       for (let i = 1; i < frameCount + 1; i++) {
-        addImage((ctx, src) => {
-          ctx.translate(width / 2, height / 2);
-          ctx.rotate(((360 / frameCount) * i * Math.PI) / 180); // rotate by 90 degrees
-          ctx.translate(width / -2, height / -2);
-          ctx.drawImage(src, 0, 0, width, height);
+        addImage((canvas, src) => {
+          const ctx = canvas.getContext("2d");
+          if (ctx !== null) {
+            ctx.translate(width / 2, height / 2);
+            ctx.rotate(((360 / frameCount) * i * Math.PI) / 180); // rotate by 90 degrees
+            ctx.translate(width / -2, height / -2);
+            ctx.drawImage(src, 0, 0, width, height);
+          }
         });
       }
+      setActionCount((prev) => prev + 1);
     };
 
   const generateFullMarquee =
@@ -41,16 +47,20 @@ export const useCanvasGenerator = () => {
     () => {
       const { frameCount, width, height } = config;
       for (let i = 1; i < frameCount + 1; i++) {
-        addImage((ctx, src) => {
-          ctx.translate(width * -1 + ((2 * width) / frameCount) * i, 0);
-          ctx.drawImage(src, 0, 0, width, height);
+        addImage((canvas, src) => {
+          const ctx = canvas.getContext("2d");
+          if (ctx !== null) {
+            ctx.translate(width * -1 + ((2 * width) / frameCount) * i, 0);
+            ctx.drawImage(src, 0, 0, width, height);
+          }
         });
       }
+      setActionCount((prev) => prev + 1);
     };
 
   const generateScaled =
     (
-      addImage: (draw: CanvasDrawFct, options?: Partial<CanvasOptions>) => void,
+      addImage: (draw: CanvasDrawFct, options: CanvasOptions) => void,
       config: SizerCanvasTransformConfig
     ) =>
     () => {
@@ -58,20 +68,22 @@ export const useCanvasGenerator = () => {
       const scaledWidth = width * scale;
       const scaledHeight = height * scale;
       addImage(
-        (ctx, src) => {
-          const canvas = document.createElement("canvas");
-          canvas.id = "canvas-" + uuid();
-          canvas.width = width;
-          canvas.height = height;
-          const tempCtx = canvas.getContext("2d");
+        (canvas: HTMLCanvasElement, src) => {
+          const newCanvas = createNewCanvas({ width: width, height: height });
+          const tempCtx = newCanvas.getContext("2d");
           if (tempCtx !== null) {
             tempCtx.drawImage(src, 0, 0, width, height);
 
-            for (let x = 0; x < scaledWidth; x += 1) {
-              for (let y = 0; y < scaledHeight; y += 1) {
-                const p = tempCtx.getImageData(x, y, 1, 1).data;
-                ctx.fillStyle = rgbToHex(p[0], p[1], p[2]);
-                ctx.fillRect(x * scale, y * scale, scale, scale);
+            const ctx = canvas.getContext("2d");
+            canvas.width = scaledWidth;
+            canvas.height = scaledHeight;
+            if (ctx !== null) {
+              for (let x = 0; x < scaledWidth; x += 1) {
+                for (let y = 0; y < scaledHeight; y += 1) {
+                  const p = tempCtx.getImageData(x, y, 1, 1).data;
+                  ctx.fillStyle = rgbToHex(p[0], p[1], p[2]);
+                  ctx.fillRect(x * scale, y * scale, scale, scale);
+                }
               }
             }
           }
@@ -81,6 +93,7 @@ export const useCanvasGenerator = () => {
           height: scaledHeight,
         }
       );
+      setActionCount((prev) => prev + 1);
     };
   return {
     generateFullRotation,
