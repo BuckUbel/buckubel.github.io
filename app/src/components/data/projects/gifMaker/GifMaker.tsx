@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { CanvasDrawFct, useGifJs } from "./hooks/useGifJs";
 import { useCanvasGenerator } from "./hooks/useCanvasGenerator";
 import { Color } from "../../../config/color";
+import { getImageColors } from "./helper/getImageColors";
 
 interface GifMakerProps extends StyledCompProps {
   onlyVisual: boolean;
@@ -33,16 +34,23 @@ function GifMaker({ className, onlyVisual }: GifMakerProps) {
     useCanvasGenerator();
   const [showFrames, setShowFrames] = useState(false);
   const [scale, setScale] = useState(4);
-
   const [currentSelectedImage, setCurrentSelectedImage] = useState("");
-  const [editCounter, setEditCounter] = useState(0);
-  const editRef = useRef<HTMLCanvasElement>(null);
+  const [colors, setColors] = useState<string[]>([]);
+  const [colorCounts, setColorCounts] = useState<number[]>([]);
+
   useEffect(() => {
     if (srcRef.current !== null) {
       setWidth(srcRef.current.width);
       setHeight(srcRef.current.height);
+      const colorCountArray = getImageColors(srcRef.current);
+      setColors(Object.keys(colorCountArray));
+      setColorCounts(Object.values(colorCountArray));
     }
   }, [currentSelectedImage]);
+
+  const [editCounter, setEditCounter] = useState(0);
+  const editRef = useRef<HTMLCanvasElement>(null);
+
   const changeEditImage = () => {
     setEditCounter((prev) => prev + 1);
     if (editRef.current !== null && srcRef.current !== null) {
@@ -312,6 +320,19 @@ function GifMaker({ className, onlyVisual }: GifMakerProps) {
           <div>
             <span>Timelength: {length.toFixed(2)} Sekunden</span>
           </div>
+          <div>
+            {colors.map((color, index) => {
+              return (
+                <div key={color}>
+                  <span
+                    className={"color-rect"}
+                    style={{ backgroundColor: color }}
+                  />
+                  {color}:{colorCounts[index]}
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
@@ -400,5 +421,16 @@ export default styled(GifMaker)`
   }
 
   .info-image-container {
+    font-family: monospace;
+    > div {
+      margin-left: 20%;
+      text-align: left;
+    }
+    .color-rect {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      margin-right: 5px;
+    }
   }
 `;

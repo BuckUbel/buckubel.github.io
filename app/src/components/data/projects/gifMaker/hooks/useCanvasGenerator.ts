@@ -1,5 +1,5 @@
 import { CanvasDrawFct } from "./useGifJs";
-import { rgbToHex } from "../../../../helper/rgbToHex";
+import { uInt8ArrayToHex } from "../../../../helper/rgbToHex";
 import { CanvasOptions, createNewCanvas } from "../helper/createNewCanvas";
 import { useState } from "react";
 
@@ -80,8 +80,8 @@ export const useCanvasGenerator = () => {
             if (ctx !== null) {
               for (let x = 0; x < scaledWidth; x += 1) {
                 for (let y = 0; y < scaledHeight; y += 1) {
-                  const p = tempCtx.getImageData(x, y, 1, 1).data;
-                  ctx.fillStyle = rgbToHex(p[0], p[1], p[2]);
+                  const pixel = tempCtx.getImageData(x, y, 1, 1).data;
+                  ctx.fillStyle = uInt8ArrayToHex(pixel);
                   ctx.fillRect(x * scale, y * scale, scale, scale);
                 }
               }
