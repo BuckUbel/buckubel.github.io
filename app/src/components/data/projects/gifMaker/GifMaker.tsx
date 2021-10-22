@@ -30,8 +30,12 @@ function GifMaker({ className, onlyVisual }: GifMakerProps) {
     isLoading,
   } = useGifJs();
 
-  const { generateFullMarquee, generateFullRotation, generateScaled } =
-    useCanvasGenerator();
+  const {
+    generateFullMarquee,
+    generateFullRotation,
+    generateScaled,
+    generate4Bit,
+  } = useCanvasGenerator();
   const [showFrames, setShowFrames] = useState(false);
   const [scale, setScale] = useState(4);
   const [currentSelectedImage, setCurrentSelectedImage] = useState("");
@@ -200,7 +204,10 @@ function GifMaker({ className, onlyVisual }: GifMakerProps) {
           >
             +
           </button>
-          <button>-</button>
+          <button onClick={() => generate4Bit(editRef.current)}>
+            To 4 bit
+          </button>
+          <button disabled>-</button>
           <hr />
           <div className={"generate-image-inner-container"}>
             <button
@@ -422,10 +429,12 @@ export default styled(GifMaker)`
 
   .info-image-container {
     font-family: monospace;
+
     > div {
       margin-left: 20%;
       text-align: left;
     }
+
     .color-rect {
       display: inline-block;
       width: 15px;
