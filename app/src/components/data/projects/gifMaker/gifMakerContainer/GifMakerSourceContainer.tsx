@@ -2,11 +2,14 @@ import React, { ChangeEvent, useEffect } from "react";
 import styled from "styled-components";
 import { StateType, StyledCompProps } from "../../../../helper/types";
 import BorderContainer from "../../../../content/BorderContainer";
+import ImageItem from "../ImageItem";
+import { shortHash } from "../helper/shortHash";
 
 interface GifMakerSourceContainerProps extends StyledCompProps {
   onlyVisual: boolean;
   addImage: (src: string) => () => void;
   addToUploadedImages: (newSrc: string) => () => void;
+  removeFromUploadedImages: (oldSrc: string) => () => void;
   currentSelectedImageState: StateType<string>;
   uploadedImages: string[];
   widthState: StateType<number>;
@@ -20,6 +23,7 @@ function GifMakerSourceContainer({
   onlyVisual,
   addImage,
   addToUploadedImages,
+  removeFromUploadedImages,
   currentSelectedImageState: [currentSelectedImage, setCurrentSelectedImage],
   uploadedImages: uploadedImages,
   widthState: [, setWidth],
@@ -77,13 +81,16 @@ function GifMakerSourceContainer({
 
       {currentSelectedImage === "" && <p>Kein Bild ausgewählt!</p>}
       {currentSelectedImage !== "" && (
-        <img
-          id={"src-image"}
-          alt={"src image"}
-          className={"source-image"}
-          src={currentSelectedImage}
-          ref={srcRef}
-        />
+        <div className={"source-image"}>
+          <ImageItem
+            key={shortHash(currentSelectedImage)}
+            id={shortHash(currentSelectedImage)}
+            alt={"src image"}
+            src={currentSelectedImage}
+            imageRef={srcRef}
+            size={100}
+          />
+        </div>
       )}
       <button onClick={startEditing}>Start Editing</button>
       <button onClick={() => addImage(currentSelectedImage)()}>
@@ -93,9 +100,12 @@ function GifMakerSourceContainer({
       {uploadedImages.length === 0 && <p>Keine Bilder vorhanden!</p>}
       <div className={"source-images-inner-container"}>
         {uploadedImages.map((upSrc: string, index: number) => (
-          <img
-            key={upSrc + index}
+          <ImageItem
+            key={shortHash(upSrc) + String(index)}
             src={upSrc}
+            size={60}
+            isSelected={shortHash(upSrc) === shortHash(currentSelectedImage)}
+            onDelete={() => removeFromUploadedImages(upSrc)}
             onClick={() => {
               if (!onlyVisual) {
                 setCurrentSelectedImage(upSrc);

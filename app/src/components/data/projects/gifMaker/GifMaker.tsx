@@ -1,17 +1,14 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import image from "../../../../images/logo_transparent.png";
+import React, { useEffect, useRef, useState } from "react";
 import { StyledCompProps } from "../../../helper/types";
 import styled from "styled-components";
-import { CanvasDrawFct, useGifJs } from "./hooks/useGifJs";
-import { useCanvasGenerator } from "./hooks/useCanvasGenerator";
-import { Color } from "../../../config/color";
+import { useGifJs } from "./hooks/useGifJs";
 import GifMakerInfoContainer from "./gifMakerContainer/GifMakerInfoContainer";
-import BorderContainer from "../../../content/BorderContainer";
 import GifMakerSettingsContainer from "./gifMakerContainer/GifMakerSettingsContainer";
 import GifMakerSourceContainer from "./gifMakerContainer/GifMakerSourceContainer";
 import GifMakerEditContainer from "./gifMakerContainer/GifMakerEditContainer";
 import GifMakerResultContainer from "./gifMakerContainer/GifMakerResultContainer";
 import GifMakerFramesContainer from "./gifMakerContainer/GifMakerFramesContainer";
+import { shortHash } from "./helper/shortHash";
 
 interface GifMakerProps extends StyledCompProps {
   onlyVisual: boolean;
@@ -46,11 +43,21 @@ function GifMaker({ className, onlyVisual }: GifMakerProps) {
     currentSelectedImageState;
 
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+
   const addToUploadedImages = (newSrc: string) => {
     setUploadedImages((prev) => {
       return [...prev, newSrc];
     });
     setCurrentSelectedImage(newSrc);
+  };
+  const removeFromUploadedImages = (oldSrc: string) => {
+    setUploadedImages((prev) => {
+      const newUploadedImages = prev.filter((img) => img !== oldSrc);
+      if (oldSrc === currentSelectedImage) {
+        setCurrentSelectedImage(newUploadedImages[0] ?? "");
+      }
+      return newUploadedImages;
+    });
   };
 
   const [editCounter, setEditCounter] = useState(0);
@@ -72,6 +79,7 @@ function GifMaker({ className, onlyVisual }: GifMakerProps) {
       }
     }
   }, [editCounter]);
+
   //TODO: Operations on uploaded images (execute operations on unzoomed images)
   //TODO: Select if you want to change the size of uploaded image, or you want to set on 0,0  of gif
   //TODO: Add image operations, to change position of image in gif on each frame (e.g. waterDrop)
@@ -112,6 +120,7 @@ function GifMaker({ className, onlyVisual }: GifMakerProps) {
         onlyVisual={onlyVisual}
         addImage={addImage}
         addToUploadedImages={addToUploadedImages}
+        removeFromUploadedImages={removeFromUploadedImages}
         currentSelectedImageState={currentSelectedImageState}
         uploadedImages={uploadedImages}
         widthState={widthState}
@@ -132,7 +141,6 @@ function GifMaker({ className, onlyVisual }: GifMakerProps) {
       <GifMakerInfoContainer
         onlyVisual={onlyVisual}
         selectedRef={srcRef.current}
-        selectedImageString={currentSelectedImage}
         timeLength={timeLength}
       />
     </div>
@@ -143,9 +151,4 @@ export default styled(GifMaker)`
   background: #333;
   display: flex;
   flex-wrap: wrap;
-
-  img,
-  canvas {
-    border: 1px white solid;
-  }
 `;

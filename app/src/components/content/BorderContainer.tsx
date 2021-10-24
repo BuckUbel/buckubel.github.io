@@ -4,15 +4,15 @@ import { StyledCompProps } from "../helper/types";
 import { Color } from "../config/color";
 
 interface BorderContainerProps extends StyledCompProps {
-  extraClassName: string;
+  extraClassName?: string;
 }
 
-function BorderContainer(props: BorderContainerProps) {
-  return (
-    <div className={props.className + " " + props.extraClassName}>
-      {props.children}
-    </div>
-  );
+function BorderContainer({
+  className,
+  extraClassName = "",
+  children,
+}: BorderContainerProps) {
+  return <div className={className + " " + extraClassName}>{children}</div>;
 }
 
 export default styled(BorderContainer)`

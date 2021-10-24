@@ -6,43 +6,60 @@ import BorderContainer from "../../../../content/BorderContainer";
 
 interface GifMakerInfoContainerProps extends StyledCompProps {
   selectedRef: HTMLImageElement | null;
-  selectedImageString: string;
   timeLength: number;
   onlyVisual?: boolean;
 }
 
-function GifMakerInfoContainer(props: GifMakerInfoContainerProps) {
-  const [colors, setColors] = useState<string[]>([]);
-  const [colorCounts, setColorCounts] = useState<number[]>([]);
+type ColorCountArrayArray = {
+  [imageName: string]: [string[], number[]];
+};
+
+function GifMakerInfoContainer({
+  className,
+  selectedRef,
+  timeLength,
+}: GifMakerInfoContainerProps) {
+  const [colorCountArray, setColorCountArray] = useState<ColorCountArrayArray>(
+    {}
+  );
 
   useEffect(() => {
-    if (props.selectedRef !== null) {
-      const colorCountArray = getImageColors(props.selectedRef);
-      setColors(Object.keys(colorCountArray));
-      setColorCounts(Object.values(colorCountArray));
+    if (
+      selectedRef !== null &&
+      selectedRef?.id !== "" &&
+      colorCountArray[selectedRef.id] === undefined
+    ) {
+      const colorCountArray = getImageColors(selectedRef);
+      const colors = Object.keys(colorCountArray);
+      const colorCounts = Object.values(colorCountArray);
+      setColorCountArray((prev) => {
+        return { ...prev, [selectedRef.id]: [colors, colorCounts] };
+      });
     }
-  }, [props.selectedImageString, props.selectedRef !== null]);
+  }, [selectedRef?.id]);
 
   return (
-    <BorderContainer extraClassName={props.className}>
+    <BorderContainer extraClassName={className}>
       <h4>Info</h4>
-      {props.timeLength > 0 && (
+      {timeLength > 0 && (
         <div>
-          <span>Timelength: {props.timeLength.toFixed(2)} Sekunden</span>
+          <span>Timelength: {timeLength.toFixed(2)} Sekunden</span>
         </div>
       )}
       <div>
-        {colors.map((color, index) => {
-          return (
-            <div key={color}>
-              <span
-                className={"color-rect"}
-                style={{ backgroundColor: color }}
-              />
-              {color}:{colorCounts[index]}
-            </div>
-          );
-        })}
+        {selectedRef !== null &&
+          colorCountArray[selectedRef.id] !== undefined &&
+          colorCountArray[selectedRef.id][0].map((color, index) => {
+            return (
+              <div key={color}>
+                <span
+                  className={"color-rect"}
+                  style={{ backgroundColor: color }}
+                />
+                {color}:{colorCountArray[selectedRef.id][1][index]}
+              </div>
+            );
+          })}
       </div>
     </BorderContainer>
   );

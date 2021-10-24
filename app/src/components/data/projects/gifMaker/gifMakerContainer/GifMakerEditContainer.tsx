@@ -47,7 +47,7 @@ function GifMakerEditContainer({
       <button
         onClick={() => {
           if (editRef.current !== null) {
-            addToUploadedImages(editRef.current.toDataURL());
+            addToUploadedImages(editRef.current.toDataURL("image/jpeg", 1.0));
           }
         }}
       >
