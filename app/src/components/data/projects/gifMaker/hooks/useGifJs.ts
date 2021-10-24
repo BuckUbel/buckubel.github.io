@@ -13,6 +13,7 @@ export interface GifJsConfig {
   height: number;
   animationFrames: number;
   quality: number;
+  scale: number;
   gifs: string[];
 }
 
@@ -21,6 +22,7 @@ const defaultGifJsConfig: GifJsConfig = {
   height: 100,
   animationFrames: 25,
   quality: 1,
+  scale: 4,
   gifs: [],
 };
 
@@ -34,16 +36,17 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
   const [animationFrames, setAnimationFrames] = animationFramesState;
   const qualityState = useState(config.quality);
   const [quality, setQuality] = qualityState;
+  const scaleState = useState(config.scale);
+
   const [frames, setFrames] = useState<HTMLCanvasElement[]>([]);
-  const [generatedGifs, setGeneratedGifs] = useNonEmptyConnectState<string>(
-    config.gifs
-  );
+  const generatedGifsState = useNonEmptyConnectState<string>(config.gifs);
+  const [generatedGifs, setGeneratedGifs] = generatedGifsState;
 
   const framesContainerRef = useRef<HTMLDivElement>(null);
   const srcRef = useRef<HTMLImageElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const length = useMemo(
+  const timeLength = useMemo(
     () => frames.length / animationFrames,
     [frames, animationFrames]
   );
@@ -139,7 +142,7 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
       frames.forEach((frame, index) => {
         const ctx = frame.getContext("2d");
         if (ctx !== null) {
-          gif.addFrame(ctx, { delay: (length / frames.length) * 1000 });
+          gif.addFrame(ctx, { delay: (timeLength / frames.length) * 1000 });
         }
       });
 
@@ -158,15 +161,15 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
     heightState,
     animationFramesState,
     qualityState,
-    length,
+    scaleState,
+    timeLength,
     frames,
     frameCount: frames.length,
     addImage,
     addFrame,
     reset,
     render,
-    generatedGifs,
-    setGeneratedGifs,
+    generatedGifsState,
     framesContainerRef,
     srcRef,
     isLoading: loading,
