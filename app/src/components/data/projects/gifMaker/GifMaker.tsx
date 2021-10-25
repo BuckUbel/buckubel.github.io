@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { RefObject, useRef, useState } from "react";
 import { StyledCompProps } from "../../../helper/types";
 import styled from "styled-components";
 import { useGifJs } from "./hooks/useGifJs";
@@ -8,7 +8,6 @@ import GifMakerSourceContainer from "./gifMakerContainer/GifMakerSourceContainer
 import GifMakerEditContainer from "./gifMakerContainer/GifMakerEditContainer";
 import GifMakerResultContainer from "./gifMakerContainer/GifMakerResultContainer";
 import GifMakerFramesContainer from "./gifMakerContainer/GifMakerFramesContainer";
-import { shortHash } from "./helper/shortHash";
 
 interface GifMakerProps extends StyledCompProps {
   onlyVisual: boolean;
@@ -63,23 +62,6 @@ function GifMaker({ className, onlyVisual }: GifMakerProps) {
   const [editCounter, setEditCounter] = useState(0);
   const editRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    if (editRef.current !== null) {
-      const editCtx = editRef.current.getContext("2d");
-      if (editCtx !== null && srcRef.current !== null) {
-        editRef.current.width = srcRef.current.width;
-        editRef.current.height = srcRef.current.height;
-        editCtx.drawImage(
-          srcRef.current,
-          0,
-          0,
-          srcRef.current.width,
-          srcRef.current.height
-        );
-      }
-    }
-  }, [editCounter]);
-
   //TODO: Operations on uploaded images (execute operations on unzoomed images)
   //TODO: Select if you want to change the size of uploaded image, or you want to set on 0,0  of gif
   //TODO: Add image operations, to change position of image in gif on each frame (e.g. waterDrop)
@@ -125,7 +107,21 @@ function GifMaker({ className, onlyVisual }: GifMakerProps) {
         uploadedImages={uploadedImages}
         widthState={widthState}
         heightState={heightState}
-        startEditing={() => {
+        startEditing={(thisRef: RefObject<HTMLImageElement>) => {
+          if (editRef.current !== null) {
+            const editCtx = editRef.current.getContext("2d");
+            if (editCtx !== null && thisRef.current !== null) {
+              editRef.current.width = thisRef.current.width;
+              editRef.current.height = thisRef.current.height;
+              editCtx.drawImage(
+                thisRef.current,
+                0,
+                0,
+                thisRef.current.width,
+                thisRef.current.height
+              );
+            }
+          }
           setEditCounter((prev) => prev + 1);
         }}
         srcRef={srcRef}

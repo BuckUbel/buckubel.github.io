@@ -1,9 +1,11 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent, RefObject, useEffect } from "react";
 import styled from "styled-components";
 import { StateType, StyledCompProps } from "../../../../helper/types";
 import BorderContainer from "../../../../content/BorderContainer";
 import ImageItem from "../ImageItem";
 import { shortHash } from "../helper/shortHash";
+import { faEdit, faTrash, faUpload } from "@fortawesome/free-solid-svg-icons";
+import { Color } from "../../../../config/color";
 
 interface GifMakerSourceContainerProps extends StyledCompProps {
   onlyVisual: boolean;
@@ -14,7 +16,7 @@ interface GifMakerSourceContainerProps extends StyledCompProps {
   uploadedImages: string[];
   widthState: StateType<number>;
   heightState: StateType<number>;
-  startEditing: () => void;
+  startEditing: (ref: RefObject<HTMLImageElement>) => void;
   srcRef: React.RefObject<HTMLImageElement>;
 }
 
@@ -83,19 +85,27 @@ function GifMakerSourceContainer({
       {currentSelectedImage !== "" && (
         <div className={"source-image"}>
           <ImageItem
-            key={shortHash(currentSelectedImage)}
+            key={shortHash(currentSelectedImage) + "-src"}
             id={shortHash(currentSelectedImage)}
             alt={"src image"}
             src={currentSelectedImage}
+            buttons={[
+              {
+                icon: faUpload,
+                style: { background: Color.TEXT_SUCCESS_COLOR },
+                onClick: () => addImage(currentSelectedImage)(),
+              },
+              {
+                icon: faEdit,
+                style: { background: Color.TEXT_SECOND_COLOR },
+                onClick: () => startEditing(srcRef),
+              },
+            ]}
             imageRef={srcRef}
             size={100}
           />
         </div>
       )}
-      <button onClick={startEditing}>Start Editing</button>
-      <button onClick={() => addImage(currentSelectedImage)()}>
-        Add to frames
-      </button>
       <h4>Images</h4>
       {uploadedImages.length === 0 && <p>Keine Bilder vorhanden!</p>}
       <div className={"source-images-inner-container"}>
@@ -105,7 +115,24 @@ function GifMakerSourceContainer({
             src={upSrc}
             size={60}
             isSelected={shortHash(upSrc) === shortHash(currentSelectedImage)}
-            onDelete={() => removeFromUploadedImages(upSrc)}
+            buttons={[
+              {
+                icon: faUpload,
+                style: { background: Color.ALPHA_COLOR },
+                onClick: () => addImage(upSrc)(),
+              },
+              {
+                icon: faEdit,
+                style: { background: Color.BETA_COLOR },
+                onClick: (thisRef: RefObject<HTMLImageElement>) =>
+                  startEditing(thisRef),
+              },
+              {
+                icon: faTrash,
+                style: { background: Color.TEXT_ERROR_COLOR },
+                onClick: () => removeFromUploadedImages(upSrc),
+              },
+            ]}
             onClick={() => {
               if (!onlyVisual) {
                 setCurrentSelectedImage(upSrc);

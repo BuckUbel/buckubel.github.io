@@ -56,10 +56,16 @@ function GifMakerEditContainer({
       <button onClick={resetEditing}>Reset Edit Frame</button>
 
       <div className={"edit-image-inner-container"}>
-        {!isEditing && <p>Bearbeitung pausiert!</p>}
-        {isEditing && (
-          <canvas id={"edit-image"} className={"edit-canvas"} ref={editRef} />
-        )}
+        <p className={isEditing ? "hide-gif-maker-edit-element" : ""}>
+          Bearbeitung pausiert!
+        </p>
+        <canvas
+          id={"edit-image"}
+          className={
+            "edit-canvas " + (isEditing ? "" : "hide-gif-maker-edit-element")
+          }
+          ref={editRef}
+        />
       </div>
       <button
         onClick={generateScaled(
@@ -112,6 +118,9 @@ function GifMakerEditContainer({
 export default styled(GifMakerEditContainer)`
   .edit-image-inner-container {
     margin: 10px;
+    .hide-gif-maker-edit-element {
+      display: none;
+    }
   }
 
   .generate-image-inner-container {
