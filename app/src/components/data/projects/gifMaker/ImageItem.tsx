@@ -2,8 +2,8 @@ import React, { CSSProperties, RefObject, useRef } from "react";
 import styled from "styled-components";
 import { StyledCompProps } from "../../../helper/types";
 import { Color } from "../../../config/color";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from "@fortawesome/fontawesome-common-types";
+import ActionButton from "./ActionButton";
 
 type ImgHTMLProps = Omit<
   React.DetailedHTMLProps<
@@ -31,6 +31,7 @@ function ImageItem({
   extraClassName = "",
   children,
   id,
+  size,
   imageRef,
   onClick,
   buttons = [],
@@ -49,17 +50,15 @@ function ImageItem({
         <img className={"ref-image"} id={id} ref={usedRef} {...imageProps} />
         <div className={"image-action-buttons"}>
           {buttons.map((button, index) => (
-            <div
-              key={index}
-              className={"image-action-button"}
+            <ActionButton
               style={button.style}
+              size={size / 3}
               onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                 button.onClick(usedRef);
                 e.stopPropagation();
               }}
-            >
-              <FontAwesomeIcon icon={button.icon} />
-            </div>
+              icon={button.icon}
+            />
           ))}
         </div>
       </div>
@@ -107,27 +106,11 @@ export default styled(ImageItem)`
       top: 3px;
       right: 1px;
       width: ${(props) => props.size - 4}px;
-
-      .image-action-button {
-        width: 20px;
-        height: 20px;
-        color: ${Color.TEXT_PRIME_COLOR};
-        background: ${Color.TEXT_ERROR_COLOR};
-        cursor: pointer;
-        border-radius: 5px;
-        font-size: 14px;
-        display: inline-block;
-        margin: 2px;
-        padding: 2px;
-      }
     }
 
     :hover {
       .image-action-buttons {
         display: block;
-
-        .image-action-button {
-        }
       }
     }
   }

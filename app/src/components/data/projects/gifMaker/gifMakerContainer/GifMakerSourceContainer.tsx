@@ -1,11 +1,18 @@
-import React, { ChangeEvent, RefObject, useEffect } from "react";
+import React, { ChangeEvent, RefObject, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { StateType, StyledCompProps } from "../../../../helper/types";
 import BorderContainer from "../../../../content/BorderContainer";
 import ImageItem from "../ImageItem";
 import { shortHash } from "../helper/shortHash";
-import { faEdit, faTrash, faUpload } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faImages,
+  faTrash,
+  faUpload,
+} from "@fortawesome/free-solid-svg-icons";
 import { Color } from "../../../../config/color";
+import ActionButton from "../ActionButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface GifMakerSourceContainerProps extends StyledCompProps {
   onlyVisual: boolean;
@@ -33,6 +40,8 @@ function GifMakerSourceContainer({
   startEditing,
   srcRef,
 }: GifMakerSourceContainerProps) {
+  const uploadRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (srcRef.current !== null) {
       setWidth(srcRef.current.width);
@@ -63,6 +72,9 @@ function GifMakerSourceContainer({
               };
 
               addToUploadedImages(newSrc);
+              if (uploadRef.current !== null) {
+                uploadRef.current.value = "";
+              }
             }
           };
           reader.readAsDataURL(file);
@@ -73,12 +85,18 @@ function GifMakerSourceContainer({
 
   return (
     <BorderContainer extraClassName={className}>
-      <input
-        type={"file"}
-        accept={"image/*"}
-        onChange={handleImageUpload}
-        multiple
-      />
+      <label className="image-upload-label">
+        <input
+          type={"file"}
+          accept={"image/*"}
+          onChange={handleImageUpload}
+          multiple
+          ref={uploadRef}
+        />
+        <FontAwesomeIcon icon={faUpload} />
+        <p>Image Upload</p>
+      </label>
+
       <h4>Selected Image</h4>
 
       {currentSelectedImage === "" && <p>Kein Bild ausgewählt!</p>}
@@ -91,13 +109,13 @@ function GifMakerSourceContainer({
             src={currentSelectedImage}
             buttons={[
               {
-                icon: faUpload,
-                style: { background: Color.TEXT_SUCCESS_COLOR },
+                icon: faImages,
+                style: { background: Color.ALPHA_COLOR },
                 onClick: () => addImage(currentSelectedImage)(),
               },
               {
                 icon: faEdit,
-                style: { background: Color.TEXT_SECOND_COLOR },
+                style: { background: Color.BETA_COLOR },
                 onClick: () => startEditing(srcRef),
               },
             ]}
@@ -117,7 +135,7 @@ function GifMakerSourceContainer({
             isSelected={shortHash(upSrc) === shortHash(currentSelectedImage)}
             buttons={[
               {
-                icon: faUpload,
+                icon: faImages,
                 style: { background: Color.ALPHA_COLOR },
                 onClick: () => addImage(upSrc)(),
               },
@@ -150,6 +168,30 @@ function GifMakerSourceContainer({
 
 export default styled(GifMakerSourceContainer)`
   padding-top: 5px;
+
+  .image-upload-label {
+    display: inline-block;
+    color: ${Color.TEXT_PRIME_COLOR};
+    background: ${Color.BETA_COLOR};
+    padding: 4px 8px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 20px;
+    p {
+      margin: 0;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    svg {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 5px;
+    }
+
+    input {
+      display: none;
+    }
+  }
 
   .source-image {
     display: block;
