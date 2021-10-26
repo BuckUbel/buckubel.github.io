@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import BorderContainer from "../../../../content/BorderContainer";
 import { StyledCompProps } from "../../../../helper/types";
+import TextButton from "../TextButton";
+import { faImages, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface GifMakerFramesContainerProps extends StyledCompProps {
   onlyVisual: boolean;
@@ -22,14 +24,16 @@ function GifMakerFramesContainer({
   return (
     <BorderContainer extraClassName={className}>
       <div className={"canvas-info-container"}>
-        <h4 className={"canvas-info-frames"}>Frames: {frameCount}</h4>
-        <button
-          className={"canvas-info-show-frames-button"}
+        <TextButton
+          content={(showFrames ? "Hide" : "Show") + " Frames: " + frameCount}
+          icons={[faImages]}
           onClick={() => setShowFrames((prev) => !prev)}
-        >
-          {showFrames ? "Hide" : "Show"} frames
-        </button>
-        <button onClick={reset}>Reset Frames</button>
+        />
+        <TextButton
+          content={"Reset Frames"}
+          icons={[faTrash]}
+          onClick={reset}
+        />
       </div>
       <div
         className={`canvas-inner-container ${

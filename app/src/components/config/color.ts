@@ -8,6 +8,7 @@ export enum Color {
   TEXT_PRIME_COLOR = "#ffffff",
   TEXT_SECOND_COLOR = "#00ffff",
   TEXT_GREY_COLOR = "#aaaaaa",
+  TEXT_DISABLE_COLOR = "#444444",
   TEXT_SUCCESS_COLOR = "#00ff00",
   TEXT_ERROR_COLOR = "#ff0000",
   TEXT_INFO_COLOR = "#ffff00",

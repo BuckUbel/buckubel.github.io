@@ -4,6 +4,16 @@ import { StyledCompProps } from "../../../../helper/types";
 import { CanvasDrawFct } from "../hooks/useGifJs";
 import BorderContainer from "../../../../content/BorderContainer";
 import { useCanvasGenerator } from "../hooks/useCanvasGenerator";
+import TextButton from "../TextButton";
+import {
+  faCaretSquareRight,
+  faChessBoard,
+  faMinus,
+  faPlus,
+  faSave,
+  faSync,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface GifMakerEditContainerProps extends StyledCompProps {
   onlyVisual: boolean;
@@ -41,20 +51,43 @@ function GifMakerEditContainer({
     generate4Bit,
   } = useCanvasGenerator();
 
+  const scaleFct = (scaleToUse: number) =>
+    generateScaled(
+      (draw: CanvasDrawFct, options) => {
+        if (editRef.current !== null) {
+          const ctx = editRef.current.getContext("2d");
+          if (ctx !== null) {
+            draw(editRef.current, editRef.current);
+            ctx.fill();
+          }
+        }
+      },
+      {
+        scale: scaleToUse,
+        width: editRef.current?.width ?? width,
+        height: editRef.current?.height ?? height,
+      }
+    );
+
   return (
     <BorderContainer extraClassName={className}>
       <h4>Edit & Generate</h4>
-      <button
+      <TextButton
+        content={"Save edit"}
+        disabled={!isEditing}
+        icons={[faSave]}
         onClick={() => {
           if (editRef.current !== null) {
             addToUploadedImages(editRef.current.toDataURL("image/jpeg", 1.0));
           }
         }}
-      >
-        Save edit
-      </button>
-      <button onClick={resetEditing}>Reset Edit Frame</button>
-
+      />
+      <TextButton
+        content={"Reset Edit Frame"}
+        disabled={!isEditing}
+        icons={[faTrash]}
+        onClick={resetEditing}
+      />
       <div className={"edit-image-inner-container"}>
         <p className={isEditing ? "hide-gif-maker-edit-element" : ""}>
           Bearbeitung pausiert!
@@ -67,49 +100,45 @@ function GifMakerEditContainer({
           ref={editRef}
         />
       </div>
-      <button
-        onClick={generateScaled(
-          (draw: CanvasDrawFct, options) => {
-            if (editRef.current !== null) {
-              const ctx = editRef.current.getContext("2d");
-              if (ctx !== null) {
-                draw(editRef.current, editRef.current);
-                ctx.fill();
-              }
-            }
-          },
-          {
-            scale: scale,
-            width: editRef.current?.width ?? width,
-            height: editRef.current?.height ?? height,
-          }
-        )}
-      >
-        +
-      </button>
-      <button onClick={() => generate4Bit(editRef.current)}>To 4 bit</button>
-      <button disabled>-</button>
+      <TextButton
+        icons={[faPlus]}
+        disabled={!isEditing}
+        onClick={scaleFct(scale)}
+      />
+      <TextButton
+        content={"4 bit"}
+        disabled={!isEditing}
+        icons={[faChessBoard]}
+        onClick={() => generate4Bit(editRef.current)}
+      />
+      <TextButton
+        disabled={!isEditing}
+        icons={[faMinus]}
+        onClick={scaleFct(1 - 1 / scale)}
+      />
+
       <hr />
       <div className={"generate-image-inner-container"}>
-        <button
+        <TextButton
+          content={"Add rotation"}
+          disabled={!currentSelectedImage}
+          icons={[faSync]}
           onClick={generateFullRotation(addImage(currentSelectedImage), {
             frameCount: animationFrames,
             width: width,
             height: height,
           })}
-        >
-          Add full rotation
-        </button>
-
-        <button
+        />
+        <TextButton
+          content={"Add marque"}
+          disabled={!currentSelectedImage}
+          icons={[faCaretSquareRight]}
           onClick={generateFullMarquee(addImage(currentSelectedImage), {
             frameCount: animationFrames,
             width: width,
             height: height,
           })}
-        >
-          Add full marquee
-        </button>
+        />
       </div>
     </BorderContainer>
   );
@@ -118,6 +147,7 @@ function GifMakerEditContainer({
 export default styled(GifMakerEditContainer)`
   .edit-image-inner-container {
     margin: 10px;
+
     .hide-gif-maker-edit-element {
       display: none;
     }

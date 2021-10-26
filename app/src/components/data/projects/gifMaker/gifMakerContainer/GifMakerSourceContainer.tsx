@@ -5,14 +5,15 @@ import BorderContainer from "../../../../content/BorderContainer";
 import ImageItem from "../ImageItem";
 import { shortHash } from "../helper/shortHash";
 import {
+  faArrowRight,
   faEdit,
+  faImage,
   faImages,
   faTrash,
   faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { Color } from "../../../../config/color";
-import ActionButton from "../ActionButton";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import TextButton, { ElementToUseProps } from "../TextButton";
 
 interface GifMakerSourceContainerProps extends StyledCompProps {
   onlyVisual: boolean;
@@ -85,19 +86,7 @@ function GifMakerSourceContainer({
 
   return (
     <BorderContainer extraClassName={className}>
-      <label className="image-upload-label">
-        <input
-          type={"file"}
-          accept={"image/*"}
-          onChange={handleImageUpload}
-          multiple
-          ref={uploadRef}
-        />
-        <FontAwesomeIcon icon={faUpload} />
-        <p>Image Upload</p>
-      </label>
-
-      <h4>Selected Image</h4>
+      <h4>Current Image</h4>
 
       {currentSelectedImage === "" && <p>Kein Bild ausgewählt!</p>}
       {currentSelectedImage !== "" && (
@@ -124,7 +113,8 @@ function GifMakerSourceContainer({
           />
         </div>
       )}
-      <h4>Images</h4>
+
+      <h4>Images Library</h4>
       {uploadedImages.length === 0 && <p>Keine Bilder vorhanden!</p>}
       <div className={"source-images-inner-container"}>
         {uploadedImages.map((upSrc: string, index: number) => (
@@ -159,9 +149,26 @@ function GifMakerSourceContainer({
           />
         ))}
       </div>
-      <button onClick={() => addAllUploadImagesToFrames()}>
-        Add all images to frames
-      </button>
+      <TextButton
+        ElementToUse={(props: ElementToUseProps) => <label {...props} />}
+        content={"Image Upload"}
+        icons={[faUpload]}
+      >
+        <input
+          className={"image-upload-hidden-input"}
+          type={"file"}
+          accept={"image/*"}
+          onChange={handleImageUpload}
+          multiple
+          ref={uploadRef}
+        />
+      </TextButton>
+      <TextButton
+        content={"Add all to frames"}
+        disabled={uploadedImages.length === 0}
+        icons={[faImage, faArrowRight, faImages]}
+        onClick={() => addAllUploadImagesToFrames()}
+      />
     </BorderContainer>
   );
 }
@@ -169,28 +176,8 @@ function GifMakerSourceContainer({
 export default styled(GifMakerSourceContainer)`
   padding-top: 5px;
 
-  .image-upload-label {
-    display: inline-block;
-    color: ${Color.TEXT_PRIME_COLOR};
-    background: ${Color.BETA_COLOR};
-    padding: 4px 8px;
-    margin: 5px;
-    cursor: pointer;
-    border-radius: 20px;
-    p {
-      margin: 0;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    svg {
-      display: inline-block;
-      vertical-align: middle;
-      margin: 5px;
-    }
-
-    input {
-      display: none;
-    }
+  .image-upload-hidden-input {
+    display: none;
   }
 
   .source-image {

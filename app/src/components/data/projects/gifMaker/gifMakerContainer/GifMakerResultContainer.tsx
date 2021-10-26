@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import BorderContainer from "../../../../content/BorderContainer";
 import { StateType, StyledCompProps } from "../../../../helper/types";
+import TextButton from "../TextButton";
+import { faFilm, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface GifMakerResultContainerProps extends StyledCompProps {
   onlyVisual: boolean;
@@ -19,8 +21,12 @@ function GifMakerResultContainer({
   return (
     <BorderContainer extraClassName={className}>
       <h4>Generated gifs</h4>
-      <button onClick={render}>Render Gif</button>
-      <button onClick={() => setGeneratedGifs([])}>Reset Gifs</button>
+      <TextButton content={"Render Gif"} icons={[faFilm]} onClick={render} />
+      <TextButton
+        content={"Reset Gifs"}
+        icons={[faTrash]}
+        onClick={() => setGeneratedGifs([])}
+      />
       {isLoading && <div>Berechnung erfolgt ...</div>}
       {generatedGifs.length > 0 && (
         <>
