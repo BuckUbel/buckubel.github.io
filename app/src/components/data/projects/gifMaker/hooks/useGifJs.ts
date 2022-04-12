@@ -1,7 +1,7 @@
-import { useMemo, useRef, useState } from "react";
+import {useMemo, useRef, useState} from "react";
 import GIF from "gif.js.optimized/dist/gif";
-import { useNonEmptyConnectState } from "../../../../helper/useNonEmptyConnectState";
-import { CanvasOptions, createNewCanvas } from "../helper/createNewCanvas";
+import {useNonEmptyConnectState} from "../../../../helper/useNonEmptyConnectState";
+import {CanvasOptions, createNewCanvas} from "../helper/createNewCanvas";
 
 export type CanvasDrawFct = (
   canvas: HTMLCanvasElement,
@@ -15,6 +15,7 @@ export interface GifJsConfig {
   quality: number;
   scale: number;
   gifs: string[];
+  transparent: null | string;
 }
 
 const defaultGifJsConfig: GifJsConfig = {
@@ -23,6 +24,7 @@ const defaultGifJsConfig: GifJsConfig = {
   animationFrames: 25,
   quality: 1,
   scale: 4,
+  transparent: null,
   gifs: [],
 };
 
@@ -37,6 +39,8 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
   const qualityState = useState(config.quality);
   const [quality, setQuality] = qualityState;
   const scaleState = useState(config.scale);
+  const transparentState = useState(config.transparent);
+  const [transparent, setTransparent] = transparentState;
 
   const [frames, setFrames] = useState<HTMLCanvasElement[]>([]);
   const generatedGifsState = useNonEmptyConnectState<string>(config.gifs);
@@ -83,30 +87,30 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
   };
   const addFrame =
     (canvasSource: CanvasImageSource) =>
-    (draw = defaultDraw, options: Partial<CanvasOptions> = {}) => {
-      prepareNewCanvas((canvas) => {
-        draw(canvas, canvasSource);
-        const ctx = canvas.getContext("2d");
-        if (ctx !== null) {
-          ctx.fill();
-        }
-      }, options);
-    };
-  const addImage =
-    (src: string) =>
-    (draw = defaultDraw, options: Partial<CanvasOptions> = {}) => {
-      prepareNewCanvas((canvas) => {
-        const img = new Image();
-        img.onload = function () {
-          draw(canvas, img);
+      (draw = defaultDraw, options: Partial<CanvasOptions> = {}) => {
+        prepareNewCanvas((canvas) => {
+          draw(canvas, canvasSource);
           const ctx = canvas.getContext("2d");
           if (ctx !== null) {
             ctx.fill();
           }
-        };
-        img.src = src;
-      }, options);
-    };
+        }, options);
+      };
+  const addImage =
+    (src: string) =>
+      (draw = defaultDraw, options: Partial<CanvasOptions> = {}) => {
+        prepareNewCanvas((canvas) => {
+          const img = new Image();
+          img.onload = function () {
+            draw(canvas, img);
+            const ctx = canvas.getContext("2d");
+            if (ctx !== null) {
+              ctx.fill();
+            }
+          };
+          img.src = src;
+        }, options);
+      };
 
   const reset = () => {
     // setGeneratedGif(undefined);
@@ -135,21 +139,21 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
         // debug: true,
         width: gifWidth,
         height: gifHeight,
-        transparent: "#000",
+        transparent: transparent,
       });
 
       setLoading(true);
       frames.forEach((frame, index) => {
         const ctx = frame.getContext("2d");
         if (ctx !== null) {
-          gif.addFrame(ctx, { delay: (timeLength / frames.length) * 1000 });
+          gif.addFrame(ctx, {delay: (timeLength / frames.length) * 1000});
         }
       });
 
       gif.on("finished", (blob: string) => {
         // window.open(URL.createObjectURL(blob));
         setLoading(false);
-        setGeneratedGifs([URL.createObjectURL(blob), ...generatedGifs ]);
+        setGeneratedGifs([URL.createObjectURL(blob), ...generatedGifs]);
         gif.abort();
       });
       gif.render();
@@ -162,6 +166,7 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
     animationFramesState,
     qualityState,
     scaleState,
+    transparentState,
     timeLength,
     frames,
     frameCount: frames.length,

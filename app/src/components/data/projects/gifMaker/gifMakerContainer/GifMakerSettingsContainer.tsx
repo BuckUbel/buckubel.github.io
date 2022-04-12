@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import BorderContainer from "../../../../content/BorderContainer";
-import { StateType, StyledCompProps } from "../../../../helper/types";
+import {StateType, StyledCompProps} from "../../../../helper/types";
 
 interface GifMakerSettingsContainerProps extends StyledCompProps {
   onlyVisual: boolean;
@@ -10,16 +10,18 @@ interface GifMakerSettingsContainerProps extends StyledCompProps {
   animationFramesState: StateType<number>;
   scaleState: StateType<number>;
   qualityState: StateType<number>;
+  transparentState: StateType<null | string>;
 }
 
 function GifMakerSettingsContainer({
-  className,
-  widthState: [width, setWidth],
-  heightState: [height, setHeight],
-  animationFramesState: [animationFrames, setAnimationFrames],
-  scaleState: [scale, setScale],
-  qualityState: [quality, setQuality],
-}: GifMakerSettingsContainerProps) {
+                                     className,
+                                     widthState: [width, setWidth],
+                                     heightState: [height, setHeight],
+                                     animationFramesState: [animationFrames, setAnimationFrames],
+                                     scaleState: [scale, setScale],
+                                     qualityState: [quality, setQuality],
+                                     transparentState: [transparent, setTransparent],
+                                   }: GifMakerSettingsContainerProps) {
   return (
     <BorderContainer extraClassName={className}>
       <h4>Settings</h4>
@@ -62,6 +64,20 @@ function GifMakerSettingsContainer({
             type={"number"}
             defaultValue={quality}
             onChange={(e) => setQuality(Number(e.target.value))}
+          />
+        </div>
+        <div>
+          <span>Transparenz</span>
+          <input
+            type={"checkbox"}
+            checked={!!transparent}
+            onChange={(e) => setTransparent(e.target.checked?"#000":null)}
+          />
+          <input
+            type={"color"}
+            disabled={!transparent}
+            defaultValue={transparent ?? "#00"}
+            onChange={(e) => setTransparent(String(e.target.value))}
           />
         </div>
       </div>

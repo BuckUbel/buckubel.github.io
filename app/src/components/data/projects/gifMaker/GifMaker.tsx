@@ -1,25 +1,26 @@
-import React, { RefObject, useRef, useState } from "react";
-import { StyledCompProps } from "../../../helper/types";
+import React, {RefObject, useRef, useState} from "react";
+import {StyledCompProps} from "../../../helper/types";
 import styled from "styled-components";
-import { useGifJs } from "./hooks/useGifJs";
-import GifMakerInfoContainer from "./gifMakerContainer/GifMakerInfoContainer";
+import {useGifJs} from "./hooks/useGifJs";
 import GifMakerSettingsContainer from "./gifMakerContainer/GifMakerSettingsContainer";
 import GifMakerSourceContainer from "./gifMakerContainer/GifMakerSourceContainer";
 import GifMakerEditContainer from "./gifMakerContainer/GifMakerEditContainer";
 import GifMakerResultContainer from "./gifMakerContainer/GifMakerResultContainer";
 import GifMakerFramesContainer from "./gifMakerContainer/GifMakerFramesContainer";
+import GifMakerInfoContainer from "./gifMakerContainer/GifMakerInfoContainer";
 
 interface GifMakerProps extends StyledCompProps {
   onlyVisual: boolean;
 }
 
-function GifMaker({ className, onlyVisual }: GifMakerProps) {
+function GifMaker({className, onlyVisual}: GifMakerProps) {
   const {
     widthState,
     heightState,
     animationFramesState,
     qualityState,
     scaleState,
+    transparentState,
     timeLength,
     addImage,
     addFrame,
@@ -132,13 +133,14 @@ function GifMaker({ className, onlyVisual }: GifMakerProps) {
         heightState={heightState}
         animationFramesState={animationFramesState}
         scaleState={scaleState}
+        transparentState={transparentState}
         qualityState={qualityState}
       />
-      <GifMakerInfoContainer
-        onlyVisual={onlyVisual}
-        selectedRef={srcRef.current}
-        timeLength={timeLength}
-      />
+      {/*<GifMakerInfoContainer*/}
+      {/*  onlyVisual={onlyVisual}*/}
+      {/*  selectedRef={srcRef.current}*/}
+      {/*  timeLength={timeLength}*/}
+      {/*/>*/}
     </div>
   );
 }
