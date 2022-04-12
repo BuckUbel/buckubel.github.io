@@ -6,6 +6,7 @@ import ImageItem from "../ImageItem";
 import { shortHash } from "../helper/shortHash";
 import {
   faArrowRight,
+  faDownload,
   faEdit,
   faImage,
   faImages,
@@ -42,6 +43,7 @@ function GifMakerSourceContainer({
   srcRef,
 }: GifMakerSourceContainerProps) {
   const uploadRef = useRef<HTMLInputElement>(null);
+  const downloadRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     if (srcRef.current !== null) {
@@ -83,7 +85,13 @@ function GifMakerSourceContainer({
       }
     }
   };
-
+  const downloadImage = (ref: RefObject<HTMLImageElement>) => {
+    const newHref = ref.current?.src ?? "";
+    if (!!downloadRef.current) {
+      downloadRef.current.href = newHref;
+      downloadRef.current.click();
+    }
+  };
   return (
     <BorderContainer extraClassName={className}>
       <h4>Current Image</h4>
@@ -107,13 +115,18 @@ function GifMakerSourceContainer({
                 style: { background: Color.BETA_COLOR },
                 onClick: () => startEditing(srcRef),
               },
+              {
+                icon: faDownload,
+                style: { background: Color.GAMMA_COLOR },
+                onClick: () => downloadImage(srcRef),
+              },
             ]}
             imageRef={srcRef}
             size={100}
           />
         </div>
       )}
-
+      <a ref={downloadRef} href={""} download={"download.png"} />
       <h4>Images Library</h4>
       {uploadedImages.length === 0 && <p>Keine Bilder vorhanden!</p>}
       <div className={"source-images-inner-container"}>
