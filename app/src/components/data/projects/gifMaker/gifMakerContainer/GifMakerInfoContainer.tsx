@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import { StyledCompProps } from "../../../../helper/types";
-import { getImageColors } from "../helper/getImageColors";
+import {StyledCompProps} from "../../../../helper/types";
+import {getImageColors} from "../helper/getImageColors";
 import BorderContainer from "../../../../content/BorderContainer";
 
 interface GifMakerInfoContainerProps extends StyledCompProps {
   selectedRef: HTMLImageElement | null;
+  currentSelectedImage: string;
   timeLength: number;
   onlyVisual?: boolean;
 }
@@ -15,16 +16,18 @@ type ColorCountArrayArray = {
 };
 
 function GifMakerInfoContainer({
-  className,
-  selectedRef,
-  timeLength,
-}: GifMakerInfoContainerProps) {
+                                 className,
+                                 selectedRef,
+                                 timeLength,
+                               }: GifMakerInfoContainerProps) {
   const [colorCountArray, setColorCountArray] = useState<ColorCountArrayArray>(
     {}
   );
+  const [shouldCalculate, setShouldCalculate] = useState<boolean>(false);
 
   useEffect(() => {
     if (
+      shouldCalculate &&
       selectedRef !== null &&
       selectedRef?.id !== "" &&
       colorCountArray[selectedRef.id] === undefined
@@ -33,10 +36,10 @@ function GifMakerInfoContainer({
       const colors = Object.keys(colorCountArray);
       const colorCounts = Object.values(colorCountArray);
       setColorCountArray((prev) => {
-        return { ...prev, [selectedRef.id]: [colors, colorCounts] };
+        return {...prev, [selectedRef.id]: [colors, colorCounts]};
       });
     }
-  }, [selectedRef?.id]);
+  }, [selectedRef?.id ?? "", shouldCalculate]);
 
   return (
     <BorderContainer extraClassName={className}>
@@ -47,20 +50,30 @@ function GifMakerInfoContainer({
         </div>
       )}
       <div>
+        <span>Farben berechnen?</span>
+        <input
+          type={"checkbox"}
+          disabled={selectedRef === null}
+          checked={shouldCalculate}
+          onChange={(e) => setShouldCalculate(e.target.checked)}
+        />
+      </div>
+      {shouldCalculate && <div className={"color-calculation-container"}>
         {selectedRef !== null &&
-          colorCountArray[selectedRef.id] !== undefined &&
-          colorCountArray[selectedRef.id][0].map((color, index) => {
-            return (
-              <div key={color}>
+        selectedRef.id !== "" &&
+        colorCountArray[selectedRef.id] !== undefined &&
+        colorCountArray[selectedRef.id][0].map((color, index) => {
+          return (
+            <div key={color} className={"color-calculation-container-item"}>
                 <span
                   className={"color-rect"}
-                  style={{ backgroundColor: color }}
+                  style={{backgroundColor: color, boxShadow: `0px 0px 10px 2px ${color}`}}
                 />
-                {color}:{colorCountArray[selectedRef.id][1][index]}
-              </div>
-            );
-          })}
-      </div>
+              {color}:{colorCountArray[selectedRef.id][1][index]}
+            </div>
+          );
+        })}
+      </div>}
     </BorderContainer>
   );
 }
@@ -68,9 +81,19 @@ function GifMakerInfoContainer({
 export default styled(GifMakerInfoContainer)`
   font-family: monospace;
 
-  > div {
-    margin-left: 20%;
-    text-align: left;
+  .color-calculation-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: flex-start;
+    align-items: flex-start;
+
+    .color-calculation-container-item {
+      margin: 2px;
+      width: 145px;
+      text-align: left;
+    }
   }
 
   .color-rect {
@@ -78,5 +101,6 @@ export default styled(GifMakerInfoContainer)`
     width: 15px;
     height: 15px;
     margin-right: 5px;
+
   }
 `;

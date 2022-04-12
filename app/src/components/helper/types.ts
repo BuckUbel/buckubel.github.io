@@ -37,3 +37,5 @@ export interface SitePreviewInterface {
   image?: string;
   onClick?: () => void;
 }
+
+export type RefHTMLImageElement = HTMLImageElement | null | undefined;

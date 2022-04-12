@@ -1,7 +1,8 @@
-import {useMemo, useRef, useState} from "react";
+import {useCallback, useMemo, useRef, useState} from "react";
 import GIF from "gif.js.optimized/dist/gif";
 import {useNonEmptyConnectState} from "../../../../helper/useNonEmptyConnectState";
 import {CanvasOptions, createNewCanvas} from "../helper/createNewCanvas";
+import {RefHTMLImageElement} from "../../../../helper/types";
 
 export type CanvasDrawFct = (
   canvas: HTMLCanvasElement,
@@ -31,23 +32,31 @@ const defaultGifJsConfig: GifJsConfig = {
 export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
   const config = Object.assign({}, defaultGifJsConfig, propConfig);
   const widthState = useState(config.width);
-  const [width, setWidth] = widthState;
+  const [width, ] = widthState;
   const heightState = useState(config.height);
-  const [height, setHeight] = heightState;
+  const [height, ] = heightState;
   const animationFramesState = useState(config.animationFrames);
   const [animationFrames, setAnimationFrames] = animationFramesState;
   const qualityState = useState(config.quality);
-  const [quality, setQuality] = qualityState;
+  const [quality, ] = qualityState;
   const scaleState = useState(config.scale);
   const transparentState = useState(config.transparent);
-  const [transparent, setTransparent] = transparentState;
+  const [transparent, ] = transparentState;
 
   const [frames, setFrames] = useState<HTMLCanvasElement[]>([]);
   const generatedGifsState = useNonEmptyConnectState<string>(config.gifs);
   const [generatedGifs, setGeneratedGifs] = generatedGifsState;
 
   const framesContainerRef = useRef<HTMLDivElement>(null);
-  const srcRef = useRef<HTMLImageElement>(null);
+
+  const [src, setSrc] = useState<RefHTMLImageElement>(null);
+  const srcRef = useCallback((node:HTMLImageElement) => {
+    if (node !== null) {
+      setSrc(node);
+    }
+    return node;
+  }, []);
+
   const [loading, setLoading] = useState<boolean>(false);
 
   const timeLength = useMemo(
@@ -143,7 +152,7 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
       });
 
       setLoading(true);
-      frames.forEach((frame, index) => {
+      frames.forEach((frame) => {
         const ctx = frame.getContext("2d");
         if (ctx !== null) {
           gif.addFrame(ctx, {delay: (timeLength / frames.length) * 1000});
@@ -176,6 +185,7 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
     render,
     generatedGifsState,
     framesContainerRef,
+    src,
     srcRef,
     isLoading: loading,
   };

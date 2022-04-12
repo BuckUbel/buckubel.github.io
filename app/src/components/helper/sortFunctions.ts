@@ -23,3 +23,13 @@ export function sortNumber<ObjectType>(key: keyof FilteredOnType<ObjectType, num
     return (valueB - valueA) * descFactor
   }
 }
+
+export function sortObjectKeys<ObjectType>(anyObject: ObjectType): ObjectType {
+  return Object.keys(anyObject).sort().reduce(
+    (obj, key) => {
+      obj[key as keyof ObjectType] = anyObject[key as keyof ObjectType];
+      return obj;
+    },
+    {} as ObjectType
+  );
+}

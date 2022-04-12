@@ -1,5 +1,5 @@
-import React, {RefObject, useRef, useState} from "react";
-import {StyledCompProps} from "../../../helper/types";
+import React, {useRef, useState} from "react";
+import {RefHTMLImageElement, StyledCompProps} from "../../../helper/types";
 import styled from "styled-components";
 import {useGifJs} from "./hooks/useGifJs";
 import GifMakerSettingsContainer from "./gifMakerContainer/GifMakerSettingsContainer";
@@ -28,6 +28,7 @@ function GifMaker({className, onlyVisual}: GifMakerProps) {
     render,
     generatedGifsState,
     framesContainerRef,
+    src,
     srcRef,
     frameCount,
     isLoading,
@@ -70,6 +71,8 @@ function GifMaker({className, onlyVisual}: GifMakerProps) {
   //TODO: Gif options setter with typescript ?
   // more cool function, like rotation
   // extend rotation with a minisizer, so the complete image is on each frame visible
+  // TODO: Color change -> select a color and change all pixels of this to another color
+
   return (
     <div className={className}>
       <GifMakerFramesContainer
@@ -108,23 +111,24 @@ function GifMaker({className, onlyVisual}: GifMakerProps) {
         uploadedImages={uploadedImages}
         widthState={widthState}
         heightState={heightState}
-        startEditing={(thisRef: RefObject<HTMLImageElement>) => {
+        startEditing={(imgElement: RefHTMLImageElement) => {
           if (editRef.current !== null) {
             const editCtx = editRef.current.getContext("2d");
-            if (editCtx !== null && thisRef.current !== null) {
-              editRef.current.width = thisRef.current.width;
-              editRef.current.height = thisRef.current.height;
+            if (editCtx !== null && !!imgElement) {
+              editRef.current.width = imgElement.width;
+              editRef.current.height = imgElement.height;
               editCtx.drawImage(
-                thisRef.current,
+                imgElement,
                 0,
                 0,
-                thisRef.current.width,
-                thisRef.current.height
+                imgElement.width,
+                imgElement.height
               );
             }
           }
           setEditCounter((prev) => prev + 1);
         }}
+        src={src}
         srcRef={srcRef}
       />
       <GifMakerSettingsContainer
@@ -136,11 +140,12 @@ function GifMaker({className, onlyVisual}: GifMakerProps) {
         transparentState={transparentState}
         qualityState={qualityState}
       />
-      {/*<GifMakerInfoContainer*/}
-      {/*  onlyVisual={onlyVisual}*/}
-      {/*  selectedRef={srcRef.current}*/}
-      {/*  timeLength={timeLength}*/}
-      {/*/>*/}
+      <GifMakerInfoContainer
+        onlyVisual={onlyVisual}
+        selectedRef={src}
+        currentSelectedImage={currentSelectedImage}
+        timeLength={timeLength}
+      />
     </div>
   );
 }

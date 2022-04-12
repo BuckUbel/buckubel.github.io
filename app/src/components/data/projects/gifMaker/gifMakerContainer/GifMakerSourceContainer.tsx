@@ -1,9 +1,9 @@
-import React, { ChangeEvent, RefObject, useEffect, useRef } from "react";
+import React, {ChangeEvent, useEffect, useRef} from "react";
 import styled from "styled-components";
-import { StateType, StyledCompProps } from "../../../../helper/types";
+import {RefHTMLImageElement, StateType, StyledCompProps} from "../../../../helper/types";
 import BorderContainer from "../../../../content/BorderContainer";
 import ImageItem from "../ImageItem";
-import { shortHash } from "../helper/shortHash";
+import {shortHash} from "../helper/shortHash";
 import {
   faArrowRight,
   faDownload,
@@ -13,8 +13,8 @@ import {
   faTrash,
   faUpload,
 } from "@fortawesome/free-solid-svg-icons";
-import { Color } from "../../../../config/color";
-import TextButton, { ElementToUseProps } from "../TextButton";
+import {Color} from "../../../../config/color";
+import TextButton, {ElementToUseProps} from "../TextButton";
 
 interface GifMakerSourceContainerProps extends StyledCompProps {
   onlyVisual: boolean;
@@ -25,30 +25,32 @@ interface GifMakerSourceContainerProps extends StyledCompProps {
   uploadedImages: string[];
   widthState: StateType<number>;
   heightState: StateType<number>;
-  startEditing: (ref: RefObject<HTMLImageElement>) => void;
+  startEditing: (imgElement: RefHTMLImageElement) => void;
   srcRef: React.RefObject<HTMLImageElement>;
+  src: RefHTMLImageElement;
 }
 
 function GifMakerSourceContainer({
-  className,
-  onlyVisual,
-  addImage,
-  addToUploadedImages,
-  removeFromUploadedImages,
-  currentSelectedImageState: [currentSelectedImage, setCurrentSelectedImage],
-  uploadedImages: uploadedImages,
-  widthState: [, setWidth],
-  heightState: [, setHeight],
-  startEditing,
-  srcRef,
-}: GifMakerSourceContainerProps) {
+                                   className,
+                                   onlyVisual,
+                                   addImage,
+                                   addToUploadedImages,
+                                   removeFromUploadedImages,
+                                   currentSelectedImageState: [currentSelectedImage, setCurrentSelectedImage],
+                                   uploadedImages: uploadedImages,
+                                   widthState: [, setWidth],
+                                   heightState: [, setHeight],
+                                   startEditing,
+                                   srcRef,
+                                   src,
+                                 }: GifMakerSourceContainerProps) {
   const uploadRef = useRef<HTMLInputElement>(null);
   const downloadRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    if (srcRef.current !== null) {
-      setWidth(srcRef.current.width);
-      setHeight(srcRef.current.height);
+    if (!!src) {
+      setWidth(src.width);
+      setHeight(src.height);
     }
   }, [currentSelectedImage]);
 
@@ -85,8 +87,8 @@ function GifMakerSourceContainer({
       }
     }
   };
-  const downloadImage = (ref: RefObject<HTMLImageElement>) => {
-    const newHref = ref.current?.src ?? "";
+  const downloadImage = (imgElement: RefHTMLImageElement) => {
+    const newHref = imgElement?.src ?? "";
     if (!!downloadRef.current) {
       downloadRef.current.href = newHref;
       downloadRef.current.click();
@@ -95,7 +97,6 @@ function GifMakerSourceContainer({
   return (
     <BorderContainer extraClassName={className}>
       <h4>Current Image</h4>
-
       {currentSelectedImage === "" && <p>Kein Bild ausgewählt!</p>}
       {currentSelectedImage !== "" && (
         <div className={"source-image"}>
@@ -107,26 +108,27 @@ function GifMakerSourceContainer({
             buttons={[
               {
                 icon: faImages,
-                style: { background: Color.ALPHA_COLOR },
+                style: {background: Color.ALPHA_COLOR},
                 onClick: () => addImage(currentSelectedImage)(),
               },
               {
                 icon: faEdit,
-                style: { background: Color.BETA_COLOR },
-                onClick: () => startEditing(srcRef),
+                style: {background: Color.BETA_COLOR},
+                onClick: () => startEditing(src),
               },
               {
                 icon: faDownload,
-                style: { background: Color.GAMMA_COLOR },
-                onClick: () => downloadImage(srcRef),
+                style: {background: Color.GAMMA_COLOR},
+                onClick: () => downloadImage(src),
               },
             ]}
+            image={src}
             imageRef={srcRef}
             size={100}
           />
         </div>
       )}
-      <a ref={downloadRef} href={""} download={"download.png"} />
+      <a ref={downloadRef} href={""} download={"download.png"}/>
       <h4>Images Library</h4>
       {uploadedImages.length === 0 && <p>Keine Bilder vorhanden!</p>}
       <div className={"source-images-inner-container"}>
@@ -139,24 +141,25 @@ function GifMakerSourceContainer({
             buttons={[
               {
                 icon: faImages,
-                style: { background: Color.ALPHA_COLOR },
+                style: {background: Color.ALPHA_COLOR},
                 onClick: () => addImage(upSrc)(),
               },
               {
                 icon: faEdit,
-                style: { background: Color.BETA_COLOR },
-                onClick: (thisRef: RefObject<HTMLImageElement>) =>
-                  startEditing(thisRef),
+                style: {background: Color.BETA_COLOR},
+                onClick: (imgElement: RefHTMLImageElement) =>
+                  startEditing(imgElement),
               },
               {
                 icon: faTrash,
-                style: { background: Color.TEXT_ERROR_COLOR },
+                style: {background: Color.TEXT_ERROR_COLOR},
                 onClick: () => removeFromUploadedImages(upSrc),
               },
             ]}
             onClick={() => {
               if (!onlyVisual) {
                 setCurrentSelectedImage(upSrc);
+
               }
             }}
           />

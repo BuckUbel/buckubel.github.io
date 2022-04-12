@@ -1,91 +1,99 @@
-import React, {CSSProperties, RefObject, useRef} from "react";
+import React, {CSSProperties, useRef} from "react";
 import styled from "styled-components";
-import {StyledCompProps} from "../../../helper/types";
+import {RefHTMLImageElement, StyledCompProps} from "../../../helper/types";
 import {Color} from "../../../config/color";
 import ActionButton from "./ActionButton";
 import {IconLookup} from "@fortawesome/fontawesome-common-types";
+import {useImageDimensions} from "./hooks/useImageDimensions";
 
 type ImgHTMLProps = Omit<React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>,
-    HTMLImageElement>,
-    "ref">;
+  HTMLImageElement>,
+  "ref">;
 
 const defaultSize = 100;
 
 interface ImageItemProps extends StyledCompProps, ImgHTMLProps {
-    extraClassName?: string;
-    imageRef?: React.RefObject<HTMLImageElement>;
-    size: number;
-    isSelected: boolean;
-    buttons: Array<{
-        icon: IconLookup;
-        onClick: (ref: RefObject<HTMLImageElement>) => void;
-        style?: CSSProperties;
-    }>;
-    onDelete?: () => void;
-    index?: number;
+  extraClassName?: string;
+  image: RefHTMLImageElement;
+  imageRef?: React.RefObject<HTMLImageElement>;
+  size: number;
+  isSelected: boolean;
+  buttons: Array<{
+    icon: IconLookup;
+    onClick: (imgElement: RefHTMLImageElement) => void;
+    style?: CSSProperties;
+  }>;
+  onDelete?: () => void;
+  index?: number;
 }
 
 function ImageItem({
-                       className,
-                       extraClassName = "",
-                       children,
-                       id,
-                       size = defaultSize,
-                       imageRef,
-                       onClick,
-                       buttons = [],
-                       onDelete,
-                       isSelected,
-                       index,
-                       ...imageProps
+                     className,
+                     extraClassName = "",
+                     children,
+                     id,
+                     size = defaultSize,
+                     image,
+                     imageRef,
+                     onClick,
+                     buttons = [],
+                     onDelete,
+                     isSelected,
+                     index,
+                     src,
+                     ...imageProps
                    }: ImageItemProps) {
-    // TODO: same for canvas items
+  // TODO: same for canvas items
 
-    const internalRef = useRef<HTMLImageElement>(null);
-    const usedRef = imageRef ?? internalRef;
-    return (
-        <div className={className + " " + extraClassName} onClick={onClick}>
-            <div className={"inner-imager-container"}>
-                <img
-                    alt={"visual image"}
-                    className={"display-image"}
-                    id={"display-" + id}
-                    {...imageProps}
-                />
-                <img
-                    alt={"non visual image"}
-                    className={"ref-image"}
-                    id={id}
-                    ref={usedRef}
-                    {...imageProps}
-                />
-                <div className={"image-action-buttons"}>
-                    {buttons.map((button, index) => (
-                        <ActionButton
-                            key={button.icon.iconName + String(index)}
-                            style={button.style}
-                            size={size / 3}
-                            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                                button.onClick(usedRef);
-                                e.stopPropagation();
-                            }}
-                            icon={button.icon}
-                        />
-                    ))}
-                </div>
-            </div>
-            <p className={"image-item-sub-info"}>
-                {index !== undefined? `${index}: `: ""}{usedRef?.current?.width}x{usedRef?.current?.height}
-            </p>
+  const [width, height] = useImageDimensions(src);
+  const internalRef = useRef<HTMLImageElement>(null);
+  const usedImageRef = imageRef ?? internalRef;
+  const usedImage = image ?? internalRef.current;
+  return (
+    <div className={className + " " + extraClassName} onClick={onClick}>
+      <div className={"inner-imager-container"}>
+        <img
+          alt={"visual image"}
+          className={"display-image"}
+          id={"display-" + id}
+          src={src}
+          {...imageProps}
+        />
+        <img
+          alt={"non visual image"}
+          className={"ref-image"}
+          id={id}
+          ref={usedImageRef}
+          src={src}
+          {...imageProps}
+        />
+        <div className={"image-action-buttons"}>
+          {buttons.map((button, index) => (
+            <ActionButton
+              key={button.icon.iconName + String(index)}
+              style={button.style}
+              size={size / 3}
+              onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                button.onClick(usedImage);
+                e.stopPropagation();
+              }}
+              icon={button.icon}
+            />
+          ))}
         </div>
-    );
+      </div>
+      <p className={"image-item-sub-info"}>
+        {index !== undefined ? `${index}: ` : ""}{width}x{height}
+      </p>
+    </div>
+  );
 }
 
 function getSize(props: ImageItemProps) {
-    if (!!props.size && props.size > 0) {
-        return props.size;
-    }
-    return defaultSize;
+  if (!!props.size && props.size > 0) {
+    return props.size;
+  }
+  return defaultSize;
 }
 
 export default styled(ImageItem)`

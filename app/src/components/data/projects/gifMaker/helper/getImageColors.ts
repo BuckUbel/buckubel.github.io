@@ -1,5 +1,6 @@
 import { imgToCanvas } from "./imgToCanvas";
 import { uInt8ArrayToHex } from "../../../../helper/rgbToHex";
+import {sortObjectKeys} from "../../../../helper/sortFunctions";
 
 export type ColorCountArray = { [color: string]: number };
 
@@ -16,5 +17,5 @@ export function getImageColors(img: HTMLImageElement): ColorCountArray {
       }
     }
   }
-  return allColors;
+  return sortObjectKeys(allColors);
 }
