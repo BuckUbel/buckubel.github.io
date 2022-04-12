@@ -2,7 +2,6 @@ import { CanvasDrawFct } from "./useGifJs";
 import { hexToRgba, uInt8ArrayToHex } from "../../../../helper/rgbToHex";
 import { CanvasOptions, createNewCanvas } from "../helper/createNewCanvas";
 import { useState } from "react";
-import { ColorCountArray } from "../helper/getImageColors";
 
 export interface CanvasTransformConfig {
   width: number;

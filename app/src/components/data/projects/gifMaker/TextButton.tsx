@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyledCompProps } from "../../../helper/types";
-import { IconName } from "@fortawesome/fontawesome-common-types";
 import { Color } from "../../../config/color";
+import { IconLookup } from "@fortawesome/fontawesome-common-types";
 
 export interface ElementToUseProps extends StyledCompProps {
   onClick?: () => void;
@@ -11,7 +11,7 @@ export interface ElementToUseProps extends StyledCompProps {
 
 interface TextButtonProps extends ElementToUseProps {
   ElementToUse: React.ComponentType<ElementToUseProps>;
-  icons: IconName[];
+  icons: IconLookup[];
   content?: string;
   disabled?: boolean;
 }
@@ -33,7 +33,7 @@ function TextButton({
   return (
     <ElementToUse onClick={onClickHandler} {...elementToUseProps}>
       {icons.map((icon) => (
-        <FontAwesomeIcon icon={icon} />
+        <FontAwesomeIcon key={icon.iconName} icon={icon} />
       ))}
       {content.length > 0 && <p>{content}</p>}
       {children}

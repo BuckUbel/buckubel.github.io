@@ -78,7 +78,7 @@ function GifMakerEditContainer({
         icons={[faSave]}
         onClick={() => {
           if (editRef.current !== null) {
-            addToUploadedImages(editRef.current.toDataURL("image/jpeg", 1.0));
+            addToUploadedImages(editRef.current.toDataURL("image/png", 1.0));
           }
         }}
       />
@@ -92,6 +92,9 @@ function GifMakerEditContainer({
         <p className={isEditing ? "hide-gif-maker-edit-element" : ""}>
           Bearbeitung pausiert!
         </p>
+        {/*<p className={isRendering ? "" : "is-rendering-gif-maker-edit-element"}>*/}
+        {/*  Bearbeitung wird durchgeführt!*/}
+        {/*</p>*/}
         <canvas
           id={"edit-image"}
           className={
@@ -100,6 +103,9 @@ function GifMakerEditContainer({
           ref={editRef}
         />
       </div>
+      <span>
+        {editRef.current?.width ?? 0} x {editRef.current?.height ?? 0}
+      </span>
       <TextButton
         icons={[faPlus]}
         disabled={!isEditing}
@@ -148,7 +154,15 @@ export default styled(GifMakerEditContainer)`
   .edit-image-inner-container {
     margin: 10px;
 
+    #edit-image {
+      max-width: 100%;
+      height: 200px;
+    }
+
     .hide-gif-maker-edit-element {
+      display: none;
+    }
+    .is-rendering-gif-maker-edit-element {
       display: none;
     }
   }

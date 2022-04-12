@@ -2,8 +2,8 @@ import React, { CSSProperties, RefObject, useRef } from "react";
 import styled from "styled-components";
 import { StyledCompProps } from "../../../helper/types";
 import { Color } from "../../../config/color";
-import { IconName } from "@fortawesome/fontawesome-common-types";
 import ActionButton from "./ActionButton";
+import { IconLookup } from "@fortawesome/fontawesome-common-types";
 
 type ImgHTMLProps = Omit<
   React.DetailedHTMLProps<
@@ -19,7 +19,7 @@ interface ImageItemProps extends StyledCompProps, ImgHTMLProps {
   size: number;
   isSelected: boolean;
   buttons: Array<{
-    icon: IconName;
+    icon: IconLookup;
     onClick: (ref: RefObject<HTMLImageElement>) => void;
     style?: CSSProperties;
   }>;
@@ -46,11 +46,23 @@ function ImageItem({
   return (
     <div className={className + " " + extraClassName} onClick={onClick}>
       <div className={"inner-imager-container"}>
-        <img className={"display-image"} id={"display-" + id} {...imageProps} />
-        <img className={"ref-image"} id={id} ref={usedRef} {...imageProps} />
+        <img
+          alt={"visual image"}
+          className={"display-image"}
+          id={"display-" + id}
+          {...imageProps}
+        />
+        <img
+          alt={"non visual image"}
+          className={"ref-image"}
+          id={id}
+          ref={usedRef}
+          {...imageProps}
+        />
         <div className={"image-action-buttons"}>
           {buttons.map((button, index) => (
             <ActionButton
+              key={button.icon.iconName + String(index)}
               style={button.style}
               size={size / 3}
               onClick={(e: React.MouseEvent<HTMLDivElement>) => {
@@ -74,13 +86,14 @@ export default styled(ImageItem)`
   vertical-align: top;
   margin: 0 2px;
 
+  border: 2px
+    ${(props) =>
+      props.isSelected ? Color.TEXT_SECOND_COLOR : Color.TEXT_PRIME_COLOR}
+    solid;
+
   .inner-imager-container {
     position: relative;
     display: inline-block;
-    border: 2px
-      ${(props) =>
-        props.isSelected ? Color.TEXT_SECOND_COLOR : Color.TEXT_PRIME_COLOR}
-      solid;
 
     min-width: ${(props) => props.size}px;
     max-width: ${(props) => props.size}px;

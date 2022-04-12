@@ -1,5 +1,10 @@
-import {Dispatch, PropsWithChildren, PropsWithRef, SetStateAction} from "react";
-import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {
+  Dispatch,
+  PropsWithChildren,
+  PropsWithRef,
+  SetStateAction,
+} from "react";
+import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 export type CompProps<T = any> = PropsWithChildren<PropsWithRef<T>>;
 
@@ -17,9 +22,9 @@ export type StateType<S> = [S, Dispatch<SetStateAction<S>>];
 export type Class<T> = new (...args: any[]) => T;
 
 export interface AppRouteInterface {
-  href: string,
-  hrefWithoutParam?: string,
-  title: string,
+  href: string;
+  hrefWithoutParam?: string;
+  title: string;
   component: (props?: any) => JSX.Element | null;
 }
 
@@ -30,5 +35,5 @@ export interface SitePreviewInterface {
   buttonText?: string;
   icon?: IconDefinition;
   image?: string;
-  onClick?:()=>void;
+  onClick?: () => void;
 }

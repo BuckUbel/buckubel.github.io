@@ -1,12 +1,12 @@
-import React, { CSSProperties, RefObject } from "react";
+import React, { CSSProperties } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyledCompProps } from "../../../helper/types";
-import { IconName } from "@fortawesome/fontawesome-common-types";
 import { Color } from "../../../config/color";
+import { IconLookup } from "@fortawesome/fontawesome-common-types";
 
 interface ActionButtonProps extends StyledCompProps {
-  icon: IconName;
+  icon: IconLookup;
   onClick: () => void;
   style?: CSSProperties;
   size?: number;
