@@ -21,10 +21,11 @@ export default styled(BorderContainer)`
   background: ${Color.PRIME_COLOR};
   color: ${Color.TEXT_PRIME_COLOR};
 
-  width: calc(50% - 2px);
+  width: calc(50% - 12px);
   display: inline-block;
   vertical-align: top;
   min-height: 150px;
   max-height: 450px;
   overflow: auto;
+  padding: 10px 5px;
 `;

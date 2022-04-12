@@ -149,7 +149,7 @@ export const useGifJs = (propConfig?: Partial<GifJsConfig>) => {
       gif.on("finished", (blob: string) => {
         // window.open(URL.createObjectURL(blob));
         setLoading(false);
-        setGeneratedGifs([...generatedGifs, URL.createObjectURL(blob)]);
+        setGeneratedGifs([URL.createObjectURL(blob), ...generatedGifs ]);
         gif.abort();
       });
       gif.render();
