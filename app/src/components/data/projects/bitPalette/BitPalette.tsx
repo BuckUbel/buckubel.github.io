@@ -27,7 +27,7 @@ function getDefaultImageData(newSize: BitPaletteSizes) {
 const DEFAULT_TEXTAREA_INPUTS = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "F5"]
 
 function getSafeText(text: string, paletteSize: number) {
-  if (/^\d+$/.test(text)) return "";
+  if (!/^\d+$/.test(text)) return "";
   const segments = text.split("");
   return segments.map((num) => {
     if (Number(num) > paletteSize) {
@@ -42,7 +42,7 @@ interface BitPaletteProps extends StyledCompProps {
   defaultPaletteSize?: number;
 }
 
-function BitPalette({className, defaultSize = 8, defaultPaletteSize = 4}: BitPaletteProps) {
+function BitPalette({className, defaultSize = 16, defaultPaletteSize = 8}: BitPaletteProps) {
 
   // TODO: Color change -> select a color and change all pixels of this to another color
   // TODO: color palettes for 4 / 8 / 16 bits && and Bitisizer adjustable palettes
