@@ -6,8 +6,10 @@ import project1Image from "../../../images/banner1024.png";
 import project2Image from "../../../images/banner1024.png";
 import project3Image from "../../../images/banner1024.png";
 import project4Image from "../../../images/banner1024.png";
+import project5Image from "../../../images/banner1024.png";
 import MediaMasterContainer from "./MediaMaster/MediaMasterContainer";
 import GifMakerContainer from "./gifMaker/GifMakerContainer";
+import BitPalette from "./bitPalette/BitPalette";
 
 export interface ProjectEntryInterface {
   id?: number;
@@ -57,6 +59,14 @@ export const PROJECTS: ProjectEntryListInterface = {
     description: "A little tool to create gif's from images.",
     favNumber: 3,
   },
+  4: {
+    id: 4,
+    title: "BitPalette",
+    image: project5Image,
+    component: <BitPalette />,
+    description: "A little tool to use palettes on pixel art and minimize it.",
+    favNumber: 4,
+  },
 };
 export const PROJECT_IDS = Object.keys(PROJECTS);
 
@@ -75,7 +85,7 @@ export function getFavProjectId() {
 export function getFavProject() {
   let highestFavValue = 0;
   let returnProject = PROJECTS[0];
-  Object.values(PROJECTS).forEach((v, i) => {
+  Object.values(PROJECTS).forEach((v) => {
     if (highestFavValue < v.favNumber) {
       highestFavValue = v.favNumber;
       returnProject = v;
