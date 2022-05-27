@@ -8,3 +8,6 @@ export const PaletteColors = [
   "#000000",
   "#FFFFFF",
 ];
+
+export const BitPaletteSizes = [8 , 16 , 32 , 64] as const;
+export type BitPaletteSizeType = (typeof BitPaletteSizes)[number];

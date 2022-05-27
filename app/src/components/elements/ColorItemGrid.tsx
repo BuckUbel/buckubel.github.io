@@ -23,7 +23,8 @@ export default styled(ColorItemGrid)`
   grid-column-gap: 0;
   grid-row-gap: 0;
   width: 400px;
-  height: 400px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
 
   .color-rect {
     display: block;

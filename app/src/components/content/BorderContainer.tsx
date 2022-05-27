@@ -12,7 +12,7 @@ function BorderContainer({
   extraClassName = "",
   children,
 }: BorderContainerProps) {
-  return <div className={className + " " + extraClassName}>{children}</div>;
+  return <div className={className + " border-container " + extraClassName}>{children}</div>;
 }
 
 export default styled(BorderContainer)`
