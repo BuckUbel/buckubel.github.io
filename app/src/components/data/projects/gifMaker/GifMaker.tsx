@@ -72,6 +72,7 @@ function GifMaker({className, onlyVisual}: GifMakerProps) {
   // more cool function, like rotation
   // extend rotation with a minisizer, so the complete image is on each frame visible
   // TODO: Color change -> select a color and change all pixels of this to another color
+  // TODO: Anti-GifMaker https://www.npmjs.com/package/gif-to-png https://github.com/benwiley4000/gif-frames
 
   return (
     <div className={className}>
