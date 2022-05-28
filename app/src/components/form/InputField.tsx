@@ -7,22 +7,32 @@ import {TEXTCOLOR} from "../config/css";
 interface InputFieldProps<T> {
   className?: string;
   state: StateType<T>;
+  isValid?: (value: T) => boolean;
   label?: string;
+  type?:"text" | "number" | "date" | "color";
 }
 
 function InputField<T extends string | number>({
   className,
   state,
   label,
+  isValid,
+  type = "text"
 }: InputFieldProps<T>) {
   const [value, setValue] = state;
   const onChange: ChangeEventHandler<HTMLInputElement> = (ev) => {
-    setValue(ev.target.value as T)
+    const newValue = ev.target.value as T;
+    if (!!isValid && isValid(newValue)) {
+      setValue(newValue);
+    }
+    if (!isValid) {
+      setValue(newValue);
+    }
   }
   return (
     <div className={`${className} input-container`}>
       <span className={"input-label"}>{label + ": "}</span>
-      <input type={"text"} defaultValue={value} onChange={onChange}/>
+      <input type={type} value={value} onChange={onChange}/>
     </div>
   );
 }
