@@ -26,18 +26,19 @@ function BitPaletteCompressedContainer({
   const [dataString] = dataStringState
   const [showCopyText, setShowCopyText] = useState(false);
 
-  const setCompressedStringInClipboard = () => {
-
-    setShowCopyText(true);
-    setTimeout(() => {
-      setShowCopyText(false);
-    }, 2000)
-  }
-
   const srcAlphabet = Array.from({length: paletteSize}, (_, index) => String(index));
   const {getCompressedText, getUncompressedText} = useCompression(srcAlphabet, imageSize)
   const compressedString = getCompressedText(dataString);
   const unCompressedString = getUncompressedText(compressedString);
+
+  const setCompressedStringInClipboard = () => {
+    navigator.clipboard.writeText(compressedString).then(()=>{
+      setShowCopyText(true);
+      setTimeout(() => {
+        setShowCopyText(false);
+      }, 2000)
+    })
+  }
 
   return (
     <BorderContainer extraClassName={className}>
@@ -49,7 +50,7 @@ function BitPaletteCompressedContainer({
       <p className={"bitpalette-uncompressed-label"}>
         Kontrolle:
       </p>
-      <p className={"bitpalette-uncompressed-string"}>
+      <p className={(dataString === unCompressedString? "same-string ":"") + "bitpalette-uncompressed-string"}>
         {unCompressedString}
       </p>
     </BorderContainer>
@@ -73,7 +74,8 @@ export default styled(BitPaletteCompressedContainer)`
     font-size: 14px;
     overflow: hidden;
     text-overflow: ellipsis;
-
+    white-space: nowrap;
+    
     ${TEXTCOLOR(Color.TEXT_PRIME_COLOR)};
 
     background: ${Color.PRIME_COLOR};
@@ -139,5 +141,10 @@ export default styled(BitPaletteCompressedContainer)`
     font-family: monospace;
     border: 1px solid ${Color.TEXT_PRIME_COLOR};
     box-shadow: 0 0 20px -5px ${Color.TEXT_PRIME_COLOR};
+    
+    &.same-string{
+      border: 1px solid ${Color.TEXT_SUCCESS_COLOR};
+      ${TEXTCOLOR(Color.TEXT_SUCCESS_COLOR)};
+    }
   }
 `;
