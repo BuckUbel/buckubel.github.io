@@ -1,11 +1,14 @@
 import React, {ChangeEvent, ClipboardEventHandler, KeyboardEventHandler, useRef} from "react";
-import {StateType, StyledCompProps} from "../../../helper/types";
+import {StateType, StyledCompProps} from "../../../../helper/types";
 import styled from "styled-components";
-import {BitPaletteSizeType} from "./constants/Palettes";
-import BorderContainer from "../../../content/BorderContainer";
-import {Color} from "../../../config/color";
-import {DEFAULT_TEXTAREA_INPUTS} from "./constants/Default";
-import {getSafePasteText} from "./helper/getSafePasteText";
+import {BitPaletteSizeType} from "../constants/Palettes";
+import BorderContainer from "../../../../content/BorderContainer";
+import {Color} from "../../../../config/color";
+import {CTRL_TEXTAREA_INPUTS, DEFAULT_TEXTAREA_INPUTS} from "../constants/Default";
+import {getSafePasteText} from "../helper/getSafePasteText";
+import "../../gifMaker/ActionButton";
+import RoundButton from "../../../../buttons/RoundButton";
+import {getRandomInt} from "../../../../helper/math";
 
 
 interface BitPaletteTextContainerProps extends StyledCompProps {
@@ -15,11 +18,11 @@ interface BitPaletteTextContainerProps extends StyledCompProps {
 }
 
 function BitPaletteTextContainer({
-                                   className,
-                                   dataStringState,
-                                   imageSize,
-                                   paletteSize
-                                 }: BitPaletteTextContainerProps) {
+  className,
+  dataStringState,
+  imageSize,
+  paletteSize
+}: BitPaletteTextContainerProps) {
 
   const [imageDataString, setImageDataString] = dataStringState;
 
@@ -65,8 +68,8 @@ function BitPaletteTextContainer({
     }
   }
   const ignoreSomeKeyEvents: KeyboardEventHandler<HTMLTextAreaElement> = (event) => {
-    const isCopyOrPaste = event.ctrlKey && (event.key === 'v' || event.key === 'c' || event.key === 'a');
-    if (DEFAULT_TEXTAREA_INPUTS.includes(event.key) || isCopyOrPaste) {
+    const isCopyOrPaste = event.ctrlKey && CTRL_TEXTAREA_INPUTS.includes(event.key);
+    if (DEFAULT_TEXTAREA_INPUTS.includes(event.key)  || isCopyOrPaste) {
       return true
     }
     if (Number(event.key) > -1 && Number(event.key) < paletteSize) {
@@ -110,9 +113,15 @@ function BitPaletteTextContainer({
           onKeyDown={ignoreSomeKeyEvents}
           onPaste={modifyPastedText}
         />
-      {/*<p className={"image-value-display"}>*/}
-      {/*  {imageDataString}*/}
-      {/*</p>*/}
+        <RoundButton link={""} onClick={()=>{
+          let newValue = "";
+          for(let i=0; i<imageSize*imageSize;i++){
+            const paletteId = getRandomInt(0, paletteSize-1);
+            newValue+= paletteId;
+          }
+          setImageDataString(newValue)
+        }} text={"Randomize"} />
+
     </BorderContainer>
   );
 }
@@ -122,6 +131,9 @@ function getWidth({imageSize}: BitPaletteTextContainerProps) {
 }
 
 export default styled(BitPaletteTextContainer)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   .image-value-display {
     display: inline-block;
