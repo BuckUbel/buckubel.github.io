@@ -7,16 +7,16 @@ import ColorItemList from "../../../elements/ColorItemList";
 import ColorItemGrid from "../../../elements/ColorItemGrid";
 import ColorRect from "../../../elements/ColorRect";
 import {getDefaultImageData} from "./constants/ImageData";
-import BitPaletteTextContainer from "./BitPaletteTextContainer";
-import InputField from "../../../form/InputField";
+import BitPaletteTextContainer from "./bitPaletteContainer/BitPaletteTextContainer";
 import SelectionField from "../../../form/SelectionField";
+import BitPaletteCompressedContainer from "./bitPaletteContainer/BitPaletteCompressedContainer";
 
 interface BitPaletteProps extends StyledCompProps {
   defaultSize?: BitPaletteSizeType;
   defaultPaletteSize?: number;
 }
 
-function BitPalette({className, defaultSize = 16, defaultPaletteSize = 8}: BitPaletteProps) {
+function BitPalette({className, defaultSize = 8, defaultPaletteSize = 2}: BitPaletteProps) {
 
   // TODO: Color change -> select a color and change all pixels of this to another color
   // TODO: color palettes for 4 / 8 / 16 bits && and Bitisizer adjustable palettes
@@ -41,15 +41,15 @@ function BitPalette({className, defaultSize = 16, defaultPaletteSize = 8}: BitPa
     return imageDataString.split('').map(Number);
   }, [imageDataString])
 
-  const paletteSizeState = useState(4);
+  const paletteSizeState = useState(defaultPaletteSize);
   const [paletteSize, setPaletteSize] = paletteSizeState
   const [palette, setPalette] = useState<string[]>([]);
 
   useEffect(() => {
-    const newPaletteSize = Math.min(defaultPaletteSize, 8)
+    const newPaletteSize = Math.min(paletteSize, PaletteColors.length)
     setPaletteSize(newPaletteSize)
     setPalette(PaletteColors.slice(0, newPaletteSize))
-  }, [defaultPaletteSize]);
+  }, [paletteSize]);
 
   const [selectedPaletteColor, setSelectedPaletteColor] = useState(0);
 
@@ -84,12 +84,19 @@ function BitPalette({className, defaultSize = 16, defaultPaletteSize = 8}: BitPa
         </ColorItemGrid>
       </BorderContainer>
       <BorderContainer>
-        <InputField label={"Palettengröße"} state={paletteSizeState}/>
-        <SelectionField label={"Bildgröße"} state={imageSizeState} options={BitPaletteSizes}/>
+        <div className={"bitpalette-settings-container"}>
+          <SelectionField label={"Palettengröße"} state={paletteSizeState} options={[2, 3, 4, 5, 6, 7, 8]}/>
+          <SelectionField label={"Bildgröße"} state={imageSizeState} options={BitPaletteSizes}/>
+        </div>
       </BorderContainer>
       <BorderContainer>
         <ColorItemList colors={palette} onClick={changePaletteColor} selectedIndex={selectedPaletteColor}/>
       </BorderContainer>
+      <BitPaletteCompressedContainer
+        dataStringState={imageDataStringState}
+        paletteSize={paletteSize}
+        imageSize={imageSize}
+      />
     </div>
   );
 }
@@ -98,10 +105,14 @@ export default styled(BitPalette)`
   display: flex;
   flex-wrap: wrap;
 
-  .border-container{
+  .border-container {
     max-height: 400px;
   }
-  
+
+  .bitpalette-settings-container {
+    margin: 20px 10px;
+  }
+
   .color-item-list {
     margin: 20px 10px;
   }
