@@ -25,9 +25,11 @@ function SelectionField<T extends string | number>({
       <span className={"input-label"}>{label + ": "}</span>
       <div className={"input-value-container"}>
 
-        {options.map((option) => {
-          return <span className={(option === value ? "selected" : "") + " input-value"}
-                       onClick={() => setValue(option)}>
+        {options.map((option, index) => {
+          return <span
+            key={option + "-" + index}
+            className={(option === value ? "selected" : "") + " input-value"}
+            onClick={() => setValue(option)}>
           {optionLabelChanger(option)}
         </span>
 
@@ -42,7 +44,7 @@ export default styled(SelectionField)`
   width: calc(100% - 10px);
   height: 30px;
   padding: 5px;
-  
+
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -78,7 +80,7 @@ export default styled(SelectionField)`
       padding: 6px;
 
       cursor: pointer;
-      
+
       font-size: 14px;
       ${TEXTCOLOR(Color.TEXT_PRIME_COLOR)};
 
@@ -92,6 +94,7 @@ export default styled(SelectionField)`
         background: ${Color.BETA_COLOR};
         ${TEXTCOLOR(Color.TEXT_PRIME_COLOR)};
       }
+
       &.selected {
         background: ${Color.TEXT_PRIME_COLOR};
         ${TEXTCOLOR(Color.BETA_COLOR)};
