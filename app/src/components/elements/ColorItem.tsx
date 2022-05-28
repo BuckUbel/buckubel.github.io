@@ -23,19 +23,21 @@ function ColorItem({className, color, children, onClick}: ColorItemProps) {
 
 export default styled(ColorItem)`
   margin: 2px;
-  padding:4px;
+  padding: 4px;
   width: 145px;
   text-align: left;
-  border: ${({selected})=>selected? '1px solid ' + Color.TEXT_PRIME_COLOR: 'none'};
+  border: 1px solid ${({selected}) => selected ? Color.TEXT_PRIME_COLOR : 'transparent'};
+  cursor: pointer;
 
   :hover {
     background: ${Color.BETA_COLOR};
   }
-  
+
   span {
     display: inline-block;
     vertical-align: middle;
   }
+
   .color-rect {
     display: inline-block;
     width: 15px;
