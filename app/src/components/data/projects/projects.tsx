@@ -1,73 +1,96 @@
-import NameValidator from "./nameValidator/NameValidator";
-import * as React from "react";
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import AdventOfCode2020 from "./adventOfCode2020/AdventOfCode2020";
-import project1Image from "../../../images/banner1024.png";
-import project2Image from "../../../images/banner1024.png";
-import project3Image from "../../../images/banner1024.png";
-import project4Image from "../../../images/banner1024.png";
-import project5Image from "../../../images/banner1024.png";
-import MediaMasterContainer from "./MediaMaster/MediaMasterContainer";
-import GifMakerContainer from "./gifMaker/GifMakerContainer";
-import BitPalette from "./bitPalette/BitPalette";
+import NameValidator from './nameValidator/NameValidator';
+import * as React from 'react';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import AdventOfCode2020 from './adventOfCode2020/AdventOfCode2020';
+import projectDefaultImage from '../../../images/banner1024.png';
+import MediaMasterContainer from './MediaMaster/MediaMasterContainer';
+import GifMakerContainer from './gifMaker/GifMakerContainer';
+import BitPalette from './bitPalette/BitPalette';
+import { removeSpaces } from '../../helper/strings';
+import { EntryInterface } from '../../helper/getEntryInfo';
 
-export interface ProjectEntryInterface {
-  id?: number;
+export interface ProjectEntryInterface extends EntryInterface {
+  component: JSX.Element;
+  favNumber: number;
+  icon?: IconDefinition;
+}
+
+interface ProjectEntryOptions {
+  favNumber?: number;
+  icon?: IconDefinition;
+  image?: string;
+  description?: string;
+
+}
+
+type ProjectEntryConstructorValues = [
+  component: JSX.Element, title: string, options?: Partial<ProjectEntryOptions>
+];
+
+export class ProjectEntry implements ProjectEntryInterface {
+  id?: number = -1;
   title: string;
+  url: string;
   component: JSX.Element;
   favNumber: number;
   description?: string;
   icon?: IconDefinition;
   image?: string;
+
+  constructor(...args: ProjectEntryConstructorValues) {
+    const [component, title, options] = args;
+    this.component = component;
+    this.title = title;
+    this.url = removeSpaces(title).toLowerCase();
+    this.favNumber = options?.favNumber ?? -1;
+    this.description = options?.description ?? '';
+    this.image = options?.image ?? projectDefaultImage;
+    this.icon = options?.icon ?? undefined;
+  }
+
+  setId(id: number) {
+    this.id = id;
+  }
 }
 
 export type ProjectEntryListInterface = {
-  [key: number]: ProjectEntryInterface;
+  [key: string]: ProjectEntryInterface;
 };
-export const PROJECTS: ProjectEntryListInterface = {
-  0: {
-    id: 0,
-    title: "Name Validator",
-    image: project1Image,
-    component: <NameValidator />,
-    description: "The coolest validator for all names of the world.",
-    favNumber: 0,
-  },
-  1: {
-    id: 1,
-    title: "Advent of Code 2020",
-    image: project2Image,
-    component: <AdventOfCode2020 />,
-    description:
-      "An coding christmas calendar. Unfortunately, I canceled the project at an early stage.",
-    favNumber: 1,
-  },
-  2: {
-    id: 2,
-    title: "Media Master",
-    image: project3Image,
-    component: <MediaMasterContainer />,
-    description:
-      "A manager for all your media things: video games, movies, series - all such things.",
-    favNumber: 2,
-  },
-  3: {
-    id: 3,
-    title: "Simple GifMaker",
-    image: project4Image,
-    component: <GifMakerContainer />,
-    description: "A little tool to create gif's from images.",
-    favNumber: 3,
-  },
-  4: {
-    id: 4,
-    title: "BitPalette",
-    image: project5Image,
-    component: <BitPalette />,
-    description: "A little tool to use palettes on pixel art and minimize it.",
-    favNumber: 4,
-  },
-};
+
+export class ProjectEntryList implements ProjectEntryListInterface {
+  [key: string]: ProjectEntryInterface;
+
+  constructor(projectValues: Array<ProjectEntryConstructorValues>) {
+    projectValues.forEach((p, i) => {
+      const newProject = new ProjectEntry(...p);
+      newProject.setId(i);
+      this[newProject.url] = newProject;
+    });
+  }
+}
+
+export const PROJECTS: ProjectEntryListInterface = new ProjectEntryList([
+  [<NameValidator />, 'Name Validator', {
+    description: 'The coolest validator for all names of the world.',
+    favNumber: 0
+  }],
+  [<AdventOfCode2020 />, 'Advent of Code 2020', {
+    description: 'An coding christmas calendar. Unfortunately, I canceled the project at an early stage.',
+    favNumber: 1
+  }],
+  [<MediaMasterContainer />, 'Media Master', {
+    description: 'A manager for all your media things: video games, movies, series - all such things.',
+    favNumber: 2
+  }],
+  [<GifMakerContainer />, 'Simple GifMaker', {
+    description: 'A little tool to create gif\'s from images.',
+    favNumber: 3
+  }],
+  [<BitPalette />, 'BitPalette', {
+    description: 'A little tool to use palettes on pixel art and minimize it.',
+    favNumber: 4
+  }]
+]);
 export const PROJECT_IDS = Object.keys(PROJECTS);
 
 export function getFavProjectId() {
@@ -84,8 +107,9 @@ export function getFavProjectId() {
 
 export function getFavProject() {
   let highestFavValue = 0;
-  let returnProject = PROJECTS[0];
-  Object.values(PROJECTS).forEach((v) => {
+  const projectsValue = Object.values(PROJECTS);
+  let returnProject = projectsValue[0];
+  projectsValue.forEach((v) => {
     if (highestFavValue < v.favNumber) {
       highestFavValue = v.favNumber;
       returnProject = v;
@@ -94,6 +118,6 @@ export function getFavProject() {
   return returnProject;
 }
 
-export function getProjectComponent(id: number) {
-  return PROJECTS[id] !== undefined ? PROJECTS[id].component : "";
+export function getProject(url: string) {
+  return PROJECTS[url] !== undefined ? PROJECTS[url] : undefined;
 }

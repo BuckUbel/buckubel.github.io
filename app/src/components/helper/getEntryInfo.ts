@@ -1,5 +1,7 @@
-interface EntryInterface {
+export interface EntryInterface {
+  id?: number;
   title: string,
+  url: string;
   description?: string,
   image?: string;
 }
@@ -9,7 +11,7 @@ type EntryListInterface<T> = {
 }
 
 export function getEntryInfo<L extends EntryListInterface<EntryInterface>>
-(infoList: L, prop: keyof EntryInterface, id: number): string {
+(infoList: L, prop: keyof EntryInterface, id: number): string | number {
 
   const infoList_ids = Object.keys(infoList);
   let idToUse = id;

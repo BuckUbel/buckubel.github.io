@@ -1,30 +1,25 @@
-import * as React from "react";
-import Page from "../Page";
-import {useParams} from "react-router-ts";
-import {getProjectComponent, PROJECTS} from "../data/projects/projects";
-import {getRouteHref} from "../config/routes";
-import {getEntryInfo} from "../helper/getEntryInfo";
+import * as React from 'react';
+import Page from '../Page';
+import { useParams } from 'react-router-ts';
+import { getProject } from '../data/projects/projects';
+import { getRouteHref } from '../config/routes';
 
 
 function ProjectEntryPage() {
-  const params = useParams<{ id: string }>("/project/:id");
-  const maybeProjectId = parseInt(params.id);
-  const projectId: number = !isNaN(maybeProjectId) ? maybeProjectId : -1;
+  const params = useParams<{ url: string }>('/project/:url');
+  const project = getProject(params.url);
 
-  const headline = getEntryInfo(PROJECTS, "title", Number(projectId));
-  const myComponent = getProjectComponent(Number(projectId));
-
-  if (myComponent === undefined) {
-    console.error("This id is not available: ", projectId)
+  if (project === undefined) {
+    console.error('This id is not available: ', params.url);
     return null;
   }
 
   return (
     <Page
-      title={headline}
-      returnLink={getRouteHref("projects")}
+      title={project.title}
+      returnLink={getRouteHref('projects')}
     >
-      {myComponent}
+      {project.component}
     </Page>
   );
 }

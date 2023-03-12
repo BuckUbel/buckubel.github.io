@@ -2,7 +2,7 @@ import * as React from "react";
 import Page from "../Page";
 import {LangEN} from "../config/langEN";
 import ColumnsContainer from "../grid/ColumnsContainer";
-import {PROJECT_IDS, PROJECTS} from "../data/projects/projects";
+import {PROJECTS} from "../data/projects/projects";
 import SitePreview from "../content/SitePreview/SitePreview";
 import {getRouteHref} from "../config/routes";
 
@@ -14,11 +14,11 @@ function ProjectPage() {
       title={LangEN.projectTitle}
     >
       <ColumnsContainer>
-        {projects.map((v, i) =>
+        {projects.map((p, i) =>
           <SitePreview key={i}
                        id={i}
                        colCount={3}
-                       content={{...v, link: getRouteHref("projectEntry") + Number(PROJECT_IDS[i])}}
+                       content={{...p, link: getRouteHref("projectEntry") + p.url}}
           />
         )}
       </ColumnsContainer>

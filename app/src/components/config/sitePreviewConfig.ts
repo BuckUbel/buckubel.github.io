@@ -24,7 +24,7 @@ export const getSitePreviewContent = (): SitePreviewContent => ({
     icon: faProjectDiagram,
     title: "Project: " + project?.title,
     description: project?.description ?? "",
-    link: getRouteHref("projectEntry") + project?.id ?? "",
+    link: getRouteHref("projectEntry") + project?.url ?? "",
     image: favProjectImage,
   }),
   lastBlog: (blog?: BlogEntryInterface) => ({
