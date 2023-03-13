@@ -20,11 +20,11 @@ export function changeNumberBase(value: number, base: number) {
   return result.join('');
 }
 
-const getAllCombinations = function (chars: string[], length: number = chars.length) {
+const getAllCombinations = function(chars: string[], length: number = chars.length) {
   let combinations: string[] = [];
   if (length == 1) return chars;
   chars.forEach((char) => {
     combinations = combinations.concat(getAllCombinations(chars, length - 1).map((otherChars) => char + otherChars));
-  })
+  });
   return combinations;
 };

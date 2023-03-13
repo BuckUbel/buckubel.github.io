@@ -1,71 +1,79 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {StyledCompProps} from "../../../helper/types";
-import styled from "styled-components";
-import {BitPaletteSizes, BitPaletteSizeType, PaletteColors} from "./constants/Palettes";
-import BorderContainer from "../../../content/BorderContainer";
-import ColorItemList from "../../../elements/ColorItemList";
-import ColorItemGrid from "../../../elements/ColorItemGrid";
-import ColorRect from "../../../elements/ColorRect";
-import {getDefaultImageData} from "./constants/ImageData";
-import BitPaletteTextContainer from "./bitPaletteContainer/BitPaletteTextContainer";
-import SelectionField from "../../../form/SelectionField";
-import BitPaletteCompressedContainer from "./bitPaletteContainer/BitPaletteCompressedContainer";
+import React, { useEffect, useMemo, useState } from 'react';
+import { StyledCompProps } from '../../../helper/types';
+import styled from 'styled-components';
+import { BitPaletteSizes, BitPaletteSizeType, PaletteColors } from './constants/Palettes';
+import BorderContainer from '../../../content/BorderContainer';
+import ColorItemList from '../../../elements/ColorItemList';
+import ColorItemGrid from '../../../elements/ColorItemGrid';
+import ColorRect from '../../../elements/ColorRect';
+import { getDefaultImageData } from './constants/ImageData';
+import BitPaletteTextContainer from './bitPaletteContainer/BitPaletteTextContainer';
+import SelectionField from '../../../form/SelectionField';
+import BitPaletteCompressedContainer from './bitPaletteContainer/BitPaletteCompressedContainer';
+import { usePresetFromParams } from './hooks/usePresetFromParams';
 
 interface BitPaletteProps extends StyledCompProps {
   defaultSize?: BitPaletteSizeType;
   defaultPaletteSize?: number;
 }
 
-function BitPalette({className, defaultSize = 8, defaultPaletteSize = 2}: BitPaletteProps) {
+function BitPalette({ className, defaultSize = 8, defaultPaletteSize = 2 }: BitPaletteProps) {
 
   // TODO: Color change -> select a color and change all pixels of this to another color
   // TODO: color palettes for 4 / 8 / 16 bits && and Bitisizer adjustable palettes
   // TODO: compromizing sprites & gifs like https://pixelpalette.webfussel.de but compressor should use more chars
   // TODO: pixalizer -> Picross / Jigginator
 
-  const imageSizeState = useState(defaultSize);
+  const {
+    imageSizeState,
+    paletteSizeState,
+    imageDataStringState,
+    presetImageSize,
+    presetDataString
+  } = usePresetFromParams(defaultSize, defaultPaletteSize);
   const [imageSize, setImageSize] = imageSizeState;
-  const imageDataStringState = useState("");
+  const [paletteSize, setPaletteSize] = paletteSizeState;
   const [imageDataString, setImageDataString] = imageDataStringState;
-
-  useEffect(() => {
-    setImageSize(defaultSize)
-    setImageDataString(getDefaultImageData(defaultSize))
-  }, []);
-
-  useEffect(() => {
-    setImageDataString(getDefaultImageData(imageSize))
-  }, [imageSize]);
-
-  const imageData = useMemo(() => {
-    return imageDataString.split('').map(Number);
-  }, [imageDataString])
-
-  const paletteSizeState = useState(defaultPaletteSize);
-  const [paletteSize, setPaletteSize] = paletteSizeState
   const [palette, setPalette] = useState<string[]>([]);
 
   useEffect(() => {
-    const newPaletteSize = Math.min(paletteSize, PaletteColors.length)
-    setPaletteSize(newPaletteSize)
-    setPalette(PaletteColors.slice(0, newPaletteSize))
+    setImageSize(presetImageSize);
+    if (!presetDataString) {
+      setImageDataString(getDefaultImageData(presetImageSize));
+    }
+  }, [presetDataString]);
+
+  useEffect(() => {
+    if (!presetDataString) {
+      setImageDataString(getDefaultImageData(presetImageSize));
+    }
+  }, [imageSize, presetDataString]);
+
+  const imageData = useMemo(() => {
+    return imageDataString.split('').map(Number);
+  }, [imageDataString]);
+
+  useEffect(() => {
+    const newPaletteSize = Math.min(paletteSize, PaletteColors.length);
+    setPaletteSize(newPaletteSize);
+    setPalette(PaletteColors.slice(0, newPaletteSize));
   }, [paletteSize]);
 
-  const [selectedPaletteColor, setSelectedPaletteColor] = useState(0);
+  const [selectedPaletteColor, setSelectedPaletteColor] = useState(1);
 
   const changePaletteColor = (index: number) => () => {
     setSelectedPaletteColor(index);
-  }
+  };
   const changePixelColor = (index: number) => () => {
     setImageDataString((oldImageDataString) => {
       return oldImageDataString.substring(0, index) + selectedPaletteColor + oldImageDataString.substring(index + 1);
-    })
-  }
+    });
+  };
   const resetPixelColor = (index: number) => () => {
     setImageDataString((oldImageDataString) => {
       return oldImageDataString.substring(0, index) + 0 + oldImageDataString.substring(index + 1);
-    })
-  }
+    });
+  };
 
   return (
     <div className={className}>
@@ -78,19 +86,19 @@ function BitPalette({className, defaultSize = 8, defaultPaletteSize = 2}: BitPal
         <ColorItemGrid size={imageSize}>
           {[...imageData].map((v: number, i) => {
             const color = palette[v];
-            return <ColorRect key={color + "-" + i} color={color} withoutShadow onClick={changePixelColor(i)}
-                              onContextClick={resetPixelColor(i)}/>
+            return <ColorRect key={color + '-' + i} color={color} withoutShadow onClick={changePixelColor(i)}
+                              onContextClick={resetPixelColor(i)} />;
           })}
         </ColorItemGrid>
       </BorderContainer>
       <BorderContainer>
-        <div className={"bitpalette-settings-container"}>
-          <SelectionField label={"Palettengröße"} state={paletteSizeState} options={[2, 3, 4, 5, 6, 7, 8]}/>
-          <SelectionField label={"Bildgröße"} state={imageSizeState} options={BitPaletteSizes}/>
+        <div className={'bitpalette-settings-container'}>
+          <SelectionField label={'Palettengröße'} state={paletteSizeState} options={[2, 3, 4, 5, 6, 7, 8]} />
+          <SelectionField label={'Bildgröße'} state={imageSizeState} options={BitPaletteSizes} />
         </div>
       </BorderContainer>
       <BorderContainer>
-        <ColorItemList colors={palette} onClick={changePaletteColor} selectedIndex={selectedPaletteColor}/>
+        <ColorItemList colors={palette} onClick={changePaletteColor} selectedIndex={selectedPaletteColor} />
       </BorderContainer>
       <BitPaletteCompressedContainer
         dataStringState={imageDataStringState}

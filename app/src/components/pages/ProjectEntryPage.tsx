@@ -6,11 +6,11 @@ import { getRouteHref } from '../config/routes';
 
 
 function ProjectEntryPage() {
-  const params = useParams<{ url: string }>('/project/:url');
-  const project = getProject(params.url);
+  const params = useParams<{ project: string }>('/project/:project/(.*)?');
+  const project = getProject(params.project);
 
   if (project === undefined) {
-    console.error('This id is not available: ', params.url);
+    console.error('This id is not available: ', params.project);
     return null;
   }
 

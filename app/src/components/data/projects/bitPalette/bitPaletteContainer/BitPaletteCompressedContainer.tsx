@@ -27,15 +27,15 @@ function BitPaletteCompressedContainer({
   const [showCopyText, setShowCopyText] = useState(false);
 
   const setCompressedStringInClipboard = () => {
-
+    navigator.clipboard.writeText(compressedString);
     setShowCopyText(true);
     setTimeout(() => {
       setShowCopyText(false);
-    }, 2000)
+    }, 1000)
   }
 
   const srcAlphabet = Array.from({length: paletteSize}, (_, index) => String(index));
-  const {getCompressedText, getUncompressedText} = useCompression(srcAlphabet, imageSize)
+  const {getCompressedText, getUncompressedText} = useCompression( srcAlphabet, imageSize)
   const compressedString = getCompressedText(dataString);
   const unCompressedString = getUncompressedText(compressedString);
 
