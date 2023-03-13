@@ -26,8 +26,7 @@ function BitPaletteCompressedContainer({
   const [dataString] = dataStringState
   const [showCopyText, setShowCopyText] = useState(false);
 
-  const srcAlphabet = Array.from({length: paletteSize}, (_, index) => String(index));
-  const {getCompressedText, getUncompressedText} = useCompression(srcAlphabet, imageSize)
+  const {getCompressedText, getUncompressedText} = useCompression(imageSize, paletteSize)
   const compressedString = getCompressedText(dataString);
   const unCompressedString = getUncompressedText(compressedString);
 

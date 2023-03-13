@@ -25,8 +25,7 @@ export function usePresetFromParams(defaultSize: number, defaultPaletteSize: num
   const [paletteSize] = paletteSizeState;
 
   const presetDataString = params?.data ?? '';
-  const srcAlphabet = Array.from({length: paletteSize}, (_, index) => String(index));
-  const { getUncompressedText, getCompressedText } = useCompression(srcAlphabet, paletteSize);
+  const { getUncompressedText, getCompressedText } = useCompression(imageSize, paletteSize);
   const unCompressedString = getUncompressedText(presetDataString);
   const imageDataStringState = useState(unCompressedString);
   const [imageDataString] = imageDataStringState;

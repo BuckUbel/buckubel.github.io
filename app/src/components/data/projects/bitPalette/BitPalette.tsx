@@ -19,10 +19,15 @@ interface BitPaletteProps extends StyledCompProps {
 
 function BitPalette({ className, defaultSize = 8, defaultPaletteSize = 2 }: BitPaletteProps) {
 
+  // TODO: Save links in localstorage
+  // TODO: Change optic focus to image instead bits - hide them in modals
+  // TODO: Add color shadow to color rects
   // TODO: Color change -> select a color and change all pixels of this to another color
   // TODO: color palettes for 4 / 8 / 16 bits && and Bitisizer adjustable palettes
+  // TODO: Save pixels as image
   // TODO: compromizing sprites & gifs like https://pixelpalette.webfussel.de but compressor should use more chars
   // TODO: pixalizer -> Picross / Jigginator
+
 
   const {
     imageSizeState,
