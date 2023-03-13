@@ -82,14 +82,20 @@ export function useCompression(srcAlphabet: string[], imageSize: number, trgAlph
         let missingZeroCount = chunk - codeCharLength;
         if (index === segments.length - 1) {
           // Attention: the image size ist not a multiple of the chunk sizes
-          missingZeroCount = Math.max(missingZeroCount - (imageSize - chunk), chunk - codeCharLength);
+          missingZeroCount = (imageSize*imageSize -(chunk * (segments.length-1)))-codeCharLength;
         }
 
         for (let i = 0; i < missingZeroCount; i++) {
           uncompressedChar = replaceCodes[0] + uncompressedChar
         }
         unCompressedText += uncompressedChar
+
       });
+
+      const missingZeroCount = imageSize*imageSize - unCompressedText.length
+      for (let i = 0; i < missingZeroCount; i++) {
+        unCompressedText += replaceCodes[0];
+      }
     }
 
     return unCompressedText;
