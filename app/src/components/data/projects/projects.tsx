@@ -10,6 +10,7 @@ import project5Image from "../../../images/banner1024.png";
 import MediaMasterContainer from "./MediaMaster/MediaMasterContainer";
 import GifMakerContainer from "./gifMaker/GifMakerContainer";
 import BitPalette from "./bitPalette/BitPalette";
+import HeatMap from "./heatmap/HeatMap";
 
 export interface ProjectEntryInterface {
   id?: number;
@@ -65,6 +66,14 @@ export const PROJECTS: ProjectEntryListInterface = {
     image: project5Image,
     component: <BitPalette />,
     description: "A little tool to use palettes on pixel art and minimize it.",
+    favNumber: 5,
+  },
+  5: {
+    id: 5,
+    title: "HeatMap",
+    image: project5Image,
+    component: <HeatMap />,
+    description: "A little tool to use data as heatmap.",
     favNumber: 4,
   },
 };

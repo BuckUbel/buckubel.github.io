@@ -3,6 +3,42 @@ declare module "*.md" {
   export default value;
 }
 
+declare module 'reactjs-calendar-heatmap' {
+
+  export default class HeatMap extends React.Component<HeatMapProps> {
+
+  }
+
+  export interface HeatMapProps {
+    //Time series data from max a year back	none	yes
+    data: DataType[];
+    //Initial overview type (choices are: year, month, day)	year
+    overview?: 'year' | 'month' | 'day';
+    //Theme hex color	#45ff00
+    color?: string;
+    //Handler function is fired on click of a time entry in daily overview
+    handler?: () => void;
+  }
+
+  export interface DataType {
+    date: string;
+    total: number;
+    details: DetailDataType[];
+    summary?: SummaryDataType[];
+  }
+
+  export interface DetailDataType {
+    name: string;
+    date: string;
+    value: number;
+  }
+
+  export interface SummaryDataType {
+    name: string;
+    value: number;
+  }
+}
+
 declare module "gif.js.optimized/dist/gif" {
   import EventEmitter from "events";
 
