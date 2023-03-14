@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyledCompProps } from '../../../helper/types';
 import styled from 'styled-components';
-import { BitPaletteSizes, BitPaletteSizeType, PaletteColors } from './constants/Palettes';
+import { BitPaletteSizes, BitPaletteSizeType } from './constants/Palettes';
 import BorderContainer from '../../../content/BorderContainer';
 import ColorItemList from '../../../elements/ColorItemList';
 import ColorItemGrid from '../../../elements/ColorItemGrid';
@@ -11,16 +11,17 @@ import BitPaletteTextContainer from './bitPaletteContainer/BitPaletteTextContain
 import SelectionField from '../../../form/SelectionField';
 import BitPaletteCompressedContainer from './bitPaletteContainer/BitPaletteCompressedContainer';
 import { usePresetFromParams } from './hooks/usePresetFromParams';
+import BitPalettePaletteContainer from './bitPaletteContainer/BitPalettePaletteContainer';
 
 interface BitPaletteProps extends StyledCompProps {
   defaultSize?: BitPaletteSizeType;
+  defaultPaletteId?: number;
   defaultPaletteSize?: number;
 }
 
-function BitPalette({ className, defaultSize = 8, defaultPaletteSize = 2 }: BitPaletteProps) {
+function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultPaletteSize = 2 }: BitPaletteProps) {
 
   // TODO: Save links in localstorage
-  // TODO: Change optic focus to image instead bits - hide them in modals
   // TODO: Add color shadow to color rects
   // TODO: Color change -> select a color and change all pixels of this to another color
   // TODO: color palettes for 4 / 8 / 16 bits && and Bitisizer adjustable palettes
@@ -28,18 +29,21 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteSize = 2 }: BitP
   // TODO: compromizing sprites & gifs like https://pixelpalette.webfussel.de but compressor should use more chars
   // TODO: pixalizer -> Picross / Jigginator
 
-
   const {
     imageSizeState,
     paletteSizeState,
     imageDataStringState,
+    paletteIndexState,
     presetImageSize,
-    presetDataString
-  } = usePresetFromParams(defaultSize, defaultPaletteSize);
+    presetDataString,
+    palettes
+  } = usePresetFromParams(defaultSize, defaultPaletteId, defaultPaletteSize);
   const [imageSize, setImageSize] = imageSizeState;
   const [paletteSize, setPaletteSize] = paletteSizeState;
   const [imageDataString, setImageDataString] = imageDataStringState;
-  const [palette, setPalette] = useState<string[]>([]);
+  const [paletteIndex] = paletteIndexState;
+  const blurState = useState(false);
+  const [blur] = blurState;
 
   useEffect(() => {
     setImageSize(presetImageSize);
@@ -59,9 +63,8 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteSize = 2 }: BitP
   }, [imageDataString]);
 
   useEffect(() => {
-    const newPaletteSize = Math.min(paletteSize, PaletteColors.length);
+    const newPaletteSize = Math.min(paletteSize, palettes[paletteIndex].length);
     setPaletteSize(newPaletteSize);
-    setPalette(PaletteColors.slice(0, newPaletteSize));
   }, [paletteSize]);
 
   const [selectedPaletteColor, setSelectedPaletteColor] = useState(1);
@@ -79,19 +82,15 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteSize = 2 }: BitP
       return oldImageDataString.substring(0, index) + 0 + oldImageDataString.substring(index + 1);
     });
   };
+  const collapsedState = useState(true);
 
   return (
     <div className={className}>
-      <BitPaletteTextContainer
-        dataStringState={imageDataStringState}
-        imageSize={imageSize}
-        paletteSize={paletteSize}
-      />
       <BorderContainer>
         <ColorItemGrid size={imageSize}>
           {[...imageData].map((v: number, i) => {
-            const color = palette[v];
-            return <ColorRect key={color + '-' + i} color={color} withoutShadow onClick={changePixelColor(i)}
+            const color = palettes[paletteIndex][v];
+            return <ColorRect key={color + '-' + i} color={color} withoutShadow={!blur} onClick={changePixelColor(i)}
                               onContextClick={resetPixelColor(i)} />;
           })}
         </ColorItemGrid>
@@ -100,16 +99,27 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteSize = 2 }: BitP
         <div className={'bitpalette-settings-container'}>
           <SelectionField label={'Palettengröße'} state={paletteSizeState} options={[2, 3, 4, 5, 6, 7, 8]} />
           <SelectionField label={'Bildgröße'} state={imageSizeState} options={BitPaletteSizes} />
+          <SelectionField label={'Verwaschen'} state={blurState} options={[true, false]} />
         </div>
       </BorderContainer>
       <BorderContainer>
-        <ColorItemList colors={palette} onClick={changePaletteColor} selectedIndex={selectedPaletteColor} />
+        <ColorItemList colors={palettes[paletteIndex]} onClick={changePaletteColor} paletteSize={paletteSize}
+                       selectedIndex={selectedPaletteColor} />
       </BorderContainer>
+      <BitPalettePaletteContainer palettes={palettes} paletteIndexState={paletteIndexState} paletteSize={paletteSize} />
+      <BitPaletteTextContainer
+        dataStringState={imageDataStringState}
+        imageSize={imageSize}
+        paletteSize={paletteSize}
+        collapsedState={collapsedState}
+      />
       <BitPaletteCompressedContainer
         dataStringState={imageDataStringState}
         paletteSize={paletteSize}
         imageSize={imageSize}
+        collapsedState={collapsedState}
       />
+
     </div>
   );
 }
@@ -117,6 +127,7 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteSize = 2 }: BitP
 export default styled(BitPalette)`
   display: flex;
   flex-wrap: wrap;
+  align-items: stretch;
 
   .border-container {
     max-height: 400px;

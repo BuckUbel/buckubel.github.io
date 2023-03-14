@@ -12,7 +12,7 @@ interface SelectionFieldProps<T> {
   optionLabelChanger?: (option: T) => string
 }
 
-function SelectionField<T extends string | number>({
+function SelectionField<T extends string | number | boolean>({
   className,
   state,
   options,

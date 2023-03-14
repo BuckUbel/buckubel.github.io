@@ -1,12 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { StyledCompProps } from "../../../helper/types";
-import { Color } from "../../../config/color";
-import { IconLookup } from "@fortawesome/fontawesome-common-types";
+import React from 'react';
+import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { StyledCompProps } from '../../../helper/types';
+import { Color } from '../../../config/color';
+import { IconLookup } from '@fortawesome/fontawesome-common-types';
 
 export interface ElementToUseProps extends StyledCompProps {
   onClick?: () => void;
+  extraClassName?: string;
 }
 
 interface TextButtonProps extends ElementToUseProps {
@@ -14,24 +15,27 @@ interface TextButtonProps extends ElementToUseProps {
   icons: IconLookup[];
   content?: string;
   disabled?: boolean;
+  background?: string;
 }
 
 function TextButton({
-  ElementToUse = (props: ElementToUseProps) => <button {...props} />,
-  icons = [],
-  disabled = false,
-  content = "",
-  children,
-  onClick,
-  ...elementToUseProps
-}: TextButtonProps) {
+                      ElementToUse = (props: ElementToUseProps) => <button {...props} />,
+                      icons = [],
+                      disabled = false,
+                      content = '',
+                      children,
+                      onClick,
+                      extraClassName,
+                      ...elementToUseProps
+                    }: TextButtonProps) {
   const onClickHandler = () => {
     if (!disabled && onClick) {
       onClick();
     }
   };
   return (
-    <ElementToUse onClick={onClickHandler} {...elementToUseProps}>
+    <ElementToUse className={elementToUseProps.className + ' ' + extraClassName}
+                  onClick={onClickHandler} {...elementToUseProps}>
       {icons.map((icon) => (
         <FontAwesomeIcon key={icon.iconName} icon={icon} />
       ))}
@@ -48,11 +52,11 @@ export default styled(TextButton)`
   border-radius: 20px;
   border: none;
   color: ${({ disabled }) =>
-    disabled ? Color.TEXT_GREY_COLOR : Color.TEXT_PRIME_COLOR};
-  background: ${({ disabled }) =>
-    disabled ? Color.TEXT_DISABLE_COLOR : Color.BETA_COLOR};
+          disabled ? Color.TEXT_GREY_COLOR : Color.TEXT_PRIME_COLOR};
+  background: ${({ disabled, background }) =>
+          disabled ? Color.TEXT_DISABLE_COLOR : background ?? Color.BETA_COLOR};
 
-  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 
   p {
     margin: 0;

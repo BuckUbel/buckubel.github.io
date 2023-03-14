@@ -1,32 +1,37 @@
-import * as React from "react";
-import {useState} from "react";
-import {StateType, StyledCompProps} from "../../../../helper/types";
-import styled from "styled-components";
-import BorderContainer from "../../../../content/BorderContainer";
-import {TEXTCOLOR} from "../../../../config/css";
-import {Color} from "../../../../config/color";
-import {faCopy} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useCompression} from "../hooks/useCompression";
+import * as React from 'react';
+import { useState } from 'react';
+import { StateType, StyledCompProps } from '../../../../helper/types';
+import styled from 'styled-components';
+import BorderContainer from '../../../../content/BorderContainer';
+import { TEXTCOLOR } from '../../../../config/css';
+import { Color } from '../../../../config/color';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useCompression } from '../hooks/useCompression';
+import ColorRect from '../../../../elements/ColorRect';
 
 
 interface BitPaletteCompressedContainerProps extends StyledCompProps {
   dataStringState: StateType<string>;
   paletteSize: number;
   imageSize: number;
+  collapsedState: StateType<boolean>;
+  detailedControl?: boolean;
 }
 
 function BitPaletteCompressedContainer({
-  className,
-  dataStringState,
-  paletteSize,
-  imageSize
-}: BitPaletteCompressedContainerProps) {
+                                         className,
+                                         dataStringState,
+                                         paletteSize,
+                                         imageSize,
+                                         collapsedState,
+                                         detailedControl
+                                       }: BitPaletteCompressedContainerProps) {
 
-  const [dataString] = dataStringState
+  const [dataString] = dataStringState;
   const [showCopyText, setShowCopyText] = useState(false);
 
-  const {getCompressedText, getUncompressedText} = useCompression(imageSize, paletteSize)
+  const { getCompressedText, getUncompressedText } = useCompression(imageSize, paletteSize);
   const compressedString = getCompressedText(dataString);
   const unCompressedString = getUncompressedText(compressedString);
 
@@ -35,28 +40,30 @@ function BitPaletteCompressedContainer({
     setShowCopyText(true);
     setTimeout(() => {
       setShowCopyText(false);
-    }, 1000)
-  }
+    }, 1000);
+  };
 
   return (
-    <BorderContainer extraClassName={className}>
-      <p className={"bitpalette-compressed-string"} onClick={setCompressedStringInClipboard}>
+    <BorderContainer extraClassName={className} collapsedState={collapsedState}>
+      <p className={'bitpalette-compressed-string'} onClick={setCompressedStringInClipboard}>
         {compressedString}
-        <FontAwesomeIcon size={"2x"} icon={faCopy}/>
-        <span className={showCopyText ? "show-copy-text" : ""}>Kopiert!</span>
+        <FontAwesomeIcon size={'2x'} icon={faCopy} />
+        <span className={showCopyText ? 'show-copy-text' : ''}>Kopiert!</span>
       </p>
-      <p className={"bitpalette-uncompressed-label"}>
+      {!detailedControl && <p className={'bitpalette-uncompressed-label'}>
         Kontrolle:
-      </p>
-      <p className={(dataString === unCompressedString? "same-string ":"") + "bitpalette-uncompressed-string"}>
-        {unCompressedString}
-      </p>
+        <ColorRect color={dataString === unCompressedString ? Color.TEXT_SUCCESS_COLOR : Color.TEXT_ERROR_COLOR} />
+      </p>}
+      {detailedControl &&
+        <p className={(dataString === unCompressedString ? 'same-string ' : '') + 'bitpalette-uncompressed-string'}>
+          {unCompressedString}
+        </p>}
     </BorderContainer>
   );
 }
 
-function getWidth({imageSize}: BitPaletteCompressedContainerProps) {
-  return 2 + imageSize / 8 * 70 + "px"
+function getWidth({ imageSize }: BitPaletteCompressedContainerProps) {
+  return 2 + imageSize / 8 * 70 + 'px';
 }
 
 export default styled(BitPaletteCompressedContainer)`
@@ -73,7 +80,7 @@ export default styled(BitPaletteCompressedContainer)`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    
+
     ${TEXTCOLOR(Color.TEXT_PRIME_COLOR)};
 
     background: ${Color.PRIME_COLOR};
@@ -126,6 +133,13 @@ export default styled(BitPaletteCompressedContainer)`
   .bitpalette-uncompressed-label {
     display: inline-block;
     vertical-align: middle;
+
+    .color-rect {
+      width: 15px;
+      height: 15px;
+      display: inline-block;
+      margin-left: 15px;
+    }
   }
 
   .bitpalette-uncompressed-string {
@@ -139,8 +153,8 @@ export default styled(BitPaletteCompressedContainer)`
     font-family: monospace;
     border: 1px solid ${Color.TEXT_PRIME_COLOR};
     box-shadow: 0 0 20px -5px ${Color.TEXT_PRIME_COLOR};
-    
-    &.same-string{
+
+    &.same-string {
       border: 1px solid ${Color.TEXT_SUCCESS_COLOR};
       ${TEXTCOLOR(Color.TEXT_SUCCESS_COLOR)};
     }

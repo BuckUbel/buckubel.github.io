@@ -9,10 +9,10 @@ interface ColorItemProps extends StyledCompProps {
   color: string;
   onClick: () => void;
   selected: boolean;
+  disabled?: boolean;
 }
 
 function ColorItem({className, color, children, onClick}: ColorItemProps) {
-
   return (
     <div key={color} className={className + " color-item-container"} onClick={onClick}>
       <ColorRect color={color}/>
@@ -28,6 +28,7 @@ export default styled(ColorItem)`
   text-align: left;
   border: 1px solid ${({selected}) => selected ? Color.TEXT_PRIME_COLOR : 'transparent'};
   cursor: pointer;
+  filter: ${({disabled})=>disabled?"blur(2px) brightness(0.5)":""}; 
 
   :hover {
     background: ${Color.BETA_COLOR};

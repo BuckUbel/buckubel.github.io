@@ -7,22 +7,26 @@ import { Color } from '../../../../config/color';
 import { CTRL_TEXTAREA_INPUTS, DEFAULT_TEXTAREA_INPUTS } from '../constants/Default';
 import { getSafePasteText } from '../helper/getSafePasteText';
 import '../../gifMaker/ActionButton';
-import RoundButton from '../../../../buttons/RoundButton';
 import { getRandomInt } from '../../../../helper/math';
 import { getDefaultImageData } from '../constants/ImageData';
+import TextButton from '../../gifMaker/TextButton';
+import { faChessBoard, faTrash } from '@fortawesome/free-solid-svg-icons';
+import ColumnsContainer from '../../../../grid/ColumnsContainer';
 
 
 interface BitPaletteTextContainerProps extends StyledCompProps {
   dataStringState: StateType<string>;
   imageSize: BitPaletteSizeType;
   paletteSize: number;
+  collapsedState: StateType<boolean>;
 }
 
 function BitPaletteTextContainer({
                                    className,
                                    dataStringState,
                                    imageSize,
-                                   paletteSize
+                                   paletteSize,
+                                   collapsedState
                                  }: BitPaletteTextContainerProps) {
 
   const [imageDataString, setImageDataString] = dataStringState;
@@ -103,39 +107,33 @@ function BitPaletteTextContainer({
   };
 
   return (
-    <BorderContainer extraClassName={className}>
-        <textarea
-          ref={textAreaRef}
-          className={'image-value-textarea'}
-          value={imageDataString}
-          cols={imageSize}
-          rows={imageSize}
-          onChange={changeColorManually}
-          onKeyDown={ignoreSomeKeyEvents}
-          onPaste={modifyPastedText}
-        />
-      <RoundButton
-        link={''}
-        text={'Randomize'}
-        onClick={() => {
+    <BorderContainer extraClassName={className} collapsedState={collapsedState}>
+      <ColumnsContainer flexDirection={'column'}>
+        <TextButton content={'Randomize'} icons={[faChessBoard]} onClick={() => {
           let newValue = '';
           for (let i = 0; i < imageSize * imageSize; i++) {
             const paletteId = getRandomInt(0, paletteSize - 1);
             newValue += paletteId;
           }
           setImageDataString(newValue);
-        }}
+        }} />
+        <TextButton
+          content={'Reset Data'}
+          icons={[faTrash]}
+          background={Color.TEXT_ERROR_COLOR}
+          onClick={() => setImageDataString(getDefaultImageData(imageSize))}
+        />
+      </ColumnsContainer>
+      <textarea
+        ref={textAreaRef}
+        className={'image-value-textarea'}
+        value={imageDataString}
+        cols={imageSize}
+        rows={imageSize}
+        onChange={changeColorManually}
+        onKeyDown={ignoreSomeKeyEvents}
+        onPaste={modifyPastedText}
       />
-
-      <RoundButton
-        link={''}
-        text={'Reset'}
-        buttonStyle={{ background: Color.TEXT_ERROR_COLOR }}
-        onClick={() => {
-          setImageDataString(getDefaultImageData(imageSize));
-        }}
-      />
-
     </BorderContainer>
   );
 }
@@ -146,8 +144,9 @@ function getWidth({ imageSize }: BitPaletteTextContainerProps) {
 
 export default styled(BitPaletteTextContainer)`
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-evenly;
 
   .image-value-display {
     display: inline-block;
@@ -167,7 +166,8 @@ export default styled(BitPaletteTextContainer)`
     width: ${getWidth};
     font-size: 16px;
     padding: 10px;
-    margin: 20px 10px;
+    margin: 5px 10px 20px;
+
     overflow: hidden;
     background: transparent;
     border: 1px solid ${Color.TEXT_PRIME_COLOR};
