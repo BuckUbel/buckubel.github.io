@@ -21,14 +21,14 @@ export const getSitePreviewContent = (): SitePreviewContent => ({
     buttonText: "Hier",
   }),
   favProject: (project?: ProjectEntryInterface) => ({
-    icon: faProjectDiagram,
+    icon: project?.icon ?? faProjectDiagram,
     title: "Project: " + project?.title,
     description: project?.description ?? "",
     link: getRouteHref("projectEntry") + project?.url ?? "",
-    image: favProjectImage,
+    image: project?.image ?? favProjectImage,
   }),
   lastBlog: (blog?: BlogEntryInterface) => ({
-    icon: faFeatherAlt,
+    icon: blog?.icon ?? faFeatherAlt,
     title: "Blog: " + blog?.title,
     description: blog?.previewText ?? "",
     link: getRouteHref("blogEntry") + blog?.id ?? "",

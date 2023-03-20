@@ -3,11 +3,15 @@ import * as React from 'react';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import AdventOfCode2020 from './adventOfCode2020/AdventOfCode2020';
 import projectDefaultImage from '../../../images/banner1024.png';
+import bitPaletteImage from '../../../images/projects/bitpalette2.png';
+import gifmakerImage from '../../../images/projects/gifmaker.gif';
+import nameValidatorImage from '../../../images/projects/nameValidator.png';
 import MediaMasterContainer from './MediaMaster/MediaMasterContainer';
 import GifMakerContainer from './gifMaker/GifMakerContainer';
 import BitPalette from './bitPalette/BitPalette';
 import { removeSpaces } from '../../helper/strings';
 import { EntryInterface } from '../../helper/getEntryInfo';
+import { faGamepad } from '@fortawesome/free-solid-svg-icons/faGamepad';
 
 export interface ProjectEntryInterface extends EntryInterface {
   component: JSX.Element;
@@ -70,25 +74,29 @@ export class ProjectEntryList implements ProjectEntryListInterface {
 }
 
 export const PROJECTS: ProjectEntryListInterface = new ProjectEntryList([
+  [<BitPalette />, 'BitPalette', {
+    description: 'A little tool to use palettes on pixel art and minimize it.',
+    favNumber: 4,
+    image:bitPaletteImage
+  }],
+  [<GifMakerContainer />, 'Simple GifMaker', {
+    description: 'A little tool to create gif\'s from images.',
+    favNumber: 3,
+    image: gifmakerImage,
+  }],
   [<NameValidator />, 'Name Validator', {
     description: 'The coolest validator for all names of the world.',
-    favNumber: 0
+    favNumber: 0,
+    image: nameValidatorImage,
   }],
   [<AdventOfCode2020 />, 'Advent of Code 2020', {
     description: 'An coding christmas calendar. Unfortunately, I canceled the project at an early stage.',
     favNumber: 1
-  }],
+}],
   [<MediaMasterContainer />, 'Media Master', {
     description: 'A manager for all your media things: video games, movies, series - all such things.',
-    favNumber: 2
-  }],
-  [<GifMakerContainer />, 'Simple GifMaker', {
-    description: 'A little tool to create gif\'s from images.',
-    favNumber: 3
-  }],
-  [<BitPalette />, 'BitPalette', {
-    description: 'A little tool to use palettes on pixel art and minimize it.',
-    favNumber: 4
+    favNumber: 2,
+    icon: faGamepad
   }]
 ]);
 export const PROJECT_IDS = Object.keys(PROJECTS);
