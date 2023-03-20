@@ -1,53 +1,56 @@
-import * as React from "react";
-import {StyledCompProps} from "./helper/types";
-import Headline from "./header/Headline";
-import PageDescription from "./content/PageDescription";
-import ColumnsContainer from "./grid/ColumnsContainer";
-import Column from "./grid/Column";
-import SquareButton from "./buttons/SquareButton";
-import {routes} from "./config/routes";
-import styled from "styled-components";
-import {BOX_SHADOW_PIXEL} from "./config/css";
-import {useRouter} from "react-router-ts";
-import {Color} from "./config/color";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
-import RoundButton from "./buttons/RoundButton";
-import PageProvider from "../hooks/usePage/PageProvider";
-import {usePage} from "../hooks/usePage/usePage";
+import * as React from 'react';
+import { StyledCompProps } from './helper/types';
+import Headline from './header/Headline';
+import PageDescription from './content/PageDescription';
+import ColumnsContainer from './grid/ColumnsContainer';
+import Column from './grid/Column';
+import SquareButton from './buttons/SquareButton';
+import { routes } from './config/routes';
+import styled from 'styled-components';
+import { BOX_SHADOW_PIXEL } from './config/css';
+import { useRouter } from 'react-router-ts';
+import { Color } from './config/color';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import RoundButton from './buttons/RoundButton';
+import PageProvider from '../hooks/usePage/PageProvider';
+import { usePage } from '../hooks/usePage/usePage';
 
 export interface PageProps extends StyledCompProps {
   title: string;
   returnLink?: string;
   returnClick?: () => void;
   description?: string;
-  subChildren?: JSX.Element
-  topSubChildren?: JSX.Element
+  subChildren?: JSX.Element;
+  topSubChildren?: JSX.Element;
 }
 
 function Page(props: PageProps) {
   const router = useRouter();
-  const {headlineTitle, returnLink, returnClick} = usePage({link: props.returnLink, click: props.returnClick, title:props.title});
+  const { headlineTitle, returnLink, returnClick } = usePage({
+    link: props.returnLink,
+    click: props.returnClick,
+    title: props.title
+  });
 
   return (
     <div className={props.className}>
       {(!!returnLink || !!returnClick) && <RoundButton link={returnLink}
                                                        onClick={returnClick}
-                                                       icon={<FontAwesomeIcon icon={faChevronLeft}/>}
-                                                       float={"left"}
-                                                       width={"100%"}/>}
+                                                       icon={<FontAwesomeIcon icon={faChevronLeft} />}
+                                                       float={'left'} />}
       {props.topSubChildren}
       <Headline>{headlineTitle}</Headline>
-      <hr className={"top-hr-line"}/>
-      {props.description && <PageDescription style={{textAlign: "center"}} content={props.description}/>}
+      <hr className={'top-hr-line'} />
+      {props.description && <PageDescription style={{ textAlign: 'center' }} content={props.description} />}
       {props.children}
-      <hr className={"bottom-hr-line"}/>
+      <hr className={'bottom-hr-line'} />
       {router.path !== routes.kontakt.href &&
-      <ColumnsContainer>
+        <ColumnsContainer>
           <Column colCount={3}>
-              <SquareButton link={routes.kontakt.href} text={"Kontakt"}/>
+            <SquareButton link={routes.kontakt.href} text={'Kontakt'} />
           </Column>
-      </ColumnsContainer>}
+        </ColumnsContainer>}
       {props.subChildren}
     </div>
   );
@@ -127,7 +130,7 @@ const StyledPage = styled(Page)`
   }
 `;
 const PageContainer = (props: PageProps) => <PageProvider>
-  <StyledPage {...props}/>
+  <StyledPage {...props} />
 </PageProvider>;
 
 export default PageContainer;

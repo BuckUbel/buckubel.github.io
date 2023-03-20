@@ -32,6 +32,7 @@ export default styled(RoundButton)`
     position: relative;
     width: ${({width}) => width !== undefined ? width : "initial"};
     padding: 0 10px;
+    float: ${({float}) => float !== undefined ? float : "initial"};
 
     button {
         background: ${Color.BETA_COLOR};
@@ -44,7 +45,6 @@ export default styled(RoundButton)`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ${({text}) => text !== undefined ? "ellipsis" :"clip" };
-        float: ${({float}) => float !== undefined ? float : "initial"};
         transition: color 1s, background 1s;
 
         :hover {
