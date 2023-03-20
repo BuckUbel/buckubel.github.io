@@ -1,6 +1,10 @@
 import { changeNumberBase, getBaseLog } from '../../../../helper/math';
 import { useMemo } from 'react';
 
+function getSrcAlphabet(size: number) {
+  return Array.from({ length: size }, (_, index) => String(index));
+}
+
 export const TARGET_ALPHABET_NUMBERS: string[] = Array.from({ length: 10 }, (_, index) => String.fromCharCode(48 + index));
 export const TARGET_ALPHABET_BIG_LETTERS: string[] = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
 export const TARGET_ALPHABET_LITTLE_LETTERS: string[] = Array.from({ length: 26 }, (_, index) => String.fromCharCode(97 + index));
@@ -21,10 +25,20 @@ export const TARGET_ALPHABET: string[] = [
 
 const ERROR_TEXT = 'ERROR!';
 
-export function useCompression(imageSize: number, paletteSize: number, srcAlphabet: string[] = Array.from({ length: paletteSize }, (_, index) => String(index)), trgAlphabet: readonly string[] = TARGET_ALPHABET) {
+export function useCompression(imageSize: number, paletteSize: number, trgAlphabet: readonly string[] = TARGET_ALPHABET) {
 
-  const getCompressedText = (text: string) => {
+  let replaceCodes: { [code: string]: number } = {};
+  replaceCodes = useMemo(() => {
+    const newReplaceCodes: { [code: string]: number } = {};
+    trgAlphabet.forEach((char, index) => {
+      newReplaceCodes[char] = index;
+    });
+    return newReplaceCodes;
+  }, [trgAlphabet]);
 
+  const getCompressedText = (text: string, imageSize: number, paletteSize: number) => {
+
+    const srcAlphabet: string[] = getSrcAlphabet(paletteSize);
     let compressedText = '';
     const srcCharCount = srcAlphabet.length;
     const trgCharCount = trgAlphabet.length;
@@ -51,17 +65,9 @@ export function useCompression(imageSize: number, paletteSize: number, srcAlphab
     return compressedText;
   };
 
-  let replaceCodes: { [code: string]: number } = {};
-  replaceCodes = useMemo(() => {
-    const newReplaceCodes: { [code: string]: number } = {};
-    trgAlphabet.forEach((char, index) => {
-      newReplaceCodes[char] = index;
-    });
-    return newReplaceCodes;
-  }, [trgAlphabet]);
+  const getUncompressedText = (text: string, imageSize: number, paletteSize: number) => {
 
-  const getUncompressedText = (text: string) => {
-
+    const srcAlphabet: string[] = getSrcAlphabet(paletteSize);
     if (text === ERROR_TEXT) {
       return ERROR_TEXT;
     }
@@ -100,6 +106,11 @@ export function useCompression(imageSize: number, paletteSize: number, srcAlphab
 
     return unCompressedText;
   };
-
-  return { getCompressedText, getUncompressedText };
+  const _getCompressedText = (text: string, newImageSize?: number, newPaletteSize?: number) => {
+    return getCompressedText(text, newImageSize ?? imageSize, newPaletteSize ?? paletteSize);
+  };
+  const _getUncompressedText = (text: string, newImageSize?: number, newPaletteSize?: number) => {
+    return getUncompressedText(text, newImageSize ?? imageSize, newPaletteSize ?? paletteSize);
+  };
+  return { getCompressedText: _getCompressedText, getUncompressedText: _getUncompressedText };
 }

@@ -1,37 +1,46 @@
-import * as React from "react";
-import styled from "styled-components";
-import {StateType} from "../helper/types";
-import {Color} from "../config/color";
-import {TEXTCOLOR} from "../config/css";
+import * as React from 'react';
+import styled from 'styled-components';
+import { StateType } from '../helper/types';
+import { Color } from '../config/color';
+import { TEXTCOLOR } from '../config/css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
 
 interface SelectionFieldProps<T> {
   className?: string;
   state: StateType<T>;
   label?: string;
-  options: readonly T[]
-  optionLabelChanger?: (option: T) => string
+  options: readonly T[];
+  optionLabelChanger?: (option: T) => JSX.Element | string;
 }
 
 function SelectionField<T extends string | number | boolean>({
-  className,
-  state,
-  options,
-  label,
-  optionLabelChanger = (option) => String(option)
-}: SelectionFieldProps<T>) {
+                                                               className,
+                                                               state,
+                                                               options,
+                                                               label,
+                                                               optionLabelChanger = (option) => {
+                                                                 if (option === true) return <FontAwesomeIcon
+                                                                   icon={faCheck} />;
+                                                                 if (option === false) return <FontAwesomeIcon
+                                                                   icon={faTimes} />;
+                                                                 return String(option);
+                                                               }
+                                                             }: SelectionFieldProps<T>) {
   const [value, setValue] = state;
   return (
     <div className={`${className} input-container`}>
-      <span className={"input-label"}>{label + ": "}</span>
-      <div className={"input-value-container"}>
+      <span className={'input-label'}>{label + ': '}</span>
+      <div className={'input-value-container'}>
 
         {options.map((option, index) => {
           return <span
-            key={option + "-" + index}
-            className={(option === value ? "selected" : "") + " input-value"}
+            key={option + '-' + index}
+            className={(option === value ? 'selected' : '') + ' input-value'}
             onClick={() => setValue(option)}>
           {optionLabelChanger(option)}
-        </span>
+        </span>;
 
         })}
       </div>
@@ -42,7 +51,7 @@ function SelectionField<T extends string | number | boolean>({
 export default styled(SelectionField)`
   position: relative;
   width: calc(100% - 10px);
-  height: 30px;
+  //height: 30px;
   padding: 5px;
 
   display: flex;
@@ -63,9 +72,9 @@ export default styled(SelectionField)`
   .input-value-container {
     display: flex;
     align-items: stretch;
-    justify-content: space-around;
+    justify-content: space-between;
     align-content: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     flex-direction: row;
 
     vertical-align: middle;
@@ -78,6 +87,7 @@ export default styled(SelectionField)`
 
       height: 16px;
       padding: 6px;
+      margin-bottom: 3px;
 
       cursor: pointer;
 

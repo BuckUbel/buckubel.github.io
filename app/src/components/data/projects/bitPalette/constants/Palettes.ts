@@ -11,7 +11,17 @@ export const Palettes = [
   ['#FF0000', '#FF3333', '#FF6666', '#FF9999', '#FFBBBB', '#FFDDDD', '#000000', '#FFFFFF'],
   ['#FFDD00', '#FFBB00', '#FF9900', '#FF6600', '#FF3300', '#FF0000', '#000000', '#FFFFFF'],
   ['#0000FF', '#3333FF', '#6666FF', '#9999FF', '#BBBBFF', '#DDDDFF', '#000000', '#FFFFFF'],
-  ['#00000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#000000', '#FFFFFF'],
+  ['#00000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#000000', '#FFFFFF']
 ];
 
 export const PaletteColors = Palettes[0];
+
+export const Templates = {
+  'Nichts': '8/0/2/00000000000',
+  'Herz': '16/0/4/000000000001K0L01gGQa1gfQwGQggha6gggv1gggkGQggga1ggga06gga00Qga001ga0005K0000000000000',
+  'Kirschen': '16/0/4/00G0005P0006gK006gH006fGK00L0GG0004400040G0050L005KRa01kRgG1kdga0Ufwf07gcf00QaL001K000',
+  'Custom': '',
+};
+
+export const TemplateKeys: Array<keyof typeof Templates> = Object.keys(Templates) as Array<keyof typeof Templates>;
+export const TemplateValues = Object.values(Templates);

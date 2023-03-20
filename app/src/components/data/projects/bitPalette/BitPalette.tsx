@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyledCompProps } from '../../../helper/types';
 import styled from 'styled-components';
-import { BitPaletteSizes, BitPaletteSizeType } from './constants/Palettes';
+import { BitPaletteSizes, BitPaletteSizeType, TemplateKeys, Templates } from './constants/Palettes';
 import BorderContainer from '../../../content/BorderContainer';
 import ColorItemList from '../../../elements/ColorItemList';
 import ColorItemGrid from '../../../elements/ColorItemGrid';
@@ -28,15 +28,21 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
   // TODO: Save pixels as image
   // TODO: compromizing sprites & gifs like https://pixelpalette.webfussel.de but compressor should use more chars
   // TODO: pixalizer -> Picross / Jigginator
+  // TODO: Let the user move the pixels down, up, left and right
+  // TODO: ZOOM-Edit Modal
+  // TODO: Undo Redo function
+  // TODO: Preview tab
 
   const {
     imageSizeState,
     paletteSizeState,
     imageDataStringState,
     paletteIndexState,
+    templateState,
     presetImageSize,
     presetDataString,
-    palettes
+    palettes,
+    loadStateFromTemplate
   } = usePresetFromParams(defaultSize, defaultPaletteId, defaultPaletteSize);
   const [imageSize, setImageSize] = imageSizeState;
   const [paletteSize, setPaletteSize] = paletteSizeState;
@@ -44,6 +50,11 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
   const [paletteIndex] = paletteIndexState;
   const blurState = useState(false);
   const [blur] = blurState;
+  const [template] = templateState;
+
+  useEffect(() => {
+    if (template !== 'Custom') loadStateFromTemplate(Templates[template]);
+  }, [template]);
 
   useEffect(() => {
     setImageSize(presetImageSize);
@@ -91,7 +102,7 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
           {[...imageData].map((v: number, i) => {
             const color = palettes[paletteIndex][v];
             return <ColorRect key={color + '-' + i} color={color} withoutShadow={!blur} onClick={changePixelColor(i)}
-                              onContextClick={resetPixelColor(i)} />;
+                              onContextClick={resetPixelColor(i)} withHoverEffect />;
           })}
         </ColorItemGrid>
       </BorderContainer>
@@ -100,6 +111,7 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
           <SelectionField label={'Palettengröße'} state={paletteSizeState} options={[2, 3, 4, 5, 6, 7, 8]} />
           <SelectionField label={'Bildgröße'} state={imageSizeState} options={BitPaletteSizes} />
           <SelectionField label={'Verwaschen'} state={blurState} options={[true, false]} />
+          <SelectionField label={'Template'} state={templateState} options={TemplateKeys} />
         </div>
       </BorderContainer>
       <BorderContainer>
