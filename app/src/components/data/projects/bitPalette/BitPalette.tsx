@@ -12,6 +12,11 @@ import SelectionField from '../../../form/SelectionField';
 import BitPaletteCompressedContainer from './bitPaletteContainer/BitPaletteCompressedContainer';
 import { usePresetFromParams } from './hooks/usePresetFromParams';
 import BitPalettePaletteContainer from './bitPaletteContainer/BitPalettePaletteContainer';
+import ColumnsContainer from '../../../grid/ColumnsContainer';
+import TextButton from '../gifMaker/TextButton';
+import { faChessBoard, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { getRandomInt } from '../../../helper/math';
+import { Color } from '../../../config/color';
 
 interface BitPaletteProps extends StyledCompProps {
   defaultSize?: BitPaletteSizeType;
@@ -63,10 +68,8 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
   }, [presetDataString]);
 
   useEffect(() => {
-    if (!presetDataString) {
-      setImageDataString(getDefaultImageData(presetImageSize));
-    }
-  }, [imageSize, presetDataString]);
+      setImageDataString(getDefaultImageData(imageSize, imageDataString));
+  }, [imageSize]);
 
   const imageData = useMemo(() => {
     return imageDataString.split('').map(Number);
@@ -100,7 +103,7 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
       return <ColorRect key={color + '-' + i} color={color} withoutShadow={!blur} onClick={changePixelColor(i)}
                         onContextClick={resetPixelColor(i)} withHoverEffect />;
     });
-  }, [imageDataString, blur, paletteIndex]);
+  }, [imageDataString, blur, paletteIndex, imageSize, selectedPaletteColor]);
 
   return (
     <div className={className}>
@@ -123,6 +126,22 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
           <SelectionField label={'Bildgröße'} state={imageSizeState} options={BitPaletteSizes} />
           <SelectionField label={'Verwaschen'} state={blurState} options={[true, false]} />
           <SelectionField label={'Template'} state={templateState} options={TemplateKeys} />
+          <ColumnsContainer flexDirection={'column'}>
+            <TextButton content={'Randomize'} icons={[faChessBoard]} onClick={() => {
+              let newValue = '';
+              for (let i = 0; i < imageSize * imageSize; i++) {
+                const paletteId = getRandomInt(0, paletteSize - 1);
+                newValue += paletteId;
+              }
+              setImageDataString(newValue);
+            }} />
+            <TextButton
+              content={'Reset Data'}
+              icons={[faTrash]}
+              background={Color.TEXT_ERROR_COLOR}
+              onClick={() => setImageDataString(getDefaultImageData(imageSize))}
+            />
+          </ColumnsContainer>
         </div>
       </BorderContainer>
       <BorderContainer>

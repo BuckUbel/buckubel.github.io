@@ -45,15 +45,17 @@ function BitPaletteCompressedContainer({
 
   return (
     <BorderContainer extraClassName={className} collapsedState={collapsedState}>
+      {!detailedControl && <p className={'bitpalette-uncompressed-label'}>
+        Kontrolle:
+        <ColorRect color={dataString === unCompressedString ? Color.TEXT_SUCCESS_COLOR : Color.TEXT_ERROR_COLOR} />
+      </p>}
+
       <p className={'bitpalette-compressed-string'} onClick={setCompressedStringInClipboard}>
         {compressedString}
         <FontAwesomeIcon size={'2x'} icon={faCopy} />
         <span className={showCopyText ? 'show-copy-text' : ''}>Kopiert!</span>
       </p>
-      {!detailedControl && <p className={'bitpalette-uncompressed-label'}>
-        Kontrolle:
-        <ColorRect color={dataString === unCompressedString ? Color.TEXT_SUCCESS_COLOR : Color.TEXT_ERROR_COLOR} />
-      </p>}
+
       {detailedControl &&
         <p className={(dataString === unCompressedString ? 'same-string ' : '') + 'bitpalette-uncompressed-string'}>
           {unCompressedString}

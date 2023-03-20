@@ -7,11 +7,6 @@ import { Color } from '../../../../config/color';
 import { CTRL_TEXTAREA_INPUTS, DEFAULT_TEXTAREA_INPUTS } from '../constants/Default';
 import { getSafePasteText } from '../helper/getSafePasteText';
 import '../../gifMaker/ActionButton';
-import { getRandomInt } from '../../../../helper/math';
-import { getDefaultImageData } from '../constants/ImageData';
-import TextButton from '../../gifMaker/TextButton';
-import { faChessBoard, faTrash } from '@fortawesome/free-solid-svg-icons';
-import ColumnsContainer from '../../../../grid/ColumnsContainer';
 
 
 interface BitPaletteTextContainerProps extends StyledCompProps {
@@ -108,22 +103,7 @@ function BitPaletteTextContainer({
 
   return (
     <BorderContainer extraClassName={className} collapsedState={collapsedState}>
-      <ColumnsContainer flexDirection={'column'}>
-        <TextButton content={'Randomize'} icons={[faChessBoard]} onClick={() => {
-          let newValue = '';
-          for (let i = 0; i < imageSize * imageSize; i++) {
-            const paletteId = getRandomInt(0, paletteSize - 1);
-            newValue += paletteId;
-          }
-          setImageDataString(newValue);
-        }} />
-        <TextButton
-          content={'Reset Data'}
-          icons={[faTrash]}
-          background={Color.TEXT_ERROR_COLOR}
-          onClick={() => setImageDataString(getDefaultImageData(imageSize))}
-        />
-      </ColumnsContainer>
+      <p>Länge: {imageDataString.length}</p>
       <textarea
         ref={textAreaRef}
         className={'image-value-textarea'}
@@ -147,6 +127,7 @@ export default styled(BitPaletteTextContainer)`
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-evenly;
+  flex-wrap: wrap;
 
   .image-value-display {
     display: inline-block;

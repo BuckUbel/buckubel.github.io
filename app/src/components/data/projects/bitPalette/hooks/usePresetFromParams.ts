@@ -3,7 +3,8 @@ import {
   BitPaletteSizes,
   BitPaletteSizeType,
   PaletteColors,
-  Palettes, TemplateKeys,
+  Palettes,
+  TemplateKeys,
   Templates,
   TemplateValues
 } from '../constants/Palettes';
@@ -24,8 +25,8 @@ export function usePresetFromParams(defaultSize: BitPaletteSizeType, defaultPale
     data: string
   }>('/project/:project/:size?/:paletteSize?/:data?/:paletteIndex?');
 
-  function getPath(size: number, paletteSize: number, data: string, paletteIndex?: number)  {
-    return `${size}/${paletteSize}/${data}${paletteIndex!==undefined?'/'+paletteIndex:''}`;
+  function getPath(size: number, paletteSize: number, data: string, paletteIndex?: number) {
+    return `${size}/${paletteSize}/${data}${paletteIndex !== undefined ? '/' + paletteIndex : ''}`;
   }
 
   const { getCompressedText: getDefaultCompressedText } = useCompression(defaultSize, defaultPaletteSize);
@@ -33,7 +34,8 @@ export function usePresetFromParams(defaultSize: BitPaletteSizeType, defaultPale
     if (!params.size || !params.paletteIndex || !params.paletteSize || !params.data) {
       const presetDefaultData = getDefaultImageData(defaultSize);
       const presetCompressedString = getDefaultCompressedText(presetDefaultData);
-      router.history.push(BITPALETTE_URL+getPath(defaultSize, defaultPaletteSize, presetCompressedString, defaultPaletteIndex));
+      const newPath = getPath(defaultSize, defaultPaletteSize, presetCompressedString, defaultPaletteIndex);
+      router.history.push(BITPALETTE_URL + newPath);
     }
   }, [params.size, params.paletteIndex, params.paletteSize, params.data]);
 
@@ -66,17 +68,16 @@ export function usePresetFromParams(defaultSize: BitPaletteSizeType, defaultPale
   const [, setTemplate] = templateState;
 
   useEffect(() => {
-    const compressedText = getCompressedText(imageDataString);
+    const compressedText = getCompressedText(getDefaultImageData(imageSize, imageDataString));
     let newPath = getPath(imageSize, paletteSize, compressedText);
     const templateIndex = TemplateValues.findIndex(val => val === newPath);
     if (templateIndex > -1) {
       setTemplate(TemplateKeys[templateIndex]);
-    }
-    else {
-      setTemplate("Custom");
+    } else {
+      setTemplate('Custom');
     }
     newPath = getPath(imageSize, paletteSize, compressedText, paletteIndex);
-    router.history.push(BITPALETTE_URL+newPath);
+    router.history.push(BITPALETTE_URL + newPath);
   }, [imageSize, paletteIndex, paletteSize, imageDataString]);
 
   const loadStateFromTemplate = (template: string) => {
