@@ -17,9 +17,9 @@ export const Palettes = [
 export const PaletteColors = Palettes[0];
 
 export const Templates = {
-  'Nichts': '8/0/2/00000000000',
-  'Herz': '16/0/4/000000000001K0L01gGQa1gfQwGQggha6gggv1gggkGQggga1ggga06gga00Qga001ga0005K0000000000000',
-  'Kirschen': '16/0/4/00G0005P0006gK006gH006fGK00L0GG0004400040G0050L005KRa01kRgG1kdga0Ufwf07gcf00QaL001K000',
+  'Nichts': '8/2/00000000000',
+  'Herz': '16/4/000000000001K0L01gGQa1gfQwGQggha6gggv1gggkGQggga1ggga06gga00Qga001ga0005K0000000000000',
+  'Kirschen': '16/4/00G0005P0006gK006gH006fGK00L0GG0004400040G0050L005KRa01kRgG1kdga0Ufwf07gcf00QaL001K000',
   'Custom': '',
 };
 

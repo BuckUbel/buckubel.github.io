@@ -22,10 +22,10 @@ export function usePresetFromParams(defaultSize: BitPaletteSizeType, defaultPale
     paletteIndex: string,
     paletteSize: string,
     data: string
-  }>('/project/:project/:size?/:paletteIndex?/:paletteSize?/:data?');
+  }>('/project/:project/:size?/:paletteSize?/:data?/:paletteIndex?');
 
-  function getPath(size: number, paletteIndex: number, paletteSize: number, data: string) {
-    return `${size}/${paletteIndex}/${paletteSize}/${data}`;
+  function getPath(size: number, paletteSize: number, data: string, paletteIndex?: number)  {
+    return `${size}/${paletteSize}/${data}${paletteIndex!==undefined?'/'+paletteIndex:''}`;
   }
 
   const { getCompressedText: getDefaultCompressedText } = useCompression(defaultSize, defaultPaletteSize);
@@ -33,7 +33,7 @@ export function usePresetFromParams(defaultSize: BitPaletteSizeType, defaultPale
     if (!params.size || !params.paletteIndex || !params.paletteSize || !params.data) {
       const presetDefaultData = getDefaultImageData(defaultSize);
       const presetCompressedString = getDefaultCompressedText(presetDefaultData);
-      router.history.push(BITPALETTE_URL+getPath(defaultSize, defaultPaletteIndex, defaultPaletteSize, presetCompressedString));
+      router.history.push(BITPALETTE_URL+getPath(defaultSize, defaultPaletteSize, presetCompressedString, defaultPaletteIndex));
     }
   }, [params.size, params.paletteIndex, params.paletteSize, params.data]);
 
@@ -49,7 +49,7 @@ export function usePresetFromParams(defaultSize: BitPaletteSizeType, defaultPale
   const parsedPresetPaletteIndex = parseInt(params?.paletteIndex);
   const presetPaletteIndex = parsedPresetPaletteIndex < palettes.length ? parsedPresetPaletteIndex : defaultPaletteIndex;
   const paletteIndexState = useState(presetPaletteIndex);
-  const [paletteIndex, setPaletteIndex] = paletteIndexState;
+  const [paletteIndex] = paletteIndexState;
 
   const parsedPresetPaletteSize = parseInt(params?.paletteSize);
   const presetPaletteSize = parsedPresetPaletteSize <= PaletteColors.length ? parsedPresetPaletteSize : defaultPaletteSize;
@@ -67,7 +67,7 @@ export function usePresetFromParams(defaultSize: BitPaletteSizeType, defaultPale
 
   useEffect(() => {
     const compressedText = getCompressedText(imageDataString);
-    const newPath = getPath(imageSize, paletteIndex, paletteSize, compressedText);
+    let newPath = getPath(imageSize, paletteSize, compressedText);
     const templateIndex = TemplateValues.findIndex(val => val === newPath);
     if (templateIndex > -1) {
       setTemplate(TemplateKeys[templateIndex]);
@@ -75,6 +75,7 @@ export function usePresetFromParams(defaultSize: BitPaletteSizeType, defaultPale
     else {
       setTemplate("Custom");
     }
+    newPath = getPath(imageSize, paletteSize, compressedText, paletteIndex);
     router.history.push(BITPALETTE_URL+newPath);
   }, [imageSize, paletteIndex, paletteSize, imageDataString]);
 
@@ -82,15 +83,13 @@ export function usePresetFromParams(defaultSize: BitPaletteSizeType, defaultPale
     if (template) {
 
       const templateData = template.split('/');
-      const [size, paletteIndex, paletteSize, data] = templateData;
+      const [size, paletteSize, data] = templateData;
 
-      if (!!size && !!paletteIndex && !!paletteSize && !!data) {
+      if (!!size && !!paletteSize && !!data) {
         const newImageSize = Number(size) as BitPaletteSizeType;
         const newPaletteSize = Number(paletteSize);
-        const newPaletteIndex = Number(paletteIndex);
         const uncompressedData = getUncompressedText(data, newImageSize, newPaletteSize);
         setImageSize(newImageSize);
-        setPaletteIndex(newPaletteIndex);
         setPaletteSize(newPaletteSize);
         setImageDataString(uncompressedData);
       }
