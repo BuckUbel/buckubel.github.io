@@ -26,7 +26,7 @@ function BorderContainer({
   }
   const withCollapsedState = !!collapsedState;
 
-  return <div className={className}>
+  return <div className={className + " border-container-outer"}>
     {withCollapsedState && <>
       <TextButton className={'toggle-button' + (collapsed ? ' collapsed' : '')} background={Color.ALPHA_COLOR}
                   icons={[faArrowUp]}

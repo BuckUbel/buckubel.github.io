@@ -17,6 +17,8 @@ import TextButton from '../gifMaker/TextButton';
 import { faChessBoard, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { getRandomInt } from '../../../helper/math';
 import { Color } from '../../../config/color';
+import Modal from '../../../modal/Modal';
+import { faExpand } from '@fortawesome/free-solid-svg-icons/faExpand';
 
 interface BitPaletteProps extends StyledCompProps {
   defaultSize?: BitPaletteSizeType;
@@ -34,7 +36,6 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
   // TODO: compromizing sprites & gifs like https://pixelpalette.webfussel.de but compressor should use more chars
   // TODO: pixalizer -> Picross / Jigginator
   // TODO: Let the user move the pixels down, up, left and right
-  // TODO: ZOOM-Edit Modal
   // TODO: Undo Redo function
 
   const {
@@ -68,7 +69,7 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
   }, [presetDataString]);
 
   useEffect(() => {
-      setImageDataString(getDefaultImageData(imageSize, imageDataString));
+    setImageDataString(getDefaultImageData(imageSize, imageDataString));
   }, [imageSize]);
 
   const imageData = useMemo(() => {
@@ -105,16 +106,42 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
     });
   }, [imageDataString, blur, paletteIndex, imageSize, selectedPaletteColor]);
 
+  const openModalState = useState(false);
+  const [openModal, setOpenModal] = openModalState;
+
+  if (openModal) {
+    return <div className={className}>
+      <Modal
+        title={`Draw Pixel!`}
+        isOpen={openModal}
+        onClose={async () => {
+          if (document.exitFullscreen) {
+            await document.exitFullscreen();
+          }
+          setOpenModal(false);
+        }}
+      >
+        <BorderContainer extraClassName={'modal-palette'}>
+          <ColorItemList colors={palettes[paletteIndex]} onClick={changePaletteColor} paletteSize={paletteSize}
+                         selectedIndex={selectedPaletteColor} />
+        </BorderContainer>
+        <BorderContainer extraClassName={'modal-colorgrid'}>
+          <ColorItemGrid size={imageSize} pixelSize={'800px'}>{colorRects}</ColorItemGrid>
+        </BorderContainer>
+      </Modal>;
+    </div>;
+  }
+
   return (
     <div className={className}>
-      <BorderContainer extraClassName={"image-preview-container"}
+      <BorderContainer extraClassName={'image-preview-container'}
                        collapsedState={collapsedState}
       >
-        <ColorItemGrid pixelSize={imageSize+"px"} size={imageSize}>{colorRects}</ColorItemGrid>
-        <ColorItemGrid pixelSize={"16px"} size={imageSize}>{colorRects}</ColorItemGrid>
-        <ColorItemGrid pixelSize={"32px"} size={imageSize}>{colorRects}</ColorItemGrid>
-        <ColorItemGrid pixelSize={"64px"} size={imageSize}>{colorRects}</ColorItemGrid>
-        <ColorItemGrid pixelSize={"128px"} size={imageSize}>{colorRects}</ColorItemGrid>
+        <ColorItemGrid pixelSize={imageSize + 'px'} size={imageSize}>{colorRects}</ColorItemGrid>
+        <ColorItemGrid pixelSize={'16px'} size={imageSize}>{colorRects}</ColorItemGrid>
+        <ColorItemGrid pixelSize={'32px'} size={imageSize}>{colorRects}</ColorItemGrid>
+        <ColorItemGrid pixelSize={'64px'} size={imageSize}>{colorRects}</ColorItemGrid>
+        <ColorItemGrid pixelSize={'128px'} size={imageSize}>{colorRects}</ColorItemGrid>
       </BorderContainer>
       <BorderContainer
         collapsedState={collapsedState}
@@ -127,6 +154,18 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
           <SelectionField label={'Verwaschen'} state={blurState} options={[true, false]} />
           <SelectionField label={'Template'} state={templateState} options={TemplateKeys} />
           <ColumnsContainer flexDirection={'column'}>
+            <TextButton
+              content={'Fullscreen'}
+              icons={[faExpand]}
+              background={Color.GAMMA_COLOR}
+              onClick={async () => {
+                setOpenModal(true);
+                const bodyEl = document.getElementsByTagName('body')[0];
+                if (bodyEl.requestFullscreen) {
+                  await bodyEl.requestFullscreen();
+                }
+              }}
+            />
             <TextButton content={'Randomize'} icons={[faChessBoard]} onClick={() => {
               let newValue = '';
               for (let i = 0; i < imageSize * imageSize; i++) {
@@ -175,12 +214,12 @@ export default styled(BitPalette)`
     max-height: 400px;
   }
 
-  .image-preview-container{
+  .image-preview-container {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
   }
-  
+
   .bitpalette-settings-container {
     margin: 20px 10px;
   }
@@ -191,5 +230,26 @@ export default styled(BitPalette)`
 
   .color-item-grid {
     margin: 0 auto
+  }
+
+  .modal {
+    left: 0;
+    top: 0;
+    width: unset;
+    max-height: unset;
+
+    .border-container-outer {
+      width: calc(100% - 10px);
+
+      .modal-palette {
+        max-height: 100px;
+        min-height: 100px;
+        overflow: hidden;
+      }
+
+      .modal-colorgrid {
+        max-height: unset;
+      }
+    }
   }
 `;
