@@ -33,7 +33,6 @@ export function usePresetFromParams(defaultSize: BitPaletteSizeType, defaultPale
     if (!params.size || !params.paletteIndex || !params.paletteSize || !params.data) {
       const presetDefaultData = getDefaultImageData(defaultSize);
       const presetCompressedString = getDefaultCompressedText(presetDefaultData);
-      console.log('Default loading');
       router.history.push(BITPALETTE_URL+getPath(defaultSize, defaultPaletteIndex, defaultPaletteSize, presetCompressedString));
     }
   }, [params.size, params.paletteIndex, params.paletteSize, params.data]);
@@ -70,7 +69,6 @@ export function usePresetFromParams(defaultSize: BitPaletteSizeType, defaultPale
     const compressedText = getCompressedText(imageDataString);
     const newPath = getPath(imageSize, paletteIndex, paletteSize, compressedText);
     const templateIndex = TemplateValues.findIndex(val => val === newPath);
-    console.log(TemplateValues, newPath)
     if (templateIndex > -1) {
       setTemplate(TemplateKeys[templateIndex]);
     }

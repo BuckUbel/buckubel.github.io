@@ -5,6 +5,7 @@ import {StyledCompProps} from "../helper/types";
 
 interface ColorItemGridProps extends StyledCompProps {
   size: number;
+  pixelSize?: number;
 }
 
 function ColorItemGrid({className, children}: ColorItemGridProps) {
@@ -22,7 +23,8 @@ export default styled(ColorItemGrid)`
   grid-template-rows: repeat(${({size}) => size}, 1fr);
   grid-column-gap: 0;
   grid-row-gap: 0;
-  width: 400px;
+  width: ${({pixelSize}) => pixelSize ?? "400px"};
+  height: ${({pixelSize}) => pixelSize ?? "400px"};
   max-width: 100%;
   aspect-ratio: 1 / 1;
 

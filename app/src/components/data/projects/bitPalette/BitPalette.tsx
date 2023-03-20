@@ -31,7 +31,6 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
   // TODO: Let the user move the pixels down, up, left and right
   // TODO: ZOOM-Edit Modal
   // TODO: Undo Redo function
-  // TODO: Preview tab
 
   const {
     imageSizeState,
@@ -95,17 +94,29 @@ function BitPalette({ className, defaultSize = 8, defaultPaletteId = 0, defaultP
   };
   const collapsedState = useState(true);
 
+  const colorRects = useMemo(() => {
+    return [...imageData].map((v: number, i) => {
+      const color = palettes[paletteIndex][v];
+      return <ColorRect key={color + '-' + i} color={color} withoutShadow={!blur} onClick={changePixelColor(i)}
+                        onContextClick={resetPixelColor(i)} withHoverEffect />;
+    });
+  }, [imageDataString, blur, paletteIndex]);
+
   return (
     <div className={className}>
-      <BorderContainer>
-        <ColorItemGrid size={imageSize}>
-          {[...imageData].map((v: number, i) => {
-            const color = palettes[paletteIndex][v];
-            return <ColorRect key={color + '-' + i} color={color} withoutShadow={!blur} onClick={changePixelColor(i)}
-                              onContextClick={resetPixelColor(i)} withHoverEffect />;
-          })}
-        </ColorItemGrid>
+      <BorderContainer extraClassName={"image-preview-container"}
+                       collapsedState={collapsedState}
+      >
+        <ColorItemGrid pixelSize={imageSize+"px"} size={imageSize}>{colorRects}</ColorItemGrid>
+        <ColorItemGrid pixelSize={"16px"} size={imageSize}>{colorRects}</ColorItemGrid>
+        <ColorItemGrid pixelSize={"32px"} size={imageSize}>{colorRects}</ColorItemGrid>
+        <ColorItemGrid pixelSize={"64px"} size={imageSize}>{colorRects}</ColorItemGrid>
+        <ColorItemGrid pixelSize={"128px"} size={imageSize}>{colorRects}</ColorItemGrid>
       </BorderContainer>
+      <BorderContainer
+        collapsedState={collapsedState}
+      ></BorderContainer>
+      <BorderContainer><ColorItemGrid size={imageSize}>{colorRects}</ColorItemGrid></BorderContainer>
       <BorderContainer>
         <div className={'bitpalette-settings-container'}>
           <SelectionField label={'Palettengröße'} state={paletteSizeState} options={[2, 3, 4, 5, 6, 7, 8]} />
@@ -145,6 +156,12 @@ export default styled(BitPalette)`
     max-height: 400px;
   }
 
+  .image-preview-container{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
   .bitpalette-settings-container {
     margin: 20px 10px;
   }
