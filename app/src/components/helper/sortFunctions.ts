@@ -25,7 +25,7 @@ export function sortNumber<ObjectType>(key: keyof FilteredOnType<ObjectType, num
 }
 
 export function sortObjectKeys<ObjectType>(anyObject: ObjectType): ObjectType {
-  return Object.keys(anyObject).sort().reduce(
+  return Object.keys(anyObject as Object).sort().reduce(
     (obj, key) => {
       obj[key as keyof ObjectType] = anyObject[key as keyof ObjectType];
       return obj;

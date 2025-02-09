@@ -1,6 +1,6 @@
 import NameValidator from './nameValidator/NameValidator';
 import * as React from 'react';
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import {faFileImage, faImage, faImages, IconDefinition} from '@fortawesome/free-solid-svg-icons';
 import AdventOfCode2020 from './adventOfCode2020/AdventOfCode2020';
 import projectDefaultImage from '../../../images/banner1024.png';
 import bitPaletteImage from '../../../images/projects/bitpalette2.png';
@@ -12,6 +12,7 @@ import BitPalette from './bitPalette/BitPalette';
 import { removeSpaces } from '../../helper/strings';
 import { EntryInterface } from '../../helper/getEntryInfo';
 import { faGamepad } from '@fortawesome/free-solid-svg-icons/faGamepad';
+import BouncingBalls from "./bouncingBalls/BouncingBalls";
 
 export interface ProjectEntryInterface extends EntryInterface {
   component: JSX.Element;
@@ -77,17 +78,24 @@ export const PROJECTS: ProjectEntryListInterface = new ProjectEntryList([
   [<BitPalette />, 'BitPalette', {
     description: 'A little tool to use palettes on pixel art and minimize it.',
     favNumber: 4,
-    image:bitPaletteImage
+    image:bitPaletteImage,
+    icon: faFileImage
   }],
   [<GifMakerContainer />, 'Simple GifMaker', {
     description: 'A little tool to create gif\'s from images.',
     favNumber: 3,
     image: gifmakerImage,
+    icon: faImages
   }],
   [<NameValidator />, 'Name Validator', {
     description: 'The coolest validator for all names of the world.',
     favNumber: 0,
     image: nameValidatorImage,
+  }],
+  [<BouncingBalls />, 'Bouncing Balls', {
+    description: 'A little simulation of colorful, animated balls that move, bounce, collide with each other, and respond to mouse interactions such as dragging.',
+    favNumber: 3,
+    icon: faGamepad
   }],
   [<AdventOfCode2020 />, 'Advent of Code 2020', {
     description: 'An coding christmas calendar. Unfortunately, I canceled the project at an early stage.',
