@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { GameEntityType } from "../../mediaTypes/GameEntityType";
 import { StateType } from "../../../../../helper/types";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 interface GameEntityPreviewHeadlineProps {
   className?: string;
@@ -37,7 +38,7 @@ function GameEntityPreviewHeadline({
         onClick ? (
           <RoundButton
             style={{ verticalAlign: "middle", width: "34px" }}
-            icon={<FontAwesomeIcon icon={faChevronRight} />}
+            icon={<FontAwesomeIcon icon={faChevronRight as IconProp} />}
             onClick={onClick}
           />
         ) : undefined

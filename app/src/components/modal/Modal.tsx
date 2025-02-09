@@ -5,6 +5,7 @@ import { Color } from "../config/color";
 import { TEXTCOLOR } from "../config/css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 interface ModalProps extends CompProps {
   className?: string;
@@ -29,7 +30,7 @@ function Modal(props: ModalProps) {
             className={"modal-header-close-button"}
             onClick={props.onClose}
           >
-            <FontAwesomeIcon size={"2x"} icon={faTimes} />
+            <FontAwesomeIcon size={"2x"} icon={faTimes as IconProp} />
           </button>
         </div>
         <div className={"modal-content"}>{props.children}</div>

@@ -15,6 +15,7 @@ import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import RoundButton from './buttons/RoundButton';
 import PageProvider from '../hooks/usePage/PageProvider';
 import { usePage } from '../hooks/usePage/usePage';
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 export interface PageProps extends StyledCompProps {
   title: string;
@@ -37,7 +38,7 @@ function Page(props: PageProps) {
     <div className={props.className}>
       {(!!returnLink || !!returnClick) && <RoundButton link={returnLink}
                                                        onClick={returnClick}
-                                                       icon={<FontAwesomeIcon icon={faChevronLeft} />}
+                                                       icon={<FontAwesomeIcon icon={faChevronLeft as IconProp} />}
                                                        float={'left'} />}
       {props.topSubChildren}
       <Headline>{headlineTitle}</Headline>

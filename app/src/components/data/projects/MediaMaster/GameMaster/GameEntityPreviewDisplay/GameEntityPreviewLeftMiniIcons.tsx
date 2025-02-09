@@ -14,6 +14,7 @@ import {
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { GameEntityType } from "../../mediaTypes/GameEntityType";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 interface GameEntityPreviewLeftMiniIconsProps {
   className?: string;
@@ -48,12 +49,12 @@ function GameEntityPreviewLeftMiniIcons({
   return (
     <SitePreviewMiniIcons icons={leftIcons} direction={"left"}>
       <span className="fa-layers fa-fw fa-2x">
-        <FontAwesomeIcon icon={faGamepad} />
+        <FontAwesomeIcon icon={faGamepad as IconProp} />
         {notYetPlayed && (
-          <FontAwesomeIcon icon={faTimes} transform="shrink-5" color={"#f00"} />
+          <FontAwesomeIcon icon={faTimes as IconProp} transform="shrink-5" color={"#f00"} />
         )}
         {alreadyCompleted && (
-          <FontAwesomeIcon icon={faCheck} transform="shrink-5" color={"#0f0"} />
+          <FontAwesomeIcon icon={faCheck as IconProp} transform="shrink-5" color={"#0f0"} />
         )}
       </span>
       <span>

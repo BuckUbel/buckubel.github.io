@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Color} from "../../config/color";
 import {TEXTCOLOR} from "../../config/css";
-import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {faAddressBook, IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 interface SitePreviewBubbleProps {
   className?: string;
@@ -16,7 +17,7 @@ function SitePreviewBubble(props: SitePreviewBubbleProps) {
   return (
     <div className={props.className}>
       <div className={`site-preview-bubble ${props.isHover ? "hovered" : ""}`}>
-        {!!props.icon && <FontAwesomeIcon size={"2x"} icon={props.icon}/>}
+        {!!props.icon && <FontAwesomeIcon size={"2x"} icon={props.icon as IconProp}/>}
       </div>
     </div>
   );

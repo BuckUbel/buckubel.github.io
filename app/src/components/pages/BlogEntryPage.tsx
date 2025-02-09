@@ -7,6 +7,7 @@ import {routes} from "../config/routes";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
 import {useBlogs} from "../data/blogs/useBlogs";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 function BlogEntryPage() {
   const params = useParams<{ id: string }>("/blog/:id");
@@ -22,7 +23,7 @@ function BlogEntryPage() {
       title={blogEntry.title}
       description={blogEntry.previewText}
       topSubChildren={<div style={{textAlign: "left"}}>
-        <RoundButton link={routes.blog.href} icon={<FontAwesomeIcon icon={faChevronLeft}/>}
+        <RoundButton link={routes.blog.href} icon={<FontAwesomeIcon icon={faChevronLeft as IconProp}/>}
                      text={" blog list"}/>
       </div>}
     >

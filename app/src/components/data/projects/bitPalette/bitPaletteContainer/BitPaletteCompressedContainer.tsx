@@ -9,6 +9,7 @@ import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useCompression } from '../hooks/useCompression';
 import ColorRect from '../../../../elements/ColorRect';
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 
 interface BitPaletteCompressedContainerProps extends StyledCompProps {
@@ -52,7 +53,7 @@ function BitPaletteCompressedContainer({
 
       <p className={'bitpalette-compressed-string'} onClick={setCompressedStringInClipboard}>
         {compressedString}
-        <FontAwesomeIcon size={'2x'} icon={faCopy} />
+        <FontAwesomeIcon size={'2x'} icon={faCopy as IconProp} />
         <span className={showCopyText ? 'show-copy-text' : ''}>Kopiert!</span>
       </p>
 
