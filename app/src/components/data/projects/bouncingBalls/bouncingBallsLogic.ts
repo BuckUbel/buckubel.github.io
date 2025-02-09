@@ -19,7 +19,8 @@ export class Game {
   ballColliding: boolean = false;
   isRunning: boolean = false;
 
-  gravity = 0.9;
+  gravity = 9.81;
+  minGroundDist = 0.8;
   fps = 30;
   updateInterval = 1000 / this.fps; // 30 Mal pro Sekunde
 
@@ -119,11 +120,13 @@ export class Ball {
   positionY = 0;
   ballPressed = false;
   velocityX = 0 //this.getRandomVelocity();
-  velocityY = 0;
+  velocityY = 9.81;
   // velocityY = this.getRandomVelocity();
-  bounceFactor = 0.7;
+  bounceFactor = 0.8; // 0.3 - 0.9
+  lastBounceHeight = 0;
+  groundFrictionX = 0.05;
   frictionX = 0.0;
-  frictionY = 0.0;
+  frictionY = 0.05;
   collidedBalls: ObjectArray<boolean> = {};
 
   MAX_VELOCITY_X = 10;
@@ -133,6 +136,8 @@ export class Ball {
   lastUpdateTime = performance.now();
   timeDelta = 0;
 
+  maxHeight = 0;
+  maxWidth = 0;
 
   constructor(game: Game) {
     this.game = game;
@@ -148,10 +153,11 @@ export class Ball {
     this.circle.style.left = "0";
     this.circle.style.top = "0";
     this.circle.style.zIndex = "1000";
-    this.game.parentElement.appendChild(this.circle);
-
     this.positionX = this.getRandomPosition(this.game.width - this.ballSizeX);
     this.positionY = this.getRandomPosition(this.game.height - this.ballSizeY);
+
+    this.game.parentElement.appendChild(this.circle);
+    this.updateMaxGameSize();
 
     // Event Listener binden zum clean up
     this.mouseDown = this.mouseDown.bind(this);
@@ -205,36 +211,35 @@ export class Ball {
 
   // Funktion zum Bewegen des Balls
   movingBall(event?: MouseEvent) {
+
     if (!this?.game?.isRunning) return;
 
-    // Zeit seit dem letzten Update berechnen
-    var currentTime = performance.now();
-    this.timeDelta += currentTime - this.lastUpdateTime;
+    // Zeit seit dem letzten Frame berechnen
+    const currentTime = performance.now();
+    this.timeDelta += (currentTime - this.lastUpdateTime);
     this.lastUpdateTime = currentTime;
 
-    // Die Position des Balls basierend auf der Mausposition aktualisieren
-    if (this.ballPressed && !!event) {
-      const parentBounds = this.game.parentElement.getBoundingClientRect(); // Position des Eltern-Elements
-      // Berechne die neue X-Position innerhalb der Spielgrenzen
-      let newPositionX = event.clientX - parentBounds.left - this.ballSizeX / 2;
-      newPositionX = Math.max(0, Math.min(newPositionX, this.game.width - this.ballSizeX));
-      this.setPositionX(newPositionX);
-
-      // Berechne die neue Y-Position innerhalb der Spielgrenzen
-      let newPositionY = event.clientY - parentBounds.top - this.ballSizeY / 2;
-      newPositionY = Math.max(0, Math.min(newPositionY, this.game.height - this.ballSizeY));
-      this.setPositionY(newPositionY);
-
-      // Geschwindigkeit entsprechend der Bewegung setzen
-      this.setVelocityX(event.movementX / 4);
-      this.setVelocityY(event.movementY / 4);
-
-    } else if (!this.ballPressed) {
-      // Ball nach unten bewegen, nur wenn das Update-Intervall erreicht wurde
+    // Für die Ballbewegung nach dem Loslassen der Maus
+    if (!this.ballPressed) {
       if (this.timeDelta >= this.game.updateInterval) {
+        // Bildschirmgrenzen berechnen
+        const isLeft = this.positionX <= 0;
+        const isRight = this.positionX + this.ballSizeX >= this.game.width;
+        const isTop = this.positionY <= 0;
+        const isBottom = this.positionY + this.ballSizeY >= this.game.height;
 
-        // Abprallen, wenn der Ball mit einem anderen Ball kollidiert
-        if (this.game.ballColliding) {
+        // Gravitation anwenden, wenn der Ball nicht am Boden ist
+        if (!isBottom) {
+          const adjustedGravity = this.game.gravity * (this.timeDelta / 1000);
+          this.setVelocityY(this.velocityY + adjustedGravity); // Gravity mit Delta Zeit
+        }
+
+        // Horizontal Geschwindigkeit durch Reibung verringern
+        this.setVelocityX(this.velocityX * (1 - this.frictionX)); // X-Verlust durch Luftreibung
+        this.setVelocityY(this.velocityY * (1 - this.frictionY)); // Y-Verlust durch Luftreibung
+
+
+        if (!!this?.game?.ballColliding) {
           const allBalls = this.game.getAllBalls();
           for (let i = 0; i < allBalls.length; i++) {
             let otherBall = allBalls[i];
@@ -270,75 +275,71 @@ export class Ball {
           }
         }
 
-        const lastFrameIsLeft = this.positionX <= 0;
-        const lastFrameIsRight = this.positionX + this.ballSizeX >= this.game.width
-        const lastFrameIsTop = this.positionY <= 0;
-        const lastFrameIsBottom = this.positionY + this.ballSizeY >= this.game.height;
-
-        // add gravity for down movement
-        if (!lastFrameIsBottom) this.setVelocityY(this.velocityY + this.game.gravity);
-        this.setVelocityX(Math.max(0, this.velocityX - this.frictionX));
-        this.setVelocityY(Math.max(0, this.velocityY - this.frictionY));
-
-        // Change size of ball on bouncing
-        // if (this.defaultBallSizeX >= this.ballSizeX) this.ballSizeX = this.ballSizeX + 5;
-        // if (this.defaultBallSizeX <= this.ballSizeX) this.ballSizeX = this.ballSizeX - 5;
-        // if (this.defaultBallSizeY >= this.ballSizeY) this.ballSizeY = this.ballSizeY + 5;
-        // if (this.defaultBallSizeY <= this.ballSizeY) this.ballSizeY = this.ballSizeY - 5;
-
-        // TODO check ball collision for positioning
-
-        const isLeft = this.positionX <= 0;
-        const isRight = this.positionX + this.ballSizeX >= this.game.width;
-        const isTop = this.positionY <= 0;
-        const isBottom = this.positionY + this.ballSizeY >= this.game.height;
-
+        // Boden- und Wand-Logik: Abprallen
         if (isBottom) {
-          // this.ballSizeY = this.ballSizeY / 1.05;
+          this.setPositionY(this.game.height - this.ballSizeY); // Korrigiere Position am Boden
+          let bounceHeightVelo = (1 + (this.game.height / this.lastBounceHeight) * 0.4);
+          if (this.lastBounceHeight > this.maxHeight - 10) bounceHeightVelo = 1;
+          this.setVelocityY(this.velocityY * -this.bounceFactor * bounceHeightVelo); // Mit Bounce-Faktor abprallen
+          this.setVelocityX(this.velocityX * (1 - this.groundFrictionX)); // Horizontale Geschwindigkeit leicht reduzieren
+          this.lastBounceHeight = this.maxHeight;
+          if (Math.abs(this.velocityY) < this.game.minGroundDist) this.setVelocityY(0); // Setze Y-Geschwindigkeit auf 0, wenn es zu langsam ist
         }
 
-        // Abprallen, wenn der Ball den Boden erreicht
-        if (isTop || isBottom) {
+        if (isTop) {
+          this.setPositionY(0);
           this.setVelocityY(this.velocityY * -this.bounceFactor);
         }
 
-        // decrease x velocity on ground because friction
-        if (isBottom) {
-          this.setVelocityX(this.velocityX * (0.9 + this.bounceFactor / 10));
-        }
-
-        if (isTop) this.setPositionY(0);
-        if (isBottom) this.setPositionY(this.game.height - this.ballSizeY);
-
-        // Abprallen, wenn der Ball den linken oder rechten Rand erreicht
-        if (isLeft || isRight) {
+        if (isLeft) {
+          this.setPositionX(0);
           this.setVelocityX(this.velocityX * -this.bounceFactor);
         }
 
-        // kill to small movement
-        // if (this.positionX < 1) this.setVelocityX(0);
-        // if (Math.abs(this.velocityY) < 0.1 && isBottom) {
-        //   this.setPositionY(this.game.height - this.ballSizeY);
-        //   this.setVelocityY(0);
-        // }
-        console.log(this.id, `[X: ${this.velocityX} / Y: ${this.velocityY}]`)
+        if (isRight) {
+          this.setPositionX(this.game.width - this.ballSizeX);
+          this.setVelocityX(this.velocityX * -this.bounceFactor);
+        }
 
-        this.timeDelta = 0; // Zeit zurücksetzen
+        // Ballposition basierend auf Geschwindigkeit aktualisieren
+        this.setPositionX(this.positionX + this.velocityX);
+        this.setPositionY(this.positionY + this.velocityY);
+
+        // Zeit zurücksetzen
+        this.timeDelta = 0;
       }
-
-      this.setPositionX(this.positionX + this.velocityX)
-      this.setPositionY(this.positionY + this.velocityY)
     }
 
-    // Ballposition im HTML aktualisieren
-    this.circle.style.transform = "translate(" + this.positionX + "px, " + this.positionY + "px)";
-    this.circle.style.width = this.ballSizeX + "px";
-    this.circle.style.height = this.ballSizeY + "px";
+    // Mausbewegung: Position anpassen
+    if (this.ballPressed && !!event) {
+      const parentBounds = this.game.parentElement.getBoundingClientRect();
+      const newPositionX = event.clientX - parentBounds.left - this.ballSizeX / 2;
+      const newPositionY = event.clientY - parentBounds.top - this.ballSizeY / 2;
 
-    // Ballanimation fortsetzen
-    requestAnimationFrame(() => {
-      this.movingBall();
-    });
+      // Begrenze Position innerhalb des Spielfelds
+      this.setPositionX(newPositionX);
+      this.setPositionY(newPositionY);
+
+      // Setze Geschwindigkeit je nach Bewegung
+      this.setVelocityX(event.movementX / 2);
+      this.setVelocityY(event.movementY / 4);
+    }
+
+    // Ballbewegung im DOM aktualisieren
+    this.circle.style.transform = `translate(${this.positionX}px, ${this.positionY}px)`;
+    this.circle.style.width = `${this.ballSizeX}px`;
+    this.circle.style.height = `${this.ballSizeY}px`;
+    this.updateMaxGameSize();
+
+    // Animation fortsetzen
+    if (!!this?.game?.isRunning || !!this.ballPressed) {
+      requestAnimationFrame(() => this.movingBall());
+    }
+  }
+
+  updateMaxGameSize() {
+    this.maxWidth = this.game.width - this.ballSizeX;
+    this.maxHeight = this.game.height - this.ballSizeY;
   }
 
   setVelocityX(newValue: number) {
@@ -350,11 +351,12 @@ export class Ball {
   }
 
   setPositionX(newValue: number) {
-    this.positionX = Math.max(0, Math.min(newValue, this.game.width - this.ballSizeX));
+    this.positionX = Math.max(0, Math.min(newValue, this.maxWidth));
   }
 
   setPositionY(newValue: number) {
-    this.positionY = Math.max(0, Math.min(newValue, this.game.height - this.ballSizeY));
+    this.positionY = Math.max(0, Math.min(newValue, this.maxHeight));
+    this.lastBounceHeight = Math.min(this.positionY, this.lastBounceHeight)
   }
 
   setColor(newValue: string) {
