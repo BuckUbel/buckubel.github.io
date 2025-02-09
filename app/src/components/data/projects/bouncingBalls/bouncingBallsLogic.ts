@@ -1,5 +1,7 @@
 import {ObjectArray} from "../../../helper/types";
 
+const MIN_VELOCITY = 1;
+
 function getSign(number: number) {
   if (number < 0) {
     return -1;
@@ -16,7 +18,7 @@ export class Game {
 
   allBalls: Ball[] = [];
 
-  ballColliding: boolean = false;
+  ballColliding: boolean = true;
   isRunning: boolean = false;
 
   gravity = 9.81;
@@ -300,10 +302,9 @@ export class Ball {
           this.setPositionX(this.game.width - this.ballSizeX);
           this.setVelocityX(this.velocityX * -this.bounceFactor);
         }
-
         // Ballposition basierend auf Geschwindigkeit aktualisieren
-        this.setPositionX(this.positionX + this.velocityX);
-        this.setPositionY(this.positionY + this.velocityY);
+        if (Math.abs(this.velocityX) >= MIN_VELOCITY) this.setPositionX(this.positionX + this.velocityX);
+        if (Math.abs(this.velocityY) >= MIN_VELOCITY) this.setPositionY(this.positionY + this.velocityY);
 
         // Zeit zurücksetzen
         this.timeDelta = 0;
@@ -319,10 +320,9 @@ export class Ball {
       // Begrenze Position innerhalb des Spielfelds
       this.setPositionX(newPositionX);
       this.setPositionY(newPositionY);
-
       // Setze Geschwindigkeit je nach Bewegung
-      this.setVelocityX(event.movementX / 2);
-      this.setVelocityY(event.movementY / 4);
+      this.setVelocityX(event.movementX);
+      this.setVelocityY(event.movementY);
     }
 
     // Ballbewegung im DOM aktualisieren
