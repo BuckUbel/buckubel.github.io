@@ -12,27 +12,90 @@ function getSign(number: number) {
 
 export class Game {
   field = document.createElement("div");
-  allBalls: Ball [] = [];
-  gravity = 0.95;
+  parentElement: HTMLElement = document.body
+
+  allBalls: Ball[] = [];
+
+  ballColliding: boolean = false;
+  isRunning: boolean = false;
+
+  gravity = 0.85;
   fps = 30;
   updateInterval = 1000 / this.fps; // 30 Mal pro Sekunde
 
-  constructor() {
-    this.field.style.backgroundColor = "black"
-    this.field.style.position = "fixed";
+  left = 0;
+  top = 0;
+  width = 0;
+  height = 0;
+
+  constructor(parentElement?: HTMLElement) {
+    // this.field.style.backgroundColor = "rgba(128, 128, 0, 0.5)";
+    this.field.style.backgroundColor = "rgba(0, 0, 0, 1)";
+    this.field.style.border = "1px solid";
+    this.field.style.position = "absolute";
     this.field.style.left = "0";
     this.field.style.top = "0";
     this.field.style.width = "100%";
     this.field.style.height = "100%";
     this.field.style.zIndex = "999";
-    document.body.appendChild(this.field);
+
+    if (!!parentElement) this.parentElement = parentElement;
+
+    const parentBounds = this.parentElement.getBoundingClientRect();
+    this.left = parentBounds.left;
+    this.top = parentBounds.top;
+    this.width = parentBounds.width;
+    this.height = parentBounds.height;
+    // this.width = window.innerWidth;
+    // this.height = window.innerHeight;
+    // this.field.style.left = `${this.left}px`;
+    // this.field.style.top = `${this.top}px`;
+    this.field.style.width = `${this.width}px`;
+    this.field.style.height = `${this.height}px`;
+
   }
 
   start(ballNumber: number = 2) {
+    this.parentElement.appendChild(this.field);
     for (let i = 0; i < ballNumber; i++) {
       new Ball(this);
     }
+    this.createEndButton();
+    this.isRunning = true;
+  }
 
+  createEndButton() {
+    const endButton = document.createElement("button");
+    endButton.className = "end-button";
+    endButton.textContent = "End Game";
+    endButton.addEventListener("click", () => {
+      this.end();
+      if (endButton.parentElement) {
+        endButton.parentElement.removeChild(endButton);
+      }
+    });
+
+    this.parentElement.appendChild(endButton);
+  }
+
+  end() {
+    // Remove all balls from the DOM and clear the array
+    this.allBalls.forEach((ball) => {
+      ball.cleanUp();
+    });
+    this.allBalls = [];
+
+    // Remove the field div from the DOM
+    if (this.field.parentElement) {
+      this.field.parentElement.removeChild(this.field);
+    }
+    this.field.replaceWith(this.field.cloneNode(true)); // Remove all event listeners from field
+    this.isRunning = false;
+
+    // Dereference properties to allow garbage collection
+    this.parentElement = null!;
+    this.field = null!;
+    this.allBalls = null!;
   }
 
   getAllBalls() {
@@ -44,7 +107,7 @@ export class Game {
 export class Ball {
   game: Game;
 
-  id = Math.random() * 10000000000000000;
+  id = Math.floor(Math.random() * 100000000000000);
   circle = document.createElement("div");
   defaultBallSizeX = 50 //this.getRandomSize();
   ballSizeX = this.defaultBallSizeX //this.getRandomSize();
@@ -52,13 +115,14 @@ export class Ball {
   ballSizeY = this.defaultBallSizeY // this.getRandomSize();
 
   // Variablen für die Position und Geschwindigkeit des Balls festlegen
-  positionX = this.getRandomPosition(window.innerWidth - this.ballSizeX);
-  positionY = this.getRandomPosition(window.innerHeight - this.ballSizeY);
+  positionX = 0;
+  positionY = 0;
   ballPressed = false;
   velocityX = 0 //this.getRandomVelocity();
-  velocityY = this.getRandomVelocity();
+  velocityY = 0;
+  // velocityY = this.getRandomVelocity();
   bounceFactor = 0.7;
-  frictionX = 0.05;
+  frictionX = 0.0;
   frictionY = 0.0;
   collidedBalls: ObjectArray<boolean> = {};
 
@@ -73,46 +137,76 @@ export class Ball {
   constructor(game: Game) {
     this.game = game;
     this.game.allBalls.push(this)
-    this.circle.className = "ball";
 
+    this.circle.className = "ball";
     this.circle.style.width = this.ballSizeX + "px";
     this.circle.style.height = this.ballSizeY + "px";
     this.circle.style.borderRadius = "50%";
-    this.setColor(this.getRandomColor());
-    this.circle.style.position = "fixed";
+    this.circle.style.border = "2px solid";
+    this.setColor(this.getBrightRandomColor());
+    this.circle.style.position = "absolute";
     this.circle.style.left = "0";
     this.circle.style.top = "0";
     this.circle.style.zIndex = "1000";
-    document.body.appendChild(this.circle);
+    this.game.parentElement.appendChild(this.circle);
 
+    this.positionX = this.getRandomPosition(this.game.width - this.ballSizeX);
+    this.positionY = this.getRandomPosition(this.game.height - this.ballSizeY);
 
+    // Event Listener binden zum clean up
+    this.mouseDown = this.mouseDown.bind(this);
+    this.mouseUp = this.mouseUp.bind(this);
+    this.mouseMove = this.mouseMove.bind(this);
     // Event Listener zum Drücken und Loslassen der Maustaste hinzufügen
-    this.circle.addEventListener("mousedown", (event) => {
-      this.ballPressed = true;
-      event.preventDefault();
-      event.stopPropagation();
-      // TODO: setPointerCapture
-    });
-
-    document.addEventListener("mouseup", (event) => {
-      this.ballPressed = false;
-      event.preventDefault();
-      event.stopPropagation();
-    });
-
+    this.circle.addEventListener("mousedown", this.mouseDown);
+    document.addEventListener("mouseup", this.mouseUp);
     // Event Listener zum Erfassen der Mausposition hinzufügen
-    document.addEventListener("mousemove", (event) => {
-      this.movingBall(event);
-      event.preventDefault();
-      event.stopPropagation();
-    });
+    document.addEventListener("mousemove", this.mouseMove);
 
     // Ballanimation starten
     this.movingBall();
   }
 
+  mouseDown = (event: MouseEvent) => {
+    this.ballPressed = true;
+    event.preventDefault();
+    event.stopPropagation();
+    // TODO: setPointerCapture
+  }
+  mouseUp = (event: MouseEvent) => {
+    this.ballPressed = false;
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  mouseMove = (event: MouseEvent) => {
+    this.movingBall(event);
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  cleanUp() {
+    this.circle.removeEventListener("mousedown", this.mouseDown);
+    document.removeEventListener("mouseup", this.mouseUp);
+    document.removeEventListener("mousemove", this.mouseMove);
+
+    // Entferne das HTML-Element
+    if (this.circle.parentElement) {
+      this.circle.parentElement.removeChild(this.circle);
+    }
+    this.circle.replaceWith(this.circle.cloneNode(true)); // Remove all event listeners
+
+    // Referenzen entfernen, damit der Garbage Collector dieses Objekt entsorgen kann
+
+    this.circle = null!;
+    this.collidedBalls = null!;
+    this.game = null!;
+
+  }
+
   // Funktion zum Bewegen des Balls
   movingBall(event?: MouseEvent) {
+    if (!this?.game?.isRunning) return;
+
     // Zeit seit dem letzten Update berechnen
     var currentTime = performance.now();
     this.timeDelta += currentTime - this.lastUpdateTime;
@@ -121,78 +215,103 @@ export class Ball {
     // Ball nur bewegen, wenn die Maustaste gedrückt ist
     if (this.ballPressed && !!event) {
       // Die Position des Balls basierend auf der Mausposition aktualisieren
-      this.setPositionX(event.clientX - (this.ballSizeX / 2))
-      this.setPositionY(event.clientY - (this.ballSizeY / 2))
-      // Geschwindigkeit basierend auf der Mausbewegung festlegen
-      this.setVelocityX(event.movementX / 10)
-      this.setVelocityY(event.movementY / 4)
+      // this.setPositionX(event.clientX - (this.ballSizeX / 2))
+      // this.setPositionY(event.clientY - (this.ballSizeY / 2))
+      // // Geschwindigkeit basierend auf der Mausbewegung festlegen
+      // this.setVelocityX(event.movementX / 10)
+      // this.setVelocityY(event.movementY / 4)
+
+      // Die Position des Balls basierend auf der Mausposition aktualisieren
+      // const parentBounds = this.game.parentElement.getBoundingClientRect(); // Position des Eltern-Elements
+      // this.setPositionX(event.clientX - parentBounds.left - this.ballSizeX / 2);
+      // this.setPositionY(event.clientY - parentBounds.top - this.ballSizeY / 2);
+      //
+      // // Geschwindigkeit basierend auf der Mausbewegung festlegen
+      // this.setVelocityX(event.movementX / 10);
+      // this.setVelocityY(event.movementY / 4);
+
+      const parentBounds = this.game.parentElement.getBoundingClientRect(); // Position des Eltern-Elements
+
+      // Berechne die neue X-Position innerhalb der Spielgrenzen
+      let newPositionX = event.clientX - parentBounds.left - this.ballSizeX / 2;
+      newPositionX = Math.max(0, Math.min(newPositionX, this.game.width - this.ballSizeX));
+      this.setPositionX(newPositionX);
+
+      // Berechne die neue Y-Position innerhalb der Spielgrenzen
+      let newPositionY = event.clientY - parentBounds.top - this.ballSizeY / 2;
+      newPositionY = Math.max(0, Math.min(newPositionY, this.game.height - this.ballSizeY));
+      this.setPositionY(newPositionY);
+
+      // Geschwindigkeit entsprechend der Bewegung setzen
+      this.setVelocityX(event.movementX / 10);
+      this.setVelocityY(event.movementY / 4);
+
 
     } else if (!this.ballPressed) {
       // Ball nach unten bewegen, nur wenn das Update-Intervall erreicht wurde
       if (this.timeDelta >= this.game.updateInterval) {
 
         const lastFrameIsLeft = this.positionX <= 0;
-        const lastFrameIsRight = this.positionX + this.ballSizeX >= window.innerWidth;
+        const lastFrameIsRight = this.positionX + this.ballSizeX >= this.game.width
         const lastFrameIsTop = this.positionY <= 0;
-        const lastFrameIsBottom = this.positionY + this.ballSizeY >= window.innerHeight;
+        const lastFrameIsBottom = this.positionY + this.ballSizeY >= this.game.height;
 
         // add gravity for down movement
         if (!lastFrameIsBottom) this.setVelocityY(this.velocityY + this.game.gravity);
-        this.setVelocityX(this.velocityX - this.frictionX);
-        this.setVelocityY(this.velocityY - this.frictionY);
+        this.setVelocityX(Math.max(0, this.velocityX - this.frictionX));
+        this.setVelocityY(Math.max(0, this.velocityY - this.frictionY));
 
+        // Change size of ball on bouncing
         if (this.defaultBallSizeX >= this.ballSizeX) this.ballSizeX = this.ballSizeX + 5;
         if (this.defaultBallSizeX <= this.ballSizeX) this.ballSizeX = this.ballSizeX - 5;
         if (this.defaultBallSizeY >= this.ballSizeY) this.ballSizeY = this.ballSizeY + 5;
         if (this.defaultBallSizeY <= this.ballSizeY) this.ballSizeY = this.ballSizeY - 5;
 
-        this.setPositionX(this.positionX + this.velocityX)
-        this.setPositionY(this.positionY + this.velocityY)
 
         // Abprallen, wenn der Ball mit einem anderen Ball kollidiert
-        const allBalls = this.game.getAllBalls();
-        for (let i = 0; i < allBalls.length; i++) {
-          let otherBall = allBalls[i];
-          if (otherBall.circle !== this.circle && !this.collidedBalls[otherBall.id]) {
-            const [isCollide, diffX, diffY, diffDelta] = this.checkCollision(otherBall);
-            if (isCollide) {
-              const tempVelocityX = this.velocityX;
-              const tempVelocityY = this.velocityY;
-              console.log("Collission:", diffX);
-              // console.log("velocity Y:", this.velocityY, otherBall.velocityY);
+        if (this.game.ballColliding) {
+          const allBalls = this.game.getAllBalls();
+          for (let i = 0; i < allBalls.length; i++) {
+            let otherBall = allBalls[i];
+            if (otherBall.circle !== this.circle && !this.collidedBalls[otherBall.id]) {
+              const [isCollide, diffX, diffY, diffDelta] = this.checkCollision(otherBall);
+              if (isCollide) {
+                const tempVelocityX = this.velocityX;
+                const tempVelocityY = this.velocityY;
+                console.log("Collission:", diffX);
+                // console.log("velocity Y:", this.velocityY, otherBall.velocityY);
 
-              this.setVelocityX(otherBall.velocityX + ((this.ballSizeY - diffDelta)) * (otherBall.velocityY * getSign(diffX)));
-              // this.setVelocityX(otherBall.velocityX - (Math.abs(this.ballSize-diffX) /Math.abs(this.ballSize-diffY))* (otherBall.velocityY));
-              // this.setVelocityX(otherBall.velocityX + (this.ballSize-diffX * (otherBall.velocityY/otherBall.MAX_VELOCITY_Y)));
-              this.setVelocityY(otherBall.velocityY - ((diffY)));
+                this.setVelocityX(otherBall.velocityX + ((this.ballSizeY - diffDelta)) * (otherBall.velocityY * getSign(diffX)));
+                // this.setVelocityX(otherBall.velocityX - (Math.abs(this.ballSize-diffX) /Math.abs(this.ballSize-diffY))* (otherBall.velocityY));
+                // this.setVelocityX(otherBall.velocityX + (this.ballSize-diffX * (otherBall.velocityY/otherBall.MAX_VELOCITY_Y)));
+                this.setVelocityY(otherBall.velocityY - ((diffY)));
 
-              otherBall.setVelocityX(tempVelocityX + ((otherBall.ballSizeY - diffDelta)) * (tempVelocityY * getSign(diffX)));
-              // otherBall.setVelocityX(tempVelocityX - (Math.abs(otherBall.ballSize-diffX) / Math.abs(otherBall.ballSize-diffY))* (tempVelocityY));
-              // otherBall.setVelocityX(tempVelocityX - (this.ballSize-diffX * (tempVelocityY/this.MAX_VELOCITY_Y)));
-              otherBall.setVelocityY(tempVelocityY - ((diffY)));
+                otherBall.setVelocityX(tempVelocityX + ((otherBall.ballSizeY - diffDelta)) * (tempVelocityY * getSign(diffX)));
+                // otherBall.setVelocityX(tempVelocityX - (Math.abs(otherBall.ballSize-diffX) / Math.abs(otherBall.ballSize-diffY))* (tempVelocityY));
+                // otherBall.setVelocityX(tempVelocityX - (this.ballSize-diffX * (tempVelocityY/this.MAX_VELOCITY_Y)));
+                otherBall.setVelocityY(tempVelocityY - ((diffY)));
 
-              otherBall.collidedBalls = {...this.collidedBalls, [this.id]: true}
-              this.collidedBalls = {...this.collidedBalls, [otherBall.id]: true}
+                otherBall.collidedBalls = {...this.collidedBalls, [this.id]: true}
+                this.collidedBalls = {...this.collidedBalls, [otherBall.id]: true}
+              }
             }
-          }
-          if (this.collidedBalls[otherBall.id]) {
-            const [isCollide, diffX, diffY, diffDelta] = this.checkCollision(otherBall);
-            if (!isCollide) {
-              otherBall.collidedBalls = {...this.collidedBalls, [this.id]: false}
-              this.collidedBalls = {...this.collidedBalls, [otherBall.id]: false}
+            if (this.collidedBalls[otherBall.id]) {
+              const [isCollide, diffX, diffY, diffDelta] = this.checkCollision(otherBall);
+              if (!isCollide) {
+                otherBall.collidedBalls = {...this.collidedBalls, [this.id]: false}
+                this.collidedBalls = {...this.collidedBalls, [otherBall.id]: false}
+              }
             }
           }
         }
-
         // TODO check ball collision for positioning
 
         const isLeft = this.positionX <= 0;
-        const isRight = this.positionX + this.ballSizeX >= window.innerWidth;
+        const isRight = this.positionX + this.ballSizeX >= this.game.width;
         const isTop = this.positionY <= 0;
-        const isBottom = this.positionY + this.ballSizeY >= window.innerHeight;
+        const isBottom = this.positionY + this.ballSizeY >= this.game.height;
 
         if (isBottom) {
-          this.setColor("#F00");
           this.ballSizeY = this.ballSizeY / 1.05;
         }
 
@@ -203,12 +322,11 @@ export class Ball {
 
         // decrease x velocity on ground because friction
         if (isBottom) {
-          this.setColor("#00F");
           this.setVelocityX(this.velocityX * (0.9 + this.bounceFactor / 10));
         }
 
         if (isTop) this.setPositionY(0);
-        if (isBottom) this.setPositionY(window.innerHeight - this.ballSizeY);
+        if (isBottom) this.setPositionY(this.game.height - this.ballSizeY);
 
         // Abprallen, wenn der Ball den linken oder rechten Rand erreicht
         if (isLeft || isRight) {
@@ -216,15 +334,20 @@ export class Ball {
         }
 
         // kill to small movement
-        if (Math.abs(this.velocityX) < 0.5) this.setVelocityX(0);
-        if (Math.abs(this.velocityY) < 0.5 && isBottom) {
-          this.setPositionY(window.innerHeight - this.ballSizeY);
+        if (Math.abs(this.velocityX) < 50) this.setVelocityX(0);
+        if (Math.abs(this.velocityY) < 50 && isBottom) {
+          this.setPositionY(this.game.height - this.ballSizeY);
           this.setVelocityY(0);
         }
+        console.log(this.id, `[X: ${this.velocityX} / Y: ${this.velocityY}]`)
 
         this.timeDelta = 0; // Zeit zurücksetzen
       }
+
+      this.setPositionX(this.positionX + this.velocityX)
+      this.setPositionY(this.positionY + this.velocityY)
     }
+
     // Ballposition im HTML aktualisieren
     this.circle.style.transform = "translate(" + this.positionX + "px, " + this.positionY + "px)";
     this.circle.style.width = this.ballSizeX + "px";
@@ -245,15 +368,27 @@ export class Ball {
   }
 
   setPositionX(newValue: number) {
-    this.positionX = Math.max(0, Math.min(newValue, window.innerHeight));
+    this.positionX = Math.max(0, Math.min(newValue, this.game.width - this.ballSizeX));
   }
 
   setPositionY(newValue: number) {
-    this.positionY = Math.max(0, Math.min(newValue, window.innerWidth));
+    this.positionY = Math.max(0, Math.min(newValue, this.game.height - this.ballSizeY));
   }
 
   setColor(newValue: string) {
-    this.circle.style.backgroundColor = newValue;
+    this.circle.style.borderColor = newValue;
+    this.circle.style.backgroundColor = this.getDarkerColor(newValue);
+  }
+
+
+  getDarkerColor(color: string): string {
+    const hex = color.replace(/^#/, '');
+    let darker = '#';
+    for (let i = 0; i < 6; i += 2) {
+      const segment = Math.max(0, Math.floor(parseInt(hex.slice(i, i + 2), 16) * 0.5));
+      darker += segment.toString(16).padStart(2, '0');
+    }
+    return darker;
   }
 
   // Funktion zur Generierung einer zufälligen Farbe
@@ -262,6 +397,15 @@ export class Ball {
     var color = "#";
     for (var i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  getBrightRandomColor() {
+    var letters = "6789ABCDEF"; // Restrict to brighter hex values
+    var color = "#";
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * letters.length)];
     }
     return color;
   }
