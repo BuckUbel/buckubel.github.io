@@ -13,7 +13,7 @@ function BouncingBalls(props: BouncingBallsProps) {
   const gameFieldRef = React.useRef<HTMLDivElement>(null) ;
   const gameRef = React.useRef<Game>(null) as MutableRefObject<Game | null>;
   const [ballCounter, setBallCounter] = useState(10);
-  const [ballColliding, setBallColliding] = useState(gameRef.current?.ballColliding ?? false);
+  const [ballColliding, setBallColliding] = useState(gameRef.current?.ballColliding ?? true);
 
   useEffect(() => {
     if (!!gameFieldRef.current) {
