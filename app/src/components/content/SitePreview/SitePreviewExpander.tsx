@@ -5,6 +5,7 @@ import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import {StateType} from "../../helper/types";
 import {Color} from "../../config/color";
 import {TEXTCOLOR} from "../../config/css";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 interface SitePreviewExpanderProps {
   className?: string;
@@ -17,7 +18,7 @@ function SitePreviewExpander(props: SitePreviewExpanderProps) {
   const [isOpen, setIsOpen] = props.isOpenState;
   return (
     <div className={props.className} style={props.style} onClick={() => setIsOpen(!isOpen)}>
-      <FontAwesomeIcon size={"2x"} icon={isOpen ? faChevronUp : faChevronDown}/>
+      <FontAwesomeIcon size={"2x"} icon={(isOpen ? faChevronUp : faChevronDown) as IconProp}/>
     </div>
   );
 }

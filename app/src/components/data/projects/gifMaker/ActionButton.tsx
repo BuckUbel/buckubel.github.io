@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { StyledCompProps } from "../../../helper/types";
 import { Color } from "../../../config/color";
 import { IconLookup } from "@fortawesome/fontawesome-common-types";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 interface ActionButtonProps extends StyledCompProps {
   icon: IconLookup;
@@ -15,7 +16,7 @@ interface ActionButtonProps extends StyledCompProps {
 function ActionButton({ className, style, onClick, icon }: ActionButtonProps) {
   return (
     <button className={className} style={style} onClick={onClick}>
-      <FontAwesomeIcon icon={icon} />
+      <FontAwesomeIcon icon={icon as IconProp} />
     </button>
   );
 }

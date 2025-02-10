@@ -29,7 +29,7 @@
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
     "build": "react-scripts build && copy build\\index.html build\\404.html && yarn run createRSS ",
     "createRSS": "cd ../rssFeedGenerator && yarn run createRSS",
     "publish": "cd .. && git subtree push --prefix app/build origin gh-pages",

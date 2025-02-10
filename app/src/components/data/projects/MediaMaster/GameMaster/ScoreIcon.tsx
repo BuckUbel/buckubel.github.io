@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircle as faCircleRegular} from "@fortawesome/free-regular-svg-icons";
 import {rgbToHex} from "../../../../helper/rgbToHex";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 function getColorFromScore(score: number): string {
   const correctedScore = Math.min(100, Math.max(score, 0));
@@ -28,7 +29,7 @@ function ScoreIcon({score}: ScoreIconProps) {
   if (score >= 0) {
     const scoreColor = getColorFromScore(score);
     return <span className="fa-layers fa-fw fa-2x" style={{color: scoreColor}}>
-            <FontAwesomeIcon icon={faCircleRegular} size={"2x"}/>
+            <FontAwesomeIcon icon={faCircleRegular as IconProp} size={"2x"}/>
             <span style={{marginLeft: "2px"}}>{score}</span>
           </span>
   }

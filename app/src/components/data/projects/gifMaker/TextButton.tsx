@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { StyledCompProps } from '../../../helper/types';
 import { Color } from '../../../config/color';
 import { IconLookup } from '@fortawesome/fontawesome-common-types';
+import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 export interface ElementToUseProps extends StyledCompProps {
   onClick?: () => void;
@@ -37,7 +39,7 @@ function TextButton({
     <ElementToUse className={elementToUseProps.className + ' ' + extraClassName}
                   onClick={onClickHandler} {...elementToUseProps}>
       {icons.map((icon) => (
-        <FontAwesomeIcon key={icon.iconName} icon={icon} />
+        <FontAwesomeIcon key={icon.iconName} icon={icon as IconProp} />
       ))}
       {content.length > 0 && <p>{content}</p>}
       {children}

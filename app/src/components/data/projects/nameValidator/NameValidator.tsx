@@ -32,6 +32,7 @@ function NameValidator(props: NameValidatorProps) {
             ref={inputRef}
             autoFocus
             autoComplete={"off"}
+            type={"text"}
           />
           <p>
             {caretPos === 0 && <span id={"the-caret"} />}
@@ -94,10 +95,10 @@ export default styled(NameValidator)`
     left: 0;
     height: 100%;
     width: 100%;
-    background: transparent;
-    color: transparent;
+      background: rgba(255, 255, 255, 0.01); /* Minimal transparenter Hintergrund */
+      color: rgba(255, 255, 255, 0.01); /* Minimal transparente Schriftfarbe */
+      font-size: 16px; /* Mindestgröße für mobile Inputs */
     border: 0;
-    font-size: 0;
     :focus {
       outline: none;
     }

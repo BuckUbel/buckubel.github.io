@@ -6,6 +6,7 @@ import { TEXTCOLOR } from '../config/css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 interface SelectionFieldProps<T> {
   className?: string;
@@ -22,9 +23,9 @@ function SelectionField<T extends string | number | boolean>({
                                                                label,
                                                                optionLabelChanger = (option) => {
                                                                  if (option === true) return <FontAwesomeIcon
-                                                                   icon={faCheck} />;
+                                                                   icon={faCheck as IconProp} />;
                                                                  if (option === false) return <FontAwesomeIcon
-                                                                   icon={faTimes} />;
+                                                                   icon={faTimes as IconProp} />;
                                                                  return String(option);
                                                                }
                                                              }: SelectionFieldProps<T>) {

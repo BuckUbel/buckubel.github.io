@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {CompProps} from "../../helper/types";
 import {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 interface SitePreviewMiniIconsProps extends CompProps {
   className?: string;
@@ -13,7 +14,7 @@ interface SitePreviewMiniIconsProps extends CompProps {
 function SitePreviewMiniIcons(props: SitePreviewMiniIconsProps) {
   return (
     <div className={props.className}>
-      {!!props.icons && props.icons.map((v, i) => <FontAwesomeIcon key={i} icon={v}/>)}
+      {!!props.icons && props.icons.map((v, i) => <FontAwesomeIcon key={i} icon={v as IconProp}/>)}
       {props.children}
     </div>
   );

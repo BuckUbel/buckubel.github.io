@@ -7,6 +7,7 @@ import RoundButton from "../../../buttons/RoundButton";
 import {Color} from "../../../config/color";
 import {crlfToP} from "../../../helper/crlfToP";
 import {TEXTCOLOR} from "../../../config/css";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 interface DoorItemProps extends StyledCompProps {
   content: string;
@@ -24,9 +25,9 @@ function DoorItem({translation, openPreset = true, content, className, children,
     <div className={className} style={style}>
       {!translation && <div className={"placeholder"}/>}
       {!!translation && <RoundButton onClick={() => setTranslated(!translated)}
-                                     icon={<FontAwesomeIcon icon={faLanguage}/>} width={"10%"}/>}
+                                     icon={<FontAwesomeIcon icon={faLanguage as IconProp}/>} width={"10%"}/>}
       <div className={"close-button"} onClick={() => setOpen(!open)}>
-        <FontAwesomeIcon size={"2x"} icon={open ? faChevronUp : faChevronDown}/>
+        <FontAwesomeIcon size={"2x"} icon={(open ? faChevronUp : faChevronDown) as IconProp}/>
       </div>
       <div className={"door-item " + (!open ? "hide-most-text" : "")}>
         {translated && translation !== undefined && crlfToP(translation)}
