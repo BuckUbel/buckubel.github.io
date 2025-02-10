@@ -13,13 +13,14 @@ interface RoundButtonProps extends StyledCompProps {
   text?: string | JSX.Element;
   float?: string;
   width?: string;
+  disabled?: boolean;
 }
 
 function RoundButton(props: RoundButtonProps) {
   const routeLink = useRouteLink(props.onClick ? "" : props.link);
   return (
     <div className={"round-button " + props.className} style={props.style} onClick={!!props.onClick ? props.onClick : routeLink.onClick}>
-      <button style={props.buttonStyle}>
+      <button style={props.buttonStyle} disabled={props.disabled}>
         {props.icon ?? ""}
         {props.text ?? ""}
       </button>
@@ -47,6 +48,10 @@ export default styled(RoundButton)`
         text-overflow: ${({text}) => text !== undefined ? "ellipsis" :"clip" };
         transition: color 1s, background 1s;
 
+        &:disabled {
+            background: ${Color.TEXT_DISABLE_COLOR};
+        }
+        
         :hover {
             background: ${Color.TEXT_PRIME_COLOR};
             color: ${Color.BETA_COLOR};

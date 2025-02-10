@@ -5,6 +5,7 @@ import AdventOfCode2020 from './adventOfCode2020/AdventOfCode2020';
 import projectDefaultImage from '../../../images/banner1024.png';
 import bitPaletteImage from '../../../images/projects/bitpalette2.png';
 import gifmakerImage from '../../../images/projects/gifmaker.gif';
+import bouncingBallsImage from '../../../images/projects/bouncingBalls.gif';
 import nameValidatorImage from '../../../images/projects/nameValidator.png';
 import MediaMasterContainer from './MediaMaster/MediaMasterContainer';
 import GifMakerContainer from './gifMaker/GifMakerContainer';
@@ -77,25 +78,26 @@ export class ProjectEntryList implements ProjectEntryListInterface {
 export const PROJECTS: ProjectEntryListInterface = new ProjectEntryList([
   [<BitPalette />, 'BitPalette', {
     description: 'A little tool to use palettes on pixel art and minimize it.',
-    favNumber: 4,
+    favNumber: 6,
     image:bitPaletteImage,
     icon: faFileImage
   }],
   [<GifMakerContainer />, 'Simple GifMaker', {
     description: 'A little tool to create gif\'s from images.',
-    favNumber: 3,
+    favNumber: 5,
     image: gifmakerImage,
     icon: faImages
   }],
-  [<NameValidator />, 'Name Validator', {
-    description: 'The coolest validator for all names of the world.',
-    favNumber: 0,
-    image: nameValidatorImage,
-  }],
   [<BouncingBalls />, 'Bouncing Balls', {
     description: 'A little simulation of colorful, animated balls that move, bounce, collide with each other, and respond to mouse interactions such as dragging.',
+    favNumber: 4,
+    image: bouncingBallsImage,
+    icon: faGamepad,
+  }],
+  [<NameValidator />, 'Name Validator', {
+    description: 'The coolest validator for all names of the world.',
     favNumber: 3,
-    icon: faGamepad
+    image: nameValidatorImage,
   }],
   [<AdventOfCode2020 />, 'Advent of Code 2020', {
     description: 'An coding christmas calendar. Unfortunately, I canceled the project at an early stage.',

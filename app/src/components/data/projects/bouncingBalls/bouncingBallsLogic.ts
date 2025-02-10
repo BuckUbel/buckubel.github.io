@@ -16,10 +16,11 @@ export class Game {
   field = document.createElement("div");
   parentElement: HTMLElement = document.body
 
-  allBalls: Ball[] = [];
+  allBalls: ObjectArray<Ball> = {};
 
   ballColliding: boolean = true;
   isRunning: boolean = false;
+  isExisting: boolean = false;
 
   gravity = 9.81;
   minGroundDist = 0.8;
@@ -59,10 +60,13 @@ export class Game {
   }
 
   start(ballNumber: number = 2) {
+    if(!this.parentElement) return;
     this.parentElement.appendChild(this.field);
+    this.allBalls = {};
     for (let i = 0; i < ballNumber; i++) {
       new Ball(this);
     }
+    this.isExisting = true;
     this.createEndButton();
     this.isRunning = true;
   }
@@ -83,10 +87,10 @@ export class Game {
 
   end() {
     // Remove all balls from the DOM and clear the array
-    this.allBalls.forEach((ball) => {
+    Object.values(this.allBalls).forEach((ball) => {
       ball.cleanUp();
     });
-    this.allBalls = [];
+    this.allBalls = {};
 
     // Remove the field div from the DOM
     if (this.field.parentElement) {
@@ -96,13 +100,13 @@ export class Game {
     this.isRunning = false;
 
     // Dereference properties to allow garbage collection
-    this.parentElement = null!;
-    this.field = null!;
     this.allBalls = null!;
+
+    this.isExisting = false;
   }
 
   getAllBalls() {
-    return this.allBalls;
+    return Object.values(this.allBalls);
   }
 }
 
@@ -112,6 +116,7 @@ export class Ball {
 
   id = Math.floor(Math.random() * 100000000000000);
   circle = document.createElement("div");
+  color = "#ff0000";
   defaultBallSizeX = 50 //this.getRandomSize();
   ballSizeX = this.defaultBallSizeX //this.getRandomSize();
   defaultBallSizeY = 50 //this.getRandomSize();
@@ -142,8 +147,8 @@ export class Ball {
   maxWidth = 0;
 
   constructor(game: Game) {
+    game.allBalls[this.id] = this;
     this.game = game;
-    this.game.allBalls.push(this)
 
     this.circle.className = "ball";
     this.circle.style.width = this.ballSizeX + "px";
@@ -243,35 +248,124 @@ export class Ball {
 
         if (!!this?.game?.ballColliding) {
           const allBalls = this.game.getAllBalls();
+          const currentCollidedBalls: ObjectArray<boolean> = {};
+
           for (let i = 0; i < allBalls.length; i++) {
             let otherBall = allBalls[i];
-            if (otherBall.circle !== this.circle && !this.collidedBalls[otherBall.id]) {
-              const [isCollide, diffX, diffY, diffDelta] = this.checkCollision(otherBall);
-              if (isCollide) {
-                const tempVelocityX = this.velocityX;
-                const tempVelocityY = this.velocityY;
-                console.log("Collission:", diffX);
-                // console.log("velocity Y:", this.velocityY, otherBall.velocityY);
-
-                this.setVelocityX(otherBall.velocityX + ((this.ballSizeY - diffDelta)) * (otherBall.velocityY * getSign(diffX)));
-                // this.setVelocityX(otherBall.velocityX - (Math.abs(this.ballSize-diffX) /Math.abs(this.ballSize-diffY))* (otherBall.velocityY));
-                // this.setVelocityX(otherBall.velocityX + (this.ballSize-diffX * (otherBall.velocityY/otherBall.MAX_VELOCITY_Y)));
-                this.setVelocityY(otherBall.velocityY - ((diffY)));
-
-                otherBall.setVelocityX(tempVelocityX + ((otherBall.ballSizeY - diffDelta)) * (tempVelocityY * getSign(diffX)));
-                // otherBall.setVelocityX(tempVelocityX - (Math.abs(otherBall.ballSize-diffX) / Math.abs(otherBall.ballSize-diffY))* (tempVelocityY));
-                // otherBall.setVelocityX(tempVelocityX - (this.ballSize-diffX * (tempVelocityY/this.MAX_VELOCITY_Y)));
-                otherBall.setVelocityY(tempVelocityY - ((diffY)));
-
-                otherBall.collidedBalls = {...this.collidedBalls, [this.id]: true}
-                this.collidedBalls = {...this.collidedBalls, [otherBall.id]: true}
-              }
+            // Skip if it's the same ball or already processed
+            if (otherBall.id === this.id || currentCollidedBalls[otherBall.id]) {
+              continue;
             }
-            if (this.collidedBalls[otherBall.id]) {
-              const [isCollide, diffX, diffY, diffDelta] = this.checkCollision(otherBall);
-              if (!isCollide) {
-                otherBall.collidedBalls = {...this.collidedBalls, [this.id]: false}
-                this.collidedBalls = {...this.collidedBalls, [otherBall.id]: false}
+
+            const [isCollide, diffX, diffY, distance] = this.checkCollision(otherBall);
+
+            if (isCollide && (!this.collidedBalls[otherBall.id] || !otherBall.collidedBalls[this.id])) {
+
+              const isOtherLeft = otherBall.positionX <= 0;
+              const isOtherRight = otherBall.positionX + otherBall.ballSizeX >= otherBall.game.width;
+              const isOtherTop = otherBall.positionY <= 0;
+              const isOtherBottom = otherBall.positionY + otherBall.ballSizeY >= otherBall.game.height;
+
+              // Kollisionsvektor berechnen
+              const collisionVectorX = diffX / distance; // Normalisierte Richtung
+              const collisionVectorY = diffY / distance;
+
+              // Geschwindigkeit entlang der Kollisionsachse (Skalarprodukt mit Normalvektor)
+              const velocityAlongNormal =
+                (this.velocityX - otherBall.velocityX) * collisionVectorX +
+                (this.velocityY - otherBall.velocityY) * collisionVectorY;
+
+              const restitution = Math.min(this.bounceFactor, otherBall.bounceFactor);
+
+              // Masse der beiden Bälle für realistischen Impuls
+              const massA = 1; // Standardmasse = 1
+              const massB = 1;
+
+              // Impuls berechnen (basierend auf Masse und Kollisionsachse)
+              const impulse = -(1 + restitution) * velocityAlongNormal / (1 / massA + 1 / massB);
+              const impulseX = impulse * collisionVectorX;
+              const impulseY = impulse * collisionVectorY;
+
+              // Ball A behandeln
+              if (isBottom) {
+                // Ball A ist am Boden > Nur X-Geschwindigkeit ändern
+                this.setVelocityY(0); // Vertikale Geschwindigkeit aufheben
+                this.setVelocityX(this.velocityX + impulseX / massA); // Seitliche Bewegung erlauben
+              } else if (isLeft) {
+                // Ball A ist an der linken Wand -> Nur Y-Geschwindigkeit ändern
+                this.setVelocityX(0); // Horizontale Geschwindigkeit aufheben
+                this.setVelocityY(this.velocityY + impulseY / massA);
+              } else if (isRight) {
+                // Ball A ist an der rechten Wand -> Nur Y-Geschwindigkeit ändern
+                this.setVelocityX(0); // Horizontale Geschwindigkeit aufheben
+                this.setVelocityY(this.velocityY + impulseY / massA);
+              } else {
+                // Ball A ist im freien Raum -> Normale Impulsbewegung
+                this.setVelocityX(this.velocityX + impulseX / massA);
+                this.setVelocityY(this.velocityY + impulseY / massA);
+              }
+
+              // Ball B behandeln
+              if (isOtherBottom) {
+                // Ball B ist am Boden -> Nur X-Geschwindigkeit ändern
+                otherBall.setVelocityY(0); // Vertikale Geschwindigkeit aufheben
+                otherBall.setVelocityX(otherBall.velocityX - impulseX / massB); // Seitliche Bewegung erlauben
+              } else if (isOtherLeft) {
+                // Ball B ist an der linken Wand -> Nur Y-Geschwindigkeit ändern
+                otherBall.setVelocityX(0); // Horizontale Geschwindigkeit aufheben
+                otherBall.setVelocityY(otherBall.velocityY - impulseY / massB);
+              } else if (isOtherRight) {
+                // Ball B ist an der rechten Wand -> Nur Y-Geschwindigkeit ändern
+                otherBall.setVelocityX(0); // Horizontale Geschwindigkeit aufheben
+                otherBall.setVelocityY(otherBall.velocityY - impulseY / massB);
+              } else {
+                // Ball B ist im freien Raum -> Normale Impulsbewegung
+                otherBall.setVelocityX(otherBall.velocityX - impulseX / massB);
+                otherBall.setVelocityY(otherBall.velocityY - impulseY / massB);
+              }
+
+
+
+              // Geschwindigkeiten anwenden (Massenverhältnis = 1 angenommen, sonst Masse einführen)
+              this.setVelocityX(this.velocityX + impulseX / massA);
+              this.setVelocityY(this.velocityY + impulseY / massA);
+              otherBall.setVelocityX(otherBall.velocityX - impulseX / massB);
+              otherBall.setVelocityY(otherBall.velocityY - impulseY / massB);
+
+              // Seitliche Bewegung hinzufügen
+              const tangentVectorX = -collisionVectorY; // drehe Kollisionsvektor um 90°
+              const tangentVectorY = collisionVectorX;
+
+              const velocityAlongTangent =
+                (this.velocityX - otherBall.velocityX) * tangentVectorX +
+                (this.velocityY - otherBall.velocityY) * tangentVectorY;
+
+              // Reibungskomponente (optional, um seitliche Bewegungen zu reduzieren)
+              const friction = 0.98; // Wert zwischen 0 (rutschig) und 1 (haftend)
+
+              // Tangentialbewegung reduzieren oder stabilisieren
+              this.setVelocityX(this.velocityX - velocityAlongTangent * tangentVectorX * friction);
+              this.setVelocityY(this.velocityY - velocityAlongTangent * tangentVectorY * friction);
+              otherBall.setVelocityX(otherBall.velocityX + velocityAlongTangent * tangentVectorX * friction);
+              otherBall.setVelocityY(otherBall.velocityY + velocityAlongTangent * tangentVectorY * friction);
+
+              // Setze den Kollisionsstatus auf "wurde verarbeitet"
+              currentCollidedBalls[this.id] = true;
+              otherBall.collidedBalls[this.id] = true;
+              this.collidedBalls[otherBall.id] = true;
+
+            } else if (this.collidedBalls[otherBall.id]) {
+
+              // Der Kollisionstatus wird nur zurückgesetzt, wenn keine Überschneidung mehr vorliegt.
+              const distanceSquared =
+                (this.positionX - otherBall.positionX) ** 2 +
+                (this.positionY - otherBall.positionY) ** 2;
+              const combinedRadius = (this.ballSizeX / 2 + otherBall.ballSizeX / 2) ** 2;
+
+              if (distanceSquared > combinedRadius) {
+                // Kein Kontakt mehr, zurücksetzen
+                delete otherBall.collidedBalls[this.id];
+                delete this.collidedBalls[otherBall.id];
               }
             }
           }
@@ -360,6 +454,8 @@ export class Ball {
   }
 
   setColor(newValue: string) {
+    this.color = newValue;
+    this.circle.style.color = newValue;
     this.circle.style.borderColor = newValue;
     this.circle.style.backgroundColor = this.getDarkerColor(newValue);
   }
@@ -412,27 +508,9 @@ export class Ball {
   checkCollision(otherBall: Ball): [boolean, number, number, number] {
     const diffX = (otherBall.positionX + (otherBall.ballSizeX / 2)) - (this.positionX + (this.ballSizeX / 2));
     const diffY = (otherBall.positionY + (otherBall.ballSizeY / 2)) - (this.positionY + (this.ballSizeY / 2));
-    const diffDelta = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
-    return [((Math.max(this.ballSizeX, this.ballSizeY) / 2) + (Math.max(otherBall.ballSizeX, otherBall.ballSizeY) / 2)) > diffDelta, diffX, diffY, diffDelta];
-    // return (
-    //     ((this.ballSize/2)+(otherBall.ballSize/2)) > Math.abs((otherBall.positionX+(otherBall.ballSize/2)) - (this.positionX+(this.ballSize/2))) &&
-    //     ((this.ballSize/2)+(otherBall.ballSize/2)) > Math.abs((otherBall.positionY+(otherBall.ballSize/2)) - (this.positionY+(this.ballSize/2)))
-    // );
-    // return (
-    //     this.positionX < otherBall.positionX+otherBall.ballSize &&
-    //     this.positionX+this.ballSize > otherBall.positionX &&
-    //     this.positionY < otherBall.positionY+otherBall.ballSize &&
-    //     this.positionY+this.ballSize > otherBall.positionY
-    // );
-    // var rect1 = this.circle.getBoundingClientRect();
-    // var rect2 = otherBall.circle.getBoundingClientRect();
-    //
-    // return (
-    //     rect1.left < rect2.right &&
-    //     rect1.right > rect2.left &&
-    //     rect1.top < rect2.bottom &&
-    //     rect1.bottom > rect2.top
-    // );
+    const distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+    const radiusSum = (Math.max(this.ballSizeX, this.ballSizeY) / 2) + (Math.max(otherBall.ballSizeX, otherBall.ballSizeY) / 2);
+    return [radiusSum > distance, diffX, diffY, distance];
   }
 }
 
