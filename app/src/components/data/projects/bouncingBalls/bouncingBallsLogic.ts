@@ -60,7 +60,7 @@ export class Game {
   }
 
   start(ballNumber: number = 2) {
-    if(!this.parentElement) return;
+    if (!this.parentElement) return;
     this.parentElement.appendChild(this.field);
     this.allBalls = {};
     for (let i = 0; i < ballNumber; i++) {
@@ -325,7 +325,6 @@ export class Ball {
               }
 
 
-
               // Geschwindigkeiten anwenden (Massenverhältnis = 1 angenommen, sonst Masse einführen)
               this.setVelocityX(this.velocityX + impulseX / massA);
               this.setVelocityY(this.velocityY + impulseY / massA);
@@ -351,22 +350,19 @@ export class Ball {
 
               // Setze den Kollisionsstatus auf "wurde verarbeitet"
               currentCollidedBalls[this.id] = true;
-              otherBall.collidedBalls[this.id] = true;
               this.collidedBalls[otherBall.id] = true;
+              otherBall.collidedBalls[this.id] = true;
 
-            } else if (this.collidedBalls[otherBall.id]) {
+              this.circle.classList.add("collided");
+              otherBall.circle.classList.add("collided");
 
+            } else if (!isCollide && this.collidedBalls[otherBall.id]) {
               // Der Kollisionstatus wird nur zurückgesetzt, wenn keine Überschneidung mehr vorliegt.
-              const distanceSquared =
-                (this.positionX - otherBall.positionX) ** 2 +
-                (this.positionY - otherBall.positionY) ** 2;
-              const combinedRadius = (this.ballSizeX / 2 + otherBall.ballSizeX / 2) ** 2;
-
-              if (distanceSquared > combinedRadius) {
-                // Kein Kontakt mehr, zurücksetzen
-                delete otherBall.collidedBalls[this.id];
-                delete this.collidedBalls[otherBall.id];
-              }
+              // Kein Kontakt mehr, zurücksetzen
+              setTimeout(()=>this.circle.classList.remove("collided"),200);
+              setTimeout(()=>otherBall.circle.classList.remove("collided"), 200);
+              delete this.collidedBalls[otherBall.id];
+              delete otherBall.collidedBalls[this.id];
             }
           }
         }

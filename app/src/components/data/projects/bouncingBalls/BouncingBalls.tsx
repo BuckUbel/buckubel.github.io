@@ -176,6 +176,10 @@ export default styled(BouncingBalls)`
             box-shadow: 0 0 40px 6px currentColor;
             cursor: pointer;
             user-select: none;
+            transition: background-color 0.5s;
+            &.collided, &:hover {
+                background-color: currentColor !important;
+            }
         }
 
         .end-button {
