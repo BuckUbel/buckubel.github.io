@@ -12,7 +12,7 @@ function BouncingBalls(props: BouncingBallsProps) {
 
   const gameFieldRef = React.useRef<HTMLDivElement>(null) ;
   const gameRef = React.useRef<Game>(null) as MutableRefObject<Game | null>;
-  const [ballCounter, setBallCounter] = useState(10);
+  const [ballCounter, setBallCounter] = useState(5);
   const [ballColliding, setBallColliding] = useState(gameRef.current?.ballColliding ?? true);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ function BouncingBalls(props: BouncingBallsProps) {
 
   function startGame() {
     if (!!gameRef.current) {
-      gameRef.current.start(ballCounter);
+      gameRef.current.start(ballCounter,ballColliding);
     }
   }
   function stopGame() {}
@@ -173,11 +173,12 @@ export default styled(BouncingBalls)`
         margin: 0 auto;
 
         .ball {
-            box-shadow: 0 0 40px 6px currentColor;
+            box-shadow: 0 0 20px 3px currentColor;
             cursor: pointer;
             user-select: none;
-            transition: background-color 0.5s;
+            transition: background-color 0.5s, box-shadow 1s;
             &.collided, &:hover {
+                box-shadow: 0 0 40px 6px currentColor;
                 background-color: currentColor !important;
             }
         }

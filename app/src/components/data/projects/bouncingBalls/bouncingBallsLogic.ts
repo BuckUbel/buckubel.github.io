@@ -18,7 +18,7 @@ export class Game {
 
   allBalls: ObjectArray<Ball> = {};
 
-  ballColliding: boolean = true;
+  ballColliding: boolean = false;
   isRunning: boolean = false;
   isExisting: boolean = false;
 
@@ -59,13 +59,14 @@ export class Game {
 
   }
 
-  start(ballNumber: number = 2) {
+  start(ballNumber: number = 2, ballColliding = true) {
     if (!this.parentElement) return;
     this.parentElement.appendChild(this.field);
     this.allBalls = {};
     for (let i = 0; i < ballNumber; i++) {
       new Ball(this);
     }
+    if(ballColliding) this.ballColliding = true;
     this.isExisting = true;
     this.createEndButton();
     this.isRunning = true;
@@ -359,8 +360,12 @@ export class Ball {
             } else if (!isCollide && this.collidedBalls[otherBall.id]) {
               // Der Kollisionstatus wird nur zurückgesetzt, wenn keine Überschneidung mehr vorliegt.
               // Kein Kontakt mehr, zurücksetzen
-              setTimeout(()=>this.circle.classList.remove("collided"),200);
-              setTimeout(()=>otherBall.circle.classList.remove("collided"), 200);
+              setTimeout(() => {
+                if (this.circle) this.circle.classList.remove("collided")
+              }, 200);
+              setTimeout(() => {
+                if (otherBall.circle) otherBall.circle.classList.remove("collided")
+              }, 200);
               delete this.collidedBalls[otherBall.id];
               delete otherBall.collidedBalls[this.id];
             }
