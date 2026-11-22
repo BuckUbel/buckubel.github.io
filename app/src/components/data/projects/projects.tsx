@@ -6,6 +6,8 @@ import projectDefaultImage from '../../../images/banner1024.png';
 import bitPaletteImage from '../../../images/projects/bitpalette2.png';
 import gifmakerImage from '../../../images/projects/gifmaker.gif';
 import bouncingBallsImage from '../../../images/projects/bouncingBalls.gif';
+import kanaProImage from '../../../images/projects/kanaPro.gif';
+import pokeUbelImage from '../../../images/projects/pokeubel.gif';
 import nameValidatorImage from '../../../images/projects/nameValidator.png';
 import MediaMasterContainer from './MediaMaster/MediaMasterContainer';
 import GifMakerContainer from './gifMaker/GifMakerContainer';
@@ -14,6 +16,8 @@ import { removeSpaces } from '../../helper/strings';
 import { EntryInterface } from '../../helper/getEntryInfo';
 import { faGamepad } from '@fortawesome/free-solid-svg-icons/faGamepad';
 import BouncingBalls from "./bouncingBalls/BouncingBalls";
+import KanaPro2 from "./kanaPro2/KanaPro2";
+import PokeUbel from "./pokeubel/PokeUbel";
 
 export interface ProjectEntryInterface extends EntryInterface {
   component: JSX.Element;
@@ -76,6 +80,18 @@ export class ProjectEntryList implements ProjectEntryListInterface {
 }
 
 export const PROJECTS: ProjectEntryListInterface = new ProjectEntryList([
+  [<PokeUbel />, 'PokeUbel', {
+    description: 'Visit my cool pokemon website to boost yur adventure!',
+    favNumber: 8,
+    image:pokeUbelImage,
+    icon: faFileImage
+  }],
+  [<KanaPro2 />, 'Kana Pro 2', {
+    description: 'Do u want learn Japanese chars? So this is the right site for u! We have a really cool quiz mode here. And some other games',
+    favNumber: 7,
+    image:kanaProImage,
+    icon: faFileImage
+  }],
   [<BitPalette />, 'BitPalette', {
     description: 'A little tool to use palettes on pixel art and minimize it.',
     favNumber: 6,
